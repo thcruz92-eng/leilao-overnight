@@ -1,5 +1,7 @@
-# O app já vem compilado neste repositório — o Netlify não constrói nada,
-# apenas publica os arquivos como estão. Sem npm, sem build, sem falha de build.
+# O app já vem compilado neste repositório (app.js) — não há nada para construir.
+# O comando abaixo existe só para anular o "npm run build" que ficou salvo nas
+# configurações do site no Netlify: o netlify.toml tem precedência sobre a interface.
 [build]
+  command = "echo 'App ja compilado — nada a construir.'"
   publish = "."
   functions = "netlify/functions"
