@@ -44,6 +44,9 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nada mudou."
           else
-            git commit -m "Base B3 — $(date -u +'%Y-%m-%d')"
+            # [skip ci] impede que este commit dispare um deploy no Netlify.
+            # O app lê a base direto do GitHub, então republicar o site seria
+            # gasto de crédito sem nenhum ganho.
+            git commit -m "Base B3 — $(date -u +'%Y-%m-%d') [skip ci]"
             git push
           fi
