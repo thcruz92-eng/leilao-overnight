@@ -1,13 +1,5 @@
+# O app já vem compilado neste repositório — o Netlify não constrói nada,
+# apenas publica os arquivos como estão. Sem npm, sem build, sem falha de build.
 [build]
-  command = "npm run build"
-  publish = "dist"
+  publish = "."
   functions = "netlify/functions"
-
-[build.environment]
-  NODE_VERSION = "20"
-
-# SPA: qualquer rota cai no index (funções têm precedência)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
