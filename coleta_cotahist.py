@@ -10,7 +10,7 @@ REGRA DEFINIDA: o COTAHIST é a fonte de verdade. Todo dado histórico
 que ele traz SOBRESCREVE o que já estiver na base.
 
 Modos de uso:
-    python coleta_cotahist.py                 # pregão do último dia útil
+    python coleta_cotahist.py                 # últimos dias úteis (hoje incluído)
     python coleta_cotahist.py --data 25/08/2026
     python coleta_cotahist.py --ano 2026      # ano inteiro (carga inicial)
     python coleta_cotahist.py --ano 2024 --ano 2025 --ano 2026
@@ -30,6 +30,7 @@ import sys
 import zipfile
 from datetime import date, datetime, timedelta
 from statistics import median
+from zoneinfo import ZoneInfo
 
 import urllib.request
 
@@ -216,11 +217,25 @@ def salvar_base(base: dict, anos_manter=None, vol_min_mm=0.0):
     print(f"  base_b3.json: {tam:.1f} MB")
 
 
-def ultimo_dia_util(hoje=None):
-    d = (hoje or date.today()) - timedelta(days=1)
-    while d.weekday() >= 5:                     # 5=sáb, 6=dom
+TZ_BR = ZoneInfo("America/Sao_Paulo")
+
+
+def hoje_br() -> date:
+    """Data-calendário em Brasília — o runner do GitHub roda em UTC."""
+    return datetime.now(TZ_BR).date()
+
+
+def dias_uteis_recentes(n: int, ate: date = None):
+    """Os n dias úteis mais recentes, do mais novo para o mais antigo,
+    INCLUINDO hoje. Às 20h de Brasília o pregão do dia já fechou e o
+    arquivo da B3 já existe, então hoje é justamente o que interessa."""
+    d = ate or hoje_br()
+    out = []
+    while len(out) < n:
+        if d.weekday() < 5:          # 5=sáb, 6=dom
+            out.append(d)
         d -= timedelta(days=1)
-    return d
+    return out
 
 
 # ------------------------------------------------------------------
@@ -228,6 +243,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", help="dd/mm/aaaa — pregão específico")
     ap.add_argument("--ano", type=int, action="append", help="ano inteiro")
+    ap.add_argument("--dias", type=int, default=4,
+                    help="quantos dias úteis recentes tentar (hoje incluído)")
     ap.add_argument("--anos-manter", type=float, default=4.0)
     ap.add_argument("--vol-min", type=float, default=1.0,
                     help="volume mediano mínimo em R$ milhões")
@@ -242,15 +259,30 @@ def main():
             for ano in args.ano:
                 print(f"\nBaixando ano {ano}...")
                 novos += buscar_ano(ano)
-        else:
-            d = (datetime.strptime(args.data, "%d/%m/%Y").date()
-                 if args.data else ultimo_dia_util())
+        elif args.data:
+            d = datetime.strptime(args.data, "%d/%m/%Y").date()
             print(f"\nBaixando pregão de {d.strftime('%d/%m/%Y')}...")
             novos = buscar_dia(d)
+        else:
+            # Percorre os últimos dias úteis (hoje incluído). Falha em um dia
+            # não derruba a execução: feriado, pregão ainda não publicado ou
+            # queda momentânea da B3 são casos normais. Isso também recupera
+            # sozinho os dias perdidos se alguma execução anterior falhou.
+            ok = 0
+            for d in dias_uteis_recentes(args.dias):
+                print(f"\nBaixando pregão de {d.strftime('%d/%m/%Y')}...")
+                try:
+                    novos += buscar_dia(d)
+                    ok += 1
+                except Exception as e:
+                    print(f"  indisponível ({e}) — seguindo", file=sys.stderr)
+            if ok == 0:
+                print("\nNenhum pregão pôde ser baixado.", file=sys.stderr)
+                print("Antes das ~19h o arquivo do dia ainda não existe.",
+                      file=sys.stderr)
+                sys.exit(1)
     except Exception as e:
         print(f"\nFalha no download: {e}", file=sys.stderr)
-        print("Se for o pregão de hoje, o arquivo só sai depois do fechamento.",
-              file=sys.stderr)
         sys.exit(1)
 
     if not novos:
