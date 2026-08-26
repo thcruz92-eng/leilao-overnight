@@ -1,0 +1,8 @@
+# Publica apenas a pasta public/, que contém tudo que o site precisa:
+# index.html, app.js e a base coletada. Nada mais fica exposto.
+# O comando abaixo não constrói nada — existe só para anular o "npm run build"
+# salvo nas configurações do site (o netlify.toml tem precedência sobre a interface).
+[build]
+  command = "echo 'App ja compilado — nada a construir.'"
+  publish = "public"
+  functions = "netlify/functions"
