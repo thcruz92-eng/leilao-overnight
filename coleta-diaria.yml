@@ -1,0 +1,73 @@
+name: Coleta diária COTAHIST
+
+on:
+  schedule:
+    # CORREÇÃO v14: o horário antigo era "0 23 * * 1-5" = 20h de Brasília.
+    # Às 20h a B3 ainda não publicou o COTAHIST do próprio dia, então a
+    # coleta falhava no dia corrente e a base vivia um pregão atrasada.
+    #
+    # 22h de Brasília = 01h UTC do dia SEGUINTE. Por isso o dia da semana
+    # vira 2-6 (ter-sáb): a execução de sexta 22h cai em sábado 01h UTC.
+    # Deixar 1-5 aqui perderia a sexta-feira e rodaria domingo à toa.
+    - cron: "0 1 * * 2-6"      # 22h de Brasília, seg a sex
+
+    # Rede de segurança: se a B3 atrasar, esta execução recupera o pregão
+    # na manhã seguinte, antes de você abrir o app.
+    - cron: "0 11 * * 1-5"     # 08h de Brasília, seg a sex
+
+  workflow_dispatch:
+    inputs:
+      ano:
+        description: "Ano inteiro (ex: 2026) — use na carga inicial"
+        required: false
+      data:
+        description: "Pregão específico (dd/mm/aaaa)"
+        required: false
+      dias:
+        description: "Quantos dias úteis recentes tentar (padrão 10)"
+        required: false
+
+concurrency:
+  # duas execuções por dia não podem se atropelar escrevendo a mesma base
+  group: coleta-diaria
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Executar coleta
+        run: |
+          if [ -n "${{ github.event.inputs.ano }}" ]; then
+            python coleta_cotahist.py --ano ${{ github.event.inputs.ano }}
+          elif [ -n "${{ github.event.inputs.data }}" ]; then
+            python coleta_cotahist.py --data "${{ github.event.inputs.data }}"
+          else
+            # --dias 10 em vez do padrão 4: cobre feriado prolongado e semana
+            # em que o workflow tenha falhado, sem deixar buraco na série.
+            python coleta_cotahist.py --dias ${{ github.event.inputs.dias || '10' }}
+          fi
+
+      - name: Publicar base atualizada
+        run: |
+          git config user.name  "coleta-bot"
+          git config user.email "coleta-bot@users.noreply.github.com"
+          git add public/base_b3.json public/base_b3.csv
+          if git diff --staged --quiet; then
+            echo "Nada mudou."
+          else
+            # [skip ci] impede que este commit dispare um deploy no Netlify.
+            # O app lê a base direto do GitHub, então republicar o site seria
+            # gasto de crédito sem nenhum ganho.
+            git commit -m "Base B3 — $(date -u +'%Y-%m-%d') [skip ci]"
+            git push
+          fi

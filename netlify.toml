@@ -7,12 +7,10 @@
   publish = "public"
   functions = "netlify/functions"
 
-  # Cada deploy de produção custa 15 créditos. O commit diário da coleta
-  # só mexe em public/base_b3.json — e o app lê esse arquivo do
-  # raw.githubusercontent.com, não daqui. Publicar o site de novo por
-  # causa dele é pagar 15 créditos por nada, todo dia útil.
+  # Segunda camada de proteção de crédito. A primeira é o [skip ci] na
+  # mensagem de commit da coleta; esta aqui cobre commit de dados feito
+  # à mão, sem a marcação. Cada deploy de produção custa 15 créditos.
   #
-  # Semântica do ignore: sai 0 -> cancela o deploy; sai 1 -> deploy roda.
-  # git diff --quiet sai 0 quando NÃO há diferença. Então: se a única
-  # mudança foi a base, não há diferença fora dela, sai 0, deploy cancelado.
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!public/base_b3.json'"
+  # Semântica: sai 0 -> cancela o deploy; sai 1 -> deploy roda.
+  # git diff --quiet sai 0 quando NÃO há diferença fora dos arquivos listados.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!public/base_b3.json' ':!public/base_b3.csv'"
