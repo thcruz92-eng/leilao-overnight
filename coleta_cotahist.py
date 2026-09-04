@@ -27,6 +27,7 @@ import json
 import os
 import ssl
 import sys
+import time
 import zipfile
 from datetime import date, datetime, timedelta
 from statistics import median
@@ -115,10 +116,24 @@ def _extrair_txt(dados_zip: bytes) -> bytes:
         return z.read(z.namelist()[0])
 
 
-def buscar_dia(d: date):
+def buscar_dia(d: date, tentativas: int = 3):
+    """Uma queda momentânea da B3 não pode custar o pregão inteiro: antes,
+    uma única falha de rede no dia que importa era definitiva para aquela
+    execução."""
     url = f"{BASE_URL}/COTAHIST_D{d.strftime('%d%m%Y')}.ZIP"
     print(f"  -> {url}")
-    return parse_cotahist(_extrair_txt(_baixar(url)))
+    ultimo_erro = None
+    for i in range(tentativas):
+        try:
+            return parse_cotahist(_extrair_txt(_baixar(url)))
+        except Exception as e:
+            ultimo_erro = e
+            if i < tentativas - 1:
+                espera = 5 * (i + 1)
+                print(f"     tentativa {i + 1} falhou ({e}); repetindo em {espera}s",
+                      file=sys.stderr)
+                time.sleep(espera)
+    raise ultimo_erro
 
 
 def buscar_ano(ano: int):
@@ -225,17 +240,45 @@ def hoje_br() -> date:
     return datetime.now(TZ_BR).date()
 
 
+# Feriados da B3 — sem isso o script tenta baixar arquivo que não existe,
+# enche o log de erro e mascara a falha de verdade no meio do ruído.
+FERIADOS_B3 = {
+    "2026-01-01", "2026-02-16", "2026-02-17", "2026-04-03", "2026-04-21",
+    "2026-05-01", "2026-06-04", "2026-09-07", "2026-10-12", "2026-11-02",
+    "2026-11-15", "2026-11-20", "2026-12-24", "2026-12-25", "2026-12-31",
+    "2027-01-01", "2027-02-08", "2027-02-09", "2027-03-26", "2027-04-21",
+    "2027-05-01", "2027-05-27", "2027-09-07", "2027-10-12", "2027-11-02",
+    "2027-11-15", "2027-11-20", "2027-12-24", "2027-12-25", "2027-12-31",
+}
+
+
+def eh_pregao(d: date) -> bool:
+    return d.weekday() < 5 and d.isoformat() not in FERIADOS_B3
+
+
 def dias_uteis_recentes(n: int, ate: date = None):
-    """Os n dias úteis mais recentes, do mais novo para o mais antigo,
-    INCLUINDO hoje. Às 20h de Brasília o pregão do dia já fechou e o
-    arquivo da B3 já existe, então hoje é justamente o que interessa."""
+    """Os n pregões mais recentes, do mais novo para o mais antigo,
+    INCLUINDO hoje. Feriado da B3 é pulado."""
     d = ate or hoje_br()
     out = []
     while len(out) < n:
-        if d.weekday() < 5:          # 5=sáb, 6=dom
+        if eh_pregao(d):
             out.append(d)
         d -= timedelta(days=1)
     return out
+
+
+def ultimo_pregao_esperado() -> date:
+    """O pregão mais recente que a B3 já deveria ter publicado.
+
+    A publicação sai perto das 22h de Brasília. Antes das 23h o esperado
+    ainda é o pregão anterior — senão a coleta das 22h cobraria um arquivo
+    que a B3 nem gerou. Mesmo limiar usado no app e no workflow."""
+    agora = datetime.now(TZ_BR)
+    d = agora.date() if agora.hour >= 23 else agora.date() - timedelta(days=1)
+    while not eh_pregao(d):
+        d -= timedelta(days=1)
+    return d
 
 
 # ------------------------------------------------------------------
@@ -269,18 +312,46 @@ def main():
             # queda momentânea da B3 são casos normais. Isso também recupera
             # sozinho os dias perdidos se alguma execução anterior falhou.
             ok = 0
+            baixados, falhados = set(), []
             for d in dias_uteis_recentes(args.dias):
                 print(f"\nBaixando pregão de {d.strftime('%d/%m/%Y')}...")
                 try:
                     novos += buscar_dia(d)
+                    baixados.add(d)
                     ok += 1
                 except Exception as e:
+                    falhados.append((d, e))
                     print(f"  indisponível ({e}) — seguindo", file=sys.stderr)
             if ok == 0:
                 print("\nNenhum pregão pôde ser baixado.", file=sys.stderr)
-                print("Antes das ~19h o arquivo do dia ainda não existe.",
+                print("Antes das ~22h o arquivo do dia ainda não existe.",
                       file=sys.stderr)
                 sys.exit(1)
+
+            # ----------------------------------------------------------
+            # AQUI ESTAVA O BURACO. Bastava UM pregão qualquer baixar para
+            # ok >= 1 e a execução se declarar bem-sucedida. Foi assim que
+            # 03/09/2026 se perdeu: os 9 dias antigos rebaixaram sem
+            # problema, só o pregão do dia falhou, e o workflow ficou verde
+            # publicando base velha. Agora o que vale é o pregão ESPERADO
+            # ter chegado, não a contagem de sucessos.
+            # ----------------------------------------------------------
+            esperado = ultimo_pregao_esperado()
+            if esperado not in baixados:
+                motivo = next((str(e) for d, e in falhados if d == esperado),
+                              "não estava na janela de --dias")
+                print(f"\n*** ATENCAO: o pregão esperado ({esperado:%d/%m/%Y}) "
+                      f"NÃO entrou nesta coleta. Motivo: {motivo}",
+                      file=sys.stderr)
+                print("*** A base vai ser publicada com o que veio, mas segue "
+                      "atrasada. O passo de verificação do workflow vai falhar "
+                      "de propósito para você ser avisado.", file=sys.stderr)
+            else:
+                print(f"\nPregão esperado ({esperado:%d/%m/%Y}) confirmado na coleta.")
+            if falhados:
+                lista = ", ".join(f"{d:%d/%m}" for d, _ in falhados)
+                print(f"Pregões que não baixaram nesta execução: {lista}",
+                      file=sys.stderr)
     except Exception as e:
         print(f"\nFalha no download: {e}", file=sys.stderr)
         sys.exit(1)
