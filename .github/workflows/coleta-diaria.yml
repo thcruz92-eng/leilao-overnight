@@ -2,8 +2,17 @@ name: Coleta diária COTAHIST
 
 on:
   schedule:
-    # 23:00 UTC = 20:00 Brasília — bem depois do fechamento do pregão.
-    - cron: "0 23 * * 1-5"
+    # Todas as janelas abaixo são inofensivas quando não há nada novo: o passo
+    # de publicação só faz commit se o arquivo mudou. Mais tentativas custam
+    # segundos de runner e eliminam o buraco na série.
+    #
+    # Lembrete do v14: 22h de Brasília = 01h UTC do dia SEGUINTE, por isso o
+    # dia da semana vira 2-6 (ter-sáb) — a execução de sexta 22h cai em sábado.
+    - cron: "0 1 * * 2-6"      # 22h de Brasília — primeira tentativa
+    - cron: "0 3 * * 2-6"      # 00h de Brasília — B3 publicou atrasado
+    - cron: "0 11 * * 1-5"     # 08h de Brasília — rede de segurança (verifica e falha se atrasada)
+    - cron: "0 12 * * 1-5"     # 09h de Brasília — última chance antes do pregão abrir
+
   workflow_dispatch:
     inputs:
       ano:
@@ -12,6 +21,19 @@ on:
       data:
         description: "Pregão específico (dd/mm/aaaa)"
         required: false
+      dias:
+        description: "Quantos dias úteis recentes tentar (padrão 10)"
+        required: false
+
+concurrency:
+  # duas execuções por dia não podem se atropelar escrevendo a mesma base
+  group: coleta-diaria
+  cancel-in-progress: false
+
+env:
+  # Sem isso o runner roda em UTC e o gerado_em fica ambíguo — foi o que
+  # dificultou entender, depois do fato, em que horário a coleta rodou.
+  TZ: America/Sao_Paulo
 
 jobs:
   coletar:
@@ -20,9 +42,15 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      # Node20 sai dos runners em 23/09/2026. checkout@v4 e setup-python@v5
+      # rodam em node20 e emitem aviso de depreciação desde que o runner
+      # passou a usar node24 por padrão (16/06/2026). Estas versões já são
+      # node24. Fiquei no checkout@v5 em vez do v6 de propósito: o v6 mudou
+      # a forma de guardar a credencial, e o passo de publicação depende
+      # dela para o git push.
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -33,7 +61,9 @@ jobs:
           elif [ -n "${{ github.event.inputs.data }}" ]; then
             python coleta_cotahist.py --data "${{ github.event.inputs.data }}"
           else
-            python coleta_cotahist.py
+            # --dias 10 cobre feriado prolongado e semana em que o workflow
+            # tenha falhado, sem deixar buraco na série.
+            python coleta_cotahist.py --dias ${{ github.event.inputs.dias || '10' }}
           fi
 
       - name: Publicar base atualizada
@@ -47,6 +77,92 @@ jobs:
             # [skip ci] impede que este commit dispare um deploy no Netlify.
             # O app lê a base direto do GitHub, então republicar o site seria
             # gasto de crédito sem nenhum ganho.
-            git commit -m "Base B3 — $(date -u +'%Y-%m-%d') [skip ci]"
+            git commit -m "Base B3 — $(date +'%Y-%m-%d') [skip ci]"
             git push
           fi
+
+      # ------------------------------------------------------------------
+      # Verificação: a base publicada realmente alcançou o último pregão?
+      #
+      # Sem este passo o workflow fica verde entregando base velha, que foi
+      # exatamente como o pregão de 03/09/2026 passou despercebido. A partir
+      # daqui, base atrasada = execução vermelha = e-mail do GitHub.
+      # ------------------------------------------------------------------
+      - name: Verificar se a base alcançou o último pregão
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os, sys, datetime as dt
+          from zoneinfo import ZoneInfo
+
+          # Feriados da B3 em que NÃO existe pregão. Acrescente aqui conforme
+          # o calendário do ano, senão o dia seguinte a um feriado gera um
+          # alarme falso (só um e-mail, nada quebra).
+          FERIADOS = {
+              "2026-01-01",  # Confraternização
+              "2026-02-16",  # Carnaval
+              "2026-02-17",  # Carnaval
+              "2026-04-03",  # Sexta-feira Santa
+              "2026-04-21",  # Tiradentes
+              "2026-05-01",  # Dia do Trabalho
+              "2026-06-04",  # Corpus Christi
+              "2026-09-07",  # Independência
+              "2026-10-12",  # N. Sra. Aparecida
+              "2026-11-02",  # Finados
+              "2026-11-15",  # Proclamação da República
+              "2026-11-20",  # Consciência Negra
+              "2026-12-24",  # B3 fechada
+              "2026-12-25",  # Natal
+              "2026-12-31",  # B3 fechada
+          }
+
+          agora = dt.datetime.now(ZoneInfo("America/Sao_Paulo"))
+
+          # A B3 publica o COTAHIST perto das 22h, então antes das 23h o
+          # esperado ainda é o dia útil anterior — senão a execução das 22h
+          # cobraria um arquivo que a B3 nem publicou.
+          d = agora.date() if agora.hour >= 23 else agora.date() - dt.timedelta(days=1)
+          while d.weekday() >= 5 or d.isoformat() in FERIADOS:
+              d -= dt.timedelta(days=1)
+          esperado = d
+
+          try:
+              with open("public/base_b3.json", encoding="utf-8") as fh:
+                  meta = json.load(fh)
+          except Exception as e:
+              print(f"::error::não consegui ler public/base_b3.json — {e}")
+              sys.exit(1)
+
+          ultimo = meta.get("ultimo_pregao")
+          gerado = meta.get("gerado_em")
+          atrasada = (ultimo is None) or (ultimo < esperado.isoformat())
+
+          resumo = [
+              "### Coleta COTAHIST",
+              "",
+              f"- executada em: `{agora:%d/%m/%Y %H:%M}` (Brasília)",
+              f"- último pregão na base: `{ultimo}`",
+              f"- último pregão esperado: `{esperado.isoformat()}`",
+              f"- carimbo do arquivo: `{gerado}`",
+              "",
+              ("⚠️ **BASE ATRASADA** — falta pelo menos um pregão." if atrasada
+               else "✅ Base em dia."),
+          ]
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+              fh.write("\n".join(resumo) + "\n")
+
+          if not atrasada:
+              print("Base em dia.")
+              sys.exit(0)
+
+          # Nas execuções da noite a B3 às vezes ainda não publicou — avisa,
+          # mas não derruba, porque as janelas seguintes vão resolver.
+          # Nas execuções da manhã não há mais desculpa: falha.
+          if agora.hour >= 6:
+              print(f"::error::base parada em {ultimo}, esperado {esperado.isoformat()}. "
+                    f"Rode 'Run workflow' com o campo 'Pregão específico' preenchido.")
+              sys.exit(1)
+
+          print(f"::warning::base ainda em {ultimo} (esperado {esperado.isoformat()}). "
+                f"As próximas janelas vão tentar de novo.")
+          PY
