@@ -1,0 +1,8 @@
+{
+  "name": "leilao-overnight",
+  "private": true,
+  "description": "Dependência da função netlify/functions/dados.mjs (dados compartilhados entre aparelhos). O app em public/ já vai compilado.",
+  "dependencies": {
+    "@netlify/blobs": "10.7.13"
+  }
+}
