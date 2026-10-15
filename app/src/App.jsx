@@ -107,6 +107,7 @@ import {
   planilhaOperacoes,
 } from "./relatorios.js";
 import { Resultados } from "./resultados.jsx";
+import { AbaSwing } from "./swing.jsx";
 import {
   BotaoImagem,
   CURSOR,
@@ -207,7 +208,9 @@ export function App() {
           ? P
           : A === "resultados"
             ? "acompanhar"
-            : A === "config"
+            : A === "swing"
+              ? "swing"
+              : A === "config"
               ? "config"
               : A === "readme"
                 ? "readme"
@@ -220,7 +223,9 @@ export function App() {
           : w(
               D === "acompanhar" || D === "resultados"
                 ? "resultados"
-                : D === "readme" || D === "manual"
+                : D === "swing"
+                  ? "swing"
+                  : D === "readme" || D === "manual"
                   ? "readme"
                   : D === "config"
                     ? "config"
@@ -6376,6 +6381,7 @@ export function App() {
             )}
           </div>
         )}
+        {_e && R === "swing" && <AbaSwing ind={Vt} />}
         {_e && R === "base" && _e.eventos.length > 0 && (
           <section
             style={{
