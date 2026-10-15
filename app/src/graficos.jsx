@@ -3,6 +3,7 @@
    são props para espalhar nos componentes dele, não componentes novos:
      <XAxis {...EIXO_X} dataKey="label" />
      <Tooltip content={<TooltipGrafico />} cursor={CURSOR} /> */
+import { useEffect, useRef, useState } from "react";
 import { tema } from "./tema.js";
 
 const TICK = { fill: tema.faint, fontSize: 10.5, fontFamily: tema.mono };
@@ -128,10 +129,10 @@ export function TooltipGrafico({ active, payload, label, casas = 2 }) {
 }
 
 /* Haste do resultado diário: linha vertical do zero até o resultado e um
-   traço horizontal na ponta, verde se positivo e vermelho se negativo.
+   traço horizontal na ponta, na cor da série (o `fill` do <Bar>).
    Usada como `shape` de um <Bar>: o Recharts entrega a caixa da barra
-   (x, y, width, height) e o valor. */
-export function Haste({ x, y, width, height, value }) {
+   (x, y, width, height), o valor e a cor. */
+export function Haste({ x, y, width, height, value, fill }) {
   let v = Array.isArray(value) ? value[1] - value[0] : value;
   if (v == null || !Number.isFinite(v) || !Number.isFinite(x)) return null;
   let cx = x + (width || 0) / 2,
@@ -139,8 +140,8 @@ export function Haste({ x, y, width, height, value }) {
     base = Math.max(y, y + height),
     ponta = v >= 0 ? topo : base,
     zero = v >= 0 ? base : topo,
-    cor = v > 0 ? tema.up : v < 0 ? tema.down : tema.faint,
-    meia = Math.max(2.5, Math.min((width || 0) / 2, 7));
+    cor = fill || tema.dim,
+    meia = Math.max(2, Math.min((width || 0) / 2 - 0.5, 6));
   return (
     <g>
       <line
@@ -149,8 +150,8 @@ export function Haste({ x, y, width, height, value }) {
         y1={zero}
         y2={ponta}
         stroke={cor}
-        strokeOpacity={0.6}
-        strokeWidth={Math.max(1, Math.min(2, (width || 0) * 0.3))}
+        strokeOpacity={0.75}
+        strokeWidth={Math.max(1.2, Math.min(2, (width || 0) * 0.3))}
       />
       <line
         x1={cx - meia}
@@ -166,13 +167,37 @@ export function Haste({ x, y, width, height, value }) {
 }
 
 /* Props do gráfico e do cursor quando as séries são hastes. */
-export const GRAFICO_HASTES = { barCategoryGap: "16%", barGap: 1 };
+// séries coladas dentro do dia (barGap 0) e dias bem separados
+export const GRAFICO_HASTES = { barCategoryGap: "28%", barGap: 0 };
+
+/* Largura de cada haste para que as séries de um dia fiquem coladas no
+   centro do dia. O Recharts só agrupa as barras no centro quando recebe
+   uma largura fixa (barSize); sem ela, espalha as séries pelo dia todo. */
+export function larguraHaste(larguraGrafico, nDias, nSeries) {
+  if (!larguraGrafico || !nDias || !nSeries) return undefined;
+  let area = larguraGrafico - EIXO_Y.width - MARGEM.right - MARGEM.left,
+    banda = area / nDias;
+  return Math.max(1, Math.min(10, Math.floor((banda * 0.7) / nSeries)));
+}
+
+/* Mede a largura de um elemento (e acompanha mudanças de tamanho). */
+export function useLargura() {
+  let ref = useRef(null),
+    [largura, setLargura] = useState(0);
+  useEffect(() => {
+    let el = ref.current;
+    if (!el || typeof ResizeObserver > "u") return;
+    let ro = new ResizeObserver(([e]) => setLargura(e.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  });
+  return [ref, largura];
+}
 export const CURSOR_HASTES = { fill: tema.panelSoft, fillOpacity: 0.55 };
 
 /* Legenda em pílulas, com amostra do traço (tracejado quando a série é).
-   `numerada`: para hastes, que são verdes ou vermelhas, mostra a posição de
-   cada série dentro do dia (1 = a mais à esquerda) e a cor dela. */
-export function LegendaGrafico({ payload, numerada = false }) {
+   `hastes`: a amostra vira uma haste com o traço na ponta. */
+export function LegendaGrafico({ payload, hastes = false }) {
   payload = (payload || []).filter((p) => p.type !== "none");
   if (payload.length === 0) return null;
   return (
@@ -185,7 +210,7 @@ export function LegendaGrafico({ payload, numerada = false }) {
         paddingTop: 12,
       }}
     >
-      {payload.map((p, i) => {
+      {payload.map((p) => {
         let tracejado = p.payload?.strokeDasharray;
         return (
           <span
@@ -204,23 +229,26 @@ export function LegendaGrafico({ payload, numerada = false }) {
               opacity: p.inactive ? 0.4 : 1,
             }}
           >
-            {numerada ? (
-              <span
-                style={{
-                  fontFamily: tema.mono,
-                  fontSize: 10.5,
-                  fontWeight: 600,
-                  minWidth: 16,
-                  height: 16,
-                  borderRadius: 99,
-                  display: "inline-grid",
-                  placeItems: "center",
-                  background: p.color + "33",
-                  color: p.color,
-                }}
-              >
-                {i + 1}
-              </span>
+            {hastes ? (
+              <svg width="12" height="12" aria-hidden="true">
+                <line
+                  x1="6"
+                  y1="11"
+                  x2="6"
+                  y2="2"
+                  stroke={p.color}
+                  strokeWidth="1.6"
+                />
+                <line
+                  x1="2"
+                  y1="2"
+                  x2="10"
+                  y2="2"
+                  stroke={p.color}
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
+              </svg>
             ) : (
               <svg width="16" height="6" aria-hidden="true">
                 <line

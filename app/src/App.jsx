@@ -113,6 +113,8 @@ import {
   Degrade,
   GRAFICO_HASTES,
   Haste,
+  larguraHaste,
+  useLargura,
   EIXO_X,
   EIXO_Y,
   GRADE,
@@ -1759,6 +1761,9 @@ export function App() {
     }, [$d, Wd, No]);
   // seletor de estratégias do OPERAR: fechado mostra só as seguidas
   let [seletorAberto, abrirSeletor] = useState(false);
+  // largura dos gráficos de RESULTADOS e COMPARAR, para o modo em hastes
+  let [refGrafResultados, largGrafResultados] = useLargura(),
+    [refGrafComparar, largGrafComparar] = useLargura();
   // navegação pelo endereço: #operar, #comparar, #acompanhar… (o botão
   // voltar do navegador volta para a aba anterior)
   useEffect(() => {
@@ -8028,6 +8033,7 @@ export function App() {
                     </div>
                   ) : (
                     <div
+                      ref={refGrafResultados}
                       style={{
                         height: 300,
                       }}
@@ -8036,7 +8042,16 @@ export function App() {
                         <ComposedChart
                           data={hi}
                           margin={MARGEM}
-                          {...(Ms === "acum" ? {} : GRAFICO_HASTES)}
+                          {...(Ms === "acum"
+                            ? {}
+                            : {
+                                ...GRAFICO_HASTES,
+                                barSize: larguraHaste(
+                                  largGrafResultados,
+                                  hi.length,
+                                  He.length + 1,
+                                ),
+                              })}
                         >
                           <defs>
                             {He.map((de) => (
@@ -8061,9 +8076,7 @@ export function App() {
                             cursor={Ms === "acum" ? CURSOR : CURSOR_HASTES}
                           />
                           <Legend
-                            content={
-                              <LegendaGrafico numerada={Ms !== "acum"} />
-                            }
+                            content={<LegendaGrafico hastes={Ms !== "acum"} />}
                           />
                           <ReferenceLine
                             y={0}
@@ -9401,6 +9414,7 @@ export function App() {
                             </div>
                           </div>
                           <div
+                            ref={refGrafComparar}
                             style={{
                               width: "100%",
                               height: 320,
@@ -9411,7 +9425,16 @@ export function App() {
                               <ComposedChart
                                 data={uu}
                                 margin={MARGEM}
-                                {...(he === "acum" ? {} : GRAFICO_HASTES)}
+                                {...(he === "acum"
+                                  ? {}
+                                  : {
+                                      ...GRAFICO_HASTES,
+                                      barSize: larguraHaste(
+                                        largGrafComparar,
+                                        uu.length,
+                                        Sr.length,
+                                      ),
+                                    })}
                               >
                                 <CartesianGrid {...GRADE} />
                                 <XAxis
@@ -9433,7 +9456,7 @@ export function App() {
                                 />
                                 <Legend
                                   content={
-                                    <LegendaGrafico numerada={he !== "acum"} />
+                                    <LegendaGrafico hastes={he !== "acum"} />
                                   }
                                 />
                                 <ReferenceLine
