@@ -4,11 +4,11 @@ import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import {
   Area,
+  Bar,
   CartesianGrid,
   ComposedChart,
   Legend,
   Line,
-  LineChart,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -109,7 +109,10 @@ import {
 import { Resultados } from "./resultados.jsx";
 import {
   CURSOR,
+  CURSOR_HASTES,
   Degrade,
+  GRAFICO_HASTES,
+  Haste,
   EIXO_X,
   EIXO_Y,
   GRADE,
@@ -8030,7 +8033,11 @@ export function App() {
                       }}
                     >
                       <ResponsiveContainer width="100%" height="100%">
-                        <ComposedChart data={hi} margin={MARGEM}>
+                        <ComposedChart
+                          data={hi}
+                          margin={MARGEM}
+                          {...(Ms === "acum" ? {} : GRAFICO_HASTES)}
+                        >
                           <defs>
                             {He.map((de) => (
                               <Degrade
@@ -8051,15 +8058,40 @@ export function App() {
                           />
                           <Tooltip
                             content={<TooltipGrafico casas={2} />}
-                            cursor={CURSOR}
+                            cursor={Ms === "acum" ? CURSOR : CURSOR_HASTES}
                           />
-                          <Legend content={<LegendaGrafico />} />
+                          <Legend
+                            content={
+                              <LegendaGrafico numerada={Ms !== "acum"} />
+                            }
+                          />
                           <ReferenceLine
                             y={0}
                             stroke={tema.faint}
                             strokeOpacity={0.6}
                           />
+                          {Ms !== "acum" && (
+                            <Bar
+                              dataKey={ht}
+                              fill={tema.dim}
+                              shape={<Haste />}
+                              animationDuration={500}
+                            />
+                          )}
+                          {Ms !== "acum" &&
+                            He.map((de) => (
+                              <Bar
+                                key={de.id}
+                                dataKey={"g_" + de.id}
+                                name={de.nome}
+                                fill={wt(de, Qi.indexOf(de))}
+                                shape={<Haste />}
+                                animationDuration={500}
+                              />
+                            ))}
                           <Line
+                            hide={Ms !== "acum"}
+                            legendType={Ms === "acum" ? "line" : "none"}
                             type="monotone"
                             dataKey={ht}
                             stroke={tema.dim}
@@ -8070,8 +8102,8 @@ export function App() {
                             connectNulls={Ms === "acum"}
                             animationDuration={700}
                           />
-                          {He.map((de) =>
-                            Ms === "acum" ? (
+                          {Ms === "acum" &&
+                            He.map((de) => (
                               <Area
                                 key={de.id}
                                 type="monotone"
@@ -8085,21 +8117,7 @@ export function App() {
                                 connectNulls={true}
                                 animationDuration={700}
                               />
-                            ) : (
-                              <Line
-                                key={de.id}
-                                type="monotone"
-                                dataKey={"g_" + de.id}
-                                name={de.nome}
-                                stroke={wt(de, Qi.indexOf(de))}
-                                dot={false}
-                                activeDot={PONTO_ATIVO}
-                                strokeWidth={1.4}
-                                connectNulls={false}
-                                animationDuration={700}
-                              />
-                            ),
-                          )}
+                            ))}
                         </ComposedChart>
                       </ResponsiveContainer>
                     </div>
@@ -9390,7 +9408,11 @@ export function App() {
                             }}
                           >
                             <ResponsiveContainer>
-                              <LineChart data={uu} margin={MARGEM}>
+                              <ComposedChart
+                                data={uu}
+                                margin={MARGEM}
+                                {...(he === "acum" ? {} : GRAFICO_HASTES)}
+                              >
                                 <CartesianGrid {...GRADE} />
                                 <XAxis
                                   {...EIXO_X}
@@ -9405,43 +9427,65 @@ export function App() {
                                 />
                                 <Tooltip
                                   content={<TooltipGrafico casas={2} />}
-                                  cursor={CURSOR}
+                                  cursor={
+                                    he === "acum" ? CURSOR : CURSOR_HASTES
+                                  }
                                 />
-                                <Legend content={<LegendaGrafico />} />
+                                <Legend
+                                  content={
+                                    <LegendaGrafico numerada={he !== "acum"} />
+                                  }
+                                />
                                 <ReferenceLine
                                   y={0}
                                   stroke={tema.faint}
                                   strokeOpacity={0.6}
                                 />
-                                {Sr.map((Ce) => (
-                                  <Line
-                                    key={Ce.id}
-                                    type="monotone"
-                                    dataKey={Ce.id}
-                                    name={Ce.nome}
-                                    stroke={Ce.cor}
-                                    dot={
-                                      Ce.grupo
-                                        ? {
-                                            r: 2.6,
-                                            strokeWidth: 0,
-                                            fill: Ce.cor,
-                                          }
-                                        : false
-                                    }
-                                    activeDot={PONTO_ATIVO}
-                                    strokeDasharray={
-                                      Ce.grupo ? "7 3" : undefined
-                                    }
-                                    strokeWidth={
-                                      Ce.grupo ? 2.4 : he === "acum" ? 1.9 : 1.2
-                                    }
-                                    strokeOpacity={0.95}
-                                    connectNulls={he === "acum"}
-                                    animationDuration={700}
-                                  />
-                                ))}
-                              </LineChart>
+                                {he !== "acum" &&
+                                  Sr.map((Ce) => (
+                                    <Bar
+                                      key={Ce.id}
+                                      dataKey={Ce.id}
+                                      name={Ce.nome}
+                                      fill={Ce.cor}
+                                      shape={<Haste />}
+                                      animationDuration={500}
+                                    />
+                                  ))}
+                                {he === "acum" &&
+                                  Sr.map((Ce) => (
+                                    <Line
+                                      key={Ce.id}
+                                      type="monotone"
+                                      dataKey={Ce.id}
+                                      name={Ce.nome}
+                                      stroke={Ce.cor}
+                                      dot={
+                                        Ce.grupo
+                                          ? {
+                                              r: 2.6,
+                                              strokeWidth: 0,
+                                              fill: Ce.cor,
+                                            }
+                                          : false
+                                      }
+                                      activeDot={PONTO_ATIVO}
+                                      strokeDasharray={
+                                        Ce.grupo ? "7 3" : undefined
+                                      }
+                                      strokeWidth={
+                                        Ce.grupo
+                                          ? 2.4
+                                          : he === "acum"
+                                            ? 1.9
+                                            : 1.2
+                                      }
+                                      strokeOpacity={0.95}
+                                      connectNulls={he === "acum"}
+                                      animationDuration={700}
+                                    />
+                                  ))}
+                              </ComposedChart>
                             </ResponsiveContainer>
                           </div>
                           <div

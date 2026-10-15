@@ -127,9 +127,54 @@ export function TooltipGrafico({ active, payload, label, casas = 2 }) {
   );
 }
 
-/* Legenda em pílulas, com amostra do traço (tracejado quando a série é). */
-export function LegendaGrafico({ payload }) {
-  if (!payload || payload.length === 0) return null;
+/* Haste do resultado diário: linha vertical do zero até o resultado e um
+   traço horizontal na ponta, verde se positivo e vermelho se negativo.
+   Usada como `shape` de um <Bar>: o Recharts entrega a caixa da barra
+   (x, y, width, height) e o valor. */
+export function Haste({ x, y, width, height, value }) {
+  let v = Array.isArray(value) ? value[1] - value[0] : value;
+  if (v == null || !Number.isFinite(v) || !Number.isFinite(x)) return null;
+  let cx = x + (width || 0) / 2,
+    topo = Math.min(y, y + height),
+    base = Math.max(y, y + height),
+    ponta = v >= 0 ? topo : base,
+    zero = v >= 0 ? base : topo,
+    cor = v > 0 ? tema.up : v < 0 ? tema.down : tema.faint,
+    meia = Math.max(2.5, Math.min((width || 0) / 2, 7));
+  return (
+    <g>
+      <line
+        x1={cx}
+        x2={cx}
+        y1={zero}
+        y2={ponta}
+        stroke={cor}
+        strokeOpacity={0.6}
+        strokeWidth={Math.max(1, Math.min(2, (width || 0) * 0.3))}
+      />
+      <line
+        x1={cx - meia}
+        x2={cx + meia}
+        y1={ponta}
+        y2={ponta}
+        stroke={cor}
+        strokeWidth={2.2}
+        strokeLinecap="round"
+      />
+    </g>
+  );
+}
+
+/* Props do gráfico e do cursor quando as séries são hastes. */
+export const GRAFICO_HASTES = { barCategoryGap: "16%", barGap: 1 };
+export const CURSOR_HASTES = { fill: tema.panelSoft, fillOpacity: 0.55 };
+
+/* Legenda em pílulas, com amostra do traço (tracejado quando a série é).
+   `numerada`: para hastes, que são verdes ou vermelhas, mostra a posição de
+   cada série dentro do dia (1 = a mais à esquerda) e a cor dela. */
+export function LegendaGrafico({ payload, numerada = false }) {
+  payload = (payload || []).filter((p) => p.type !== "none");
+  if (payload.length === 0) return null;
   return (
     <div
       style={{
@@ -140,7 +185,7 @@ export function LegendaGrafico({ payload }) {
         paddingTop: 12,
       }}
     >
-      {payload.map((p) => {
+      {payload.map((p, i) => {
         let tracejado = p.payload?.strokeDasharray;
         return (
           <span
@@ -159,18 +204,37 @@ export function LegendaGrafico({ payload }) {
               opacity: p.inactive ? 0.4 : 1,
             }}
           >
-            <svg width="16" height="6" aria-hidden="true">
-              <line
-                x1="1"
-                y1="3"
-                x2="15"
-                y2="3"
-                stroke={p.color}
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                strokeDasharray={tracejado ? "3 3" : undefined}
-              />
-            </svg>
+            {numerada ? (
+              <span
+                style={{
+                  fontFamily: tema.mono,
+                  fontSize: 10.5,
+                  fontWeight: 600,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 99,
+                  display: "inline-grid",
+                  placeItems: "center",
+                  background: p.color + "33",
+                  color: p.color,
+                }}
+              >
+                {i + 1}
+              </span>
+            ) : (
+              <svg width="16" height="6" aria-hidden="true">
+                <line
+                  x1="1"
+                  y1="3"
+                  x2="15"
+                  y2="3"
+                  stroke={p.color}
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeDasharray={tracejado ? "3 3" : undefined}
+                />
+              </svg>
+            )}
             {p.value}
           </span>
         );
