@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0E1116" />
+    <meta name="theme-color" content="#0B0E13" />
     <title>Leilão Overnight · B3</title>
     <meta name="description" content="Compra no leilão de fechamento, venda na abertura — análise e backtest na B3." />
     <meta name="application-name" content="Leilão Overnight" />
@@ -12,7 +12,14 @@
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <style>html,body,#root{margin:0;padding:0;background:#0E1116}</style>
+    <!-- Inter e JetBrains Mono (SIL Open Font License), servidas pelo próprio site -->
+    <link rel="preload" href="./fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/jetbrains-mono.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      @font-face{font-family:"Inter";src:url("./fonts/inter.woff2") format("woff2");font-weight:100 900;font-display:swap}
+      @font-face{font-family:"JetBrains Mono";src:url("./fonts/jetbrains-mono.woff2") format("woff2");font-weight:100 800;font-display:swap}
+    </style>
+    <style>html,body,#root{margin:0;padding:0;background:#0B0E13}</style>
     <script type="module" crossorigin src="./app.js"></script>
   </head>
   <body>
