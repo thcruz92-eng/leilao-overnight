@@ -1,0 +1,49 @@
+name: Fundamentos CVM
+
+# Baixa balanços trimestrais/anuais e o cadastro de tickers da CVM
+# (dados abertos) e grava dados/cvm/fundamentos.json no próprio ramo.
+# O arquivo fica fora de public/, então não vai para o site.
+#
+# "[skip netlify]" no commit evita deploy no Netlify; não usamos
+# "[skip ci]" porque ele também bloquearia outros workflows.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/app-site-adjustments-l3mh5d]
+    paths:
+      - coleta_cvm.py
+      - .github/workflows/fundamentos-cvm.yml
+
+concurrency:
+  group: fundamentos-cvm
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Coletar fundamentos na CVM
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python coleta_cvm.py --de 2020
+
+      - name: Gravar no ramo
+        run: |
+          git config user.name  "coleta-bot"
+          git config user.email "coleta-bot@users.noreply.github.com"
+          git add dados/cvm/fundamentos.json
+          if git diff --staged --quiet; then
+            echo "Nada mudou."
+          else
+            git commit -m "Fundamentos CVM — $(date +'%Y-%m-%d %H:%M') [skip netlify]"
+            git push
+          fi
