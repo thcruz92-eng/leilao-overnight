@@ -10,6 +10,7 @@ export const ABAS = [
     curto: "Estratégias",
     icone: "camadas",
   },
+  { id: "swing", rotulo: "Swing", curto: "Swing", icone: "onda" },
   {
     id: "resultados",
     rotulo: "Resultados",
@@ -61,6 +62,12 @@ const TRACOS = {
       <circle cx="15" cy="6.5" r="2" />
       <circle cx="9" cy="12" r="2" />
       <circle cx="17" cy="17.5" r="2" />
+    </>
+  ),
+  onda: (
+    <>
+      <path d="M3.5 17c2.2 0 2.6-7 5-7s2.8 5 5 5 2.8-8.5 6.5-8.5" />
+      <path d="M16.5 6.5h3.5V10" />
     </>
   ),
   livro: (
@@ -260,11 +267,12 @@ export const CSS_GLOBAL = `
     .so-largo{display:none}
     .cabecalho-extras{gap:6px}
     .conteudo{padding:16px 12px calc(92px + env(safe-area-inset-bottom))}
-    .abas-celular{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;
+    .abas-celular{display:grid;grid-template-columns:repeat(7,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;
       background:rgba(15,19,26,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
       border-top:1px solid ${tema.line};padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
     .abas-celular button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;border:none;background:none;
-      color:${tema.faint};font:500 10.5px/1 ${tema.sans};cursor:pointer;border-radius:10px}
+      color:${tema.faint};font:500 10px/1 ${tema.sans};cursor:pointer;border-radius:10px;min-width:0}
+    .abas-celular button span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .abas-celular button.ativa{color:${tema.amber};background:${tema.amberSoft}}
   }
 `;

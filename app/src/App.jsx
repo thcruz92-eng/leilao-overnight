@@ -107,9 +107,12 @@ import {
   planilhaOperacoes,
 } from "./relatorios.js";
 import { Resultados } from "./resultados.jsx";
+import { AbaSwing } from "./swing.jsx";
 import {
+  BotaoImagem,
   CURSOR,
   CURSOR_HASTES,
+  baixarGraficoPNG,
   Degrade,
   GRAFICO_HASTES,
   Haste,
@@ -205,7 +208,9 @@ export function App() {
           ? P
           : A === "resultados"
             ? "acompanhar"
-            : A === "config"
+            : A === "swing"
+              ? "swing"
+              : A === "config"
               ? "config"
               : A === "readme"
                 ? "readme"
@@ -218,7 +223,9 @@ export function App() {
           : w(
               D === "acompanhar" || D === "resultados"
                 ? "resultados"
-                : D === "readme" || D === "manual"
+                : D === "swing"
+                  ? "swing"
+                  : D === "readme" || D === "manual"
                   ? "readme"
                   : D === "config"
                     ? "config"
@@ -6374,6 +6381,7 @@ export function App() {
             )}
           </div>
         )}
+        {_e && R === "swing" && <AbaSwing ind={Vt} />}
         {_e && R === "base" && _e.eventos.length > 0 && (
           <section
             style={{
@@ -7999,12 +8007,50 @@ export function App() {
                 >
                   <div
                     style={{
-                      fontWeight: 650,
-                      fontSize: 15,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 10,
                       marginBottom: 2,
                     }}
                   >
-                    {Ms === "acum" ? "Retorno acumulado" : "Retorno por noite"}
+                    <span
+                      style={{
+                        fontWeight: 650,
+                        fontSize: 15,
+                      }}
+                    >
+                      {Ms === "acum"
+                        ? "Retorno acumulado"
+                        : "Retorno por noite"}
+                    </span>
+                    {mi.length > 0 && (
+                      <BotaoImagem
+                        onClick={() =>
+                          baixarGraficoPNG(refGrafResultados.current, {
+                            titulo:
+                              Ms === "acum"
+                                ? "Retorno acumulado"
+                                : "Retorno por noite",
+                            subtitulo: `RESULTADOS · ${hi.length ? `${hi[0].label} a ${hi[hi.length - 1].label}` : ""} · líquido de taxa`,
+                            series: [
+                              {
+                                nome: ht,
+                                cor: tema.dim,
+                                tracejado: Ms === "acum",
+                                haste: Ms !== "acum",
+                              },
+                              ...He.map((de) => ({
+                                nome: de.nome,
+                                cor: wt(de, Qi.indexOf(de)),
+                                haste: Ms !== "acum",
+                              })),
+                            ],
+                            arquivo: `resultados_${Ms === "acum" ? "acumulado" : "por_noite"}`,
+                          })
+                        }
+                      />
+                    )}
                   </div>
                   <div
                     style={{
@@ -9412,6 +9458,32 @@ export function App() {
                                 }
                               </div>
                             </div>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              marginTop: 8,
+                            }}
+                          >
+                            <BotaoImagem
+                              onClick={() =>
+                                baixarGraficoPNG(refGrafComparar.current, {
+                                  titulo:
+                                    he === "acum"
+                                      ? "Comparar estratégias · acumulado"
+                                      : "Comparar estratégias · resultado diário",
+                                  subtitulo: `${uu.length ? `${uu[0].label} a ${uu[uu.length - 1].label}` : ""} · líquido de taxa`,
+                                  series: Sr.map((Ce) => ({
+                                    nome: Ce.nome,
+                                    cor: Ce.cor,
+                                    tracejado: !!Ce.grupo && he === "acum",
+                                    haste: he !== "acum",
+                                  })),
+                                  arquivo: `comparar_${he === "acum" ? "acumulado" : "diario"}`,
+                                })
+                              }
+                            />
                           </div>
                           <div
                             ref={refGrafComparar}

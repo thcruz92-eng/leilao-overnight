@@ -4,7 +4,7 @@
      <XAxis {...EIXO_X} dataKey="label" />
      <Tooltip content={<TooltipGrafico />} cursor={CURSOR} /> */
 import { useEffect, useRef, useState } from "react";
-import { tema } from "./tema.js";
+import { estiloBotao, tema } from "./tema.js";
 
 const TICK = { fill: tema.faint, fontSize: 10.5, fontFamily: tema.mono };
 
@@ -279,4 +279,147 @@ export function Degrade({ id, cor, opacidade = 0.22 }) {
       <stop offset="100%" stopColor={cor} stopOpacity={0} />
     </linearGradient>
   );
+}
+
+/* Botão "⬇ imagem", igual ao do MÊS A MÊS. */
+export function BotaoImagem({
+  onClick,
+  titulo = "baixar o gráfico como imagem",
+}) {
+  return (
+    <button
+      onClick={onClick}
+      title={titulo}
+      style={{
+        ...estiloBotao,
+        padding: "5px 12px",
+        fontSize: 12,
+        color: tema.amber,
+        borderColor: "rgba(244,183,64,.45)",
+        background: tema.amberSoft,
+      }}
+    >
+      ⬇ imagem
+    </button>
+  );
+}
+
+/* Baixa o gráfico (o <svg> do Recharts dentro de `container`) como PNG,
+   com título, subtítulo e legenda desenhados em volta.
+   series: [{ nome, cor, tracejado?, haste? }] */
+export function baixarGraficoPNG(
+  container,
+  { titulo, subtitulo = "", series = [], arquivo = "grafico" },
+) {
+  let svg = container?.querySelector("svg.recharts-surface");
+  if (!svg) return;
+  let caixa = svg.getBoundingClientRect(),
+    w = Math.round(caixa.width),
+    hSvg = Math.round(caixa.height),
+    // o Recharts reserva embaixo do <svg> o espaço da legenda da tela;
+    // a imagem desenha a própria legenda, então esse trecho sai
+    legTela =
+      container.querySelector(".recharts-legend-wrapper")?.offsetHeight || 0,
+    h = Math.max(40, hSvg - legTela),
+    copia = svg.cloneNode(true);
+  copia.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  copia.setAttribute("width", w);
+  copia.setAttribute("height", hSvg);
+  // sem cursor nem tooltip na imagem
+  copia
+    .querySelectorAll(".recharts-tooltip-cursor, .recharts-active-dot")
+    .forEach((n) => n.remove());
+  let dados = new XMLSerializer().serializeToString(copia),
+    url = URL.createObjectURL(
+      new Blob([dados], { type: "image/svg+xml;charset=utf-8" }),
+    ),
+    img = new Image();
+  img.onload = () => {
+    let esc = 2,
+      pad = 20,
+      topo = 62,
+      // legenda em linhas que cabem na largura
+      ctxMedida = document.createElement("canvas").getContext("2d");
+    ctxMedida.font = "12px Inter, sans-serif";
+    let linhas = [[]],
+      larg = 0;
+    for (let s of series) {
+      let lw = 26 + ctxMedida.measureText(s.nome).width + 18;
+      if (larg + lw > w && linhas[linhas.length - 1].length) {
+        linhas.push([]);
+        larg = 0;
+      }
+      linhas[linhas.length - 1].push({ ...s, lw });
+      larg += lw;
+    }
+    let altLeg = series.length ? linhas.length * 22 + 10 : 0,
+      W = w + pad * 2,
+      H = topo + h + altLeg + pad,
+      cv = document.createElement("canvas");
+    cv.width = W * esc;
+    cv.height = H * esc;
+    let c = cv.getContext("2d");
+    c.scale(esc, esc);
+    c.fillStyle = tema.panel;
+    c.fillRect(0, 0, W, H);
+    c.fillStyle = tema.text;
+    c.font = "600 16px Inter, sans-serif";
+    c.fillText(titulo, pad, 28);
+    c.fillStyle = tema.faint;
+    c.font = "12px Inter, sans-serif";
+    c.fillText(
+      [subtitulo, `gerado em ${new Date().toLocaleDateString("pt-BR")}`]
+        .filter(Boolean)
+        .join(" · "),
+      pad,
+      48,
+    );
+    c.drawImage(img, 0, 0, w, h, pad, topo, w, h);
+    let y = topo + h + 18;
+    for (let linha of linhas) {
+      let tot = linha.reduce((a, s) => a + s.lw, 0),
+        x = pad + Math.max(0, (w - tot) / 2);
+      for (let s of linha) {
+        c.strokeStyle = s.cor;
+        c.lineCap = "round";
+        if (s.haste) {
+          c.lineWidth = 1.6;
+          c.beginPath();
+          c.moveTo(x + 9, y + 5);
+          c.lineTo(x + 9, y - 5);
+          c.stroke();
+          c.lineWidth = 2.2;
+          c.beginPath();
+          c.moveTo(x + 4, y - 5);
+          c.lineTo(x + 14, y - 5);
+          c.stroke();
+        } else {
+          c.lineWidth = 2.4;
+          c.setLineDash(s.tracejado ? [3, 3] : []);
+          c.beginPath();
+          c.moveTo(x + 2, y);
+          c.lineTo(x + 18, y);
+          c.stroke();
+          c.setLineDash([]);
+        }
+        c.fillStyle = tema.dim;
+        c.font = "12px Inter, sans-serif";
+        c.fillText(s.nome, x + 26, y + 4);
+        x += s.lw;
+      }
+      y += 22;
+    }
+    URL.revokeObjectURL(url);
+    cv.toBlob((b) => {
+      let u = URL.createObjectURL(b),
+        a = document.createElement("a");
+      a.href = u;
+      a.download = arquivo + ".png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 2000);
+    }, "image/png");
+  };
+  img.src = url;
 }

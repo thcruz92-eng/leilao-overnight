@@ -1,0 +1,58 @@
+name: Fundamentos CVM
+
+# Baixa balanços trimestrais/anuais e o cadastro de tickers da CVM
+# (dados abertos), grava dados/cvm/fundamentos.json (completo) e
+# public/fundamentos.json (resumo que a aba Swing do app lê pelo GitHub).
+# Roda toda semana: pega os balanços trimestrais conforme vão saindo.
+#
+# "[skip netlify]" no commit evita deploy no Netlify; não usamos
+# "[skip ci]" porque ele também bloquearia outros workflows.
+
+on:
+  schedule:
+    - cron: "17 9 * * 2,5"   # terça e sexta, 06h17 de Brasília
+  workflow_dispatch:
+  push:
+    branches: [claude/app-site-adjustments-l3mh5d]
+    paths:
+      - coleta_cvm.py
+      - resumo_fundamentos.py
+      - .github/workflows/fundamentos-cvm.yml
+
+concurrency:
+  group: fundamentos-cvm
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Coletar fundamentos na CVM
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: python coleta_cvm.py --de 2020
+
+      - name: Resumir para o app
+        run: python resumo_fundamentos.py
+
+      - name: Gravar no ramo
+        run: |
+          git config user.name  "coleta-bot"
+          git config user.email "coleta-bot@users.noreply.github.com"
+          git add dados/cvm/fundamentos.json public/fundamentos.json
+          if git diff --staged --quiet; then
+            echo "Nada mudou."
+          else
+            git commit -m "Fundamentos CVM — $(date +'%Y-%m-%d %H:%M') [skip netlify]"
+            # a coleta diária da B3 também grava no ramo; alinha antes de enviar
+            git pull --rebase
+            git push
+          fi
