@@ -243,6 +243,11 @@ export const CSS_GLOBAL = `
   .subabas button:hover{color:${tema.text};background:${tema.panelSoft};filter:none!important}
   .subabas button.ativa{background:${tema.amber};color:#1A1407;font-weight:600}
 
+  .grade-papeis{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr));gap:12px;margin-top:14px}
+  .pilulas{display:flex;flex-wrap:wrap;gap:6px}
+  .pilula{display:inline-flex;align-items:baseline;gap:5px;padding:4px 10px;border-radius:999px;background:${tema.panelSoft};
+    border:1px solid ${tema.lineSoft};font:400 12px/1.4 ${tema.sans};color:${tema.dim};white-space:nowrap}
+  .pilula b{color:${tema.text};font-weight:600}
   .abas-celular{display:none}
   .conteudo{padding:24px 28px 64px;box-sizing:border-box;width:100%}
 

@@ -1754,6 +1754,8 @@ export function App() {
         }
       }
     }, [$d, Wd, No]);
+  // seletor de estratégias do OPERAR: fechado mostra só as seguidas
+  let [seletorAberto, abrirSeletor] = useState(false);
   // navegação pelo endereço: #operar, #comparar, #acompanhar… (o botão
   // voltar do navegador volta para a aba anterior)
   useEffect(() => {
@@ -1907,90 +1909,50 @@ export function App() {
             <div
               style={{
                 flex: "1 1 360px",
-                fontSize: 12,
-                color: tema.dim,
-                lineHeight: 1.7,
+                display: "flex",
+                flexDirection: "column",
+                gap: 7,
               }}
             >
               <span
                 style={{
-                  fontFamily: tema.mono,
-                  fontSize: 9.5,
-                  letterSpacing: 2,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: 0.7,
                   textTransform: "uppercase",
-                  color: tema.amber,
-                  opacity: 0.8,
-                  marginRight: 10,
+                  color: tema.faint,
                 }}
               >
                 valendo agora
               </span>
-              {"piso "}
-              <b
-                style={{
-                  color: tema.text,
-                }}
-              >
-                {"R$ "}
-                {fmtNum(X)}
-                {" MM"}
-              </b>
-              <span
-                style={{
-                  color: Ds.n < 20 ? tema.amber : tema.faint,
-                }}
-              >
-                {" "}
-                ({Ds.n} {Ds.n === 1 ? "ativo passa" : "ativos passam"})
-              </span>
-              {" · "}
-              {"taxa "}
-              <b
-                style={{
-                  color: tema.text,
-                }}
-              >
-                {numBR(k, 3)}%
-              </b>
-              {" · "}
-              {"preço mín. "}
-              <b
-                style={{
-                  color: tema.text,
-                }}
-              >
-                {"R$ "}
-                {numBR(j, 2)}
-              </b>
-              {" · "}
-              <b
-                style={{
-                  color: tema.text,
-                }}
-              >
-                {I}
-              </b>
-              {" papéis por estratégia"}
-              {" · "}
-              {"MIX com "}
-              <b
-                style={{
-                  color: tema.text,
-                }}
-              >
-                {H.queda}
-              </b>
-              {" papéis em dia de queda (mais de "}
-              {H.limiar}
-              {"% dos líquidos) e "}
-              <b
-                style={{
-                  color: tema.text,
-                }}
-              >
-                {H.normal}
-              </b>
-              {" nos demais"}
+              <div className="pilulas">
+                <span className="pilula">
+                  piso <b>R$ {fmtNum(X)} MM</b>
+                  <span
+                    style={{
+                      color: Ds.n < 20 ? tema.amber : tema.faint,
+                    }}
+                  >
+                    {Ds.n} {Ds.n === 1 ? "ativo passa" : "ativos passam"}
+                  </span>
+                </span>
+                <span className="pilula">
+                  taxa <b>{numBR(k, 3)}%</b>
+                </span>
+                <span className="pilula">
+                  preço mín. <b>R$ {numBR(j, 2)}</b>
+                </span>
+                <span className="pilula">
+                  <b>{I}</b> papéis por estratégia
+                </span>
+                <span
+                  className="pilula"
+                  title={`MIX com ${H.queda} papéis em dia de queda (mais de ${H.limiar}% dos líquidos) e ${H.normal} nos demais`}
+                >
+                  MIX <b>{H.queda}</b> em dia de queda · <b>{H.normal}</b> nos
+                  demais
+                </span>
+              </div>
             </div>
             <button
               onClick={() => w("config")}
@@ -2000,7 +1962,7 @@ export function App() {
                 fontSize: 12,
               }}
             >
-              ⚙ CONFIGURAÇÕES
+              ⚙ ajustar
             </button>
           </section>
         )}
@@ -3590,9 +3552,14 @@ export function App() {
                     return (
                       <div
                         key={ke.ativo}
+                        className="cartao-papel"
                         style={{
-                          padding: "13px 0 3px",
-                          borderTop: `1px solid ${tema.line}`,
+                          background: tema.panelSoft,
+                          border: `1px solid ${tema.lineSoft}`,
+                          borderRadius: 12,
+                          padding: "14px 16px 12px",
+                          display: "flex",
+                          flexDirection: "column",
                         }}
                       >
                         <div
@@ -3614,18 +3581,28 @@ export function App() {
                           >
                             <span
                               style={{
-                                color: tema.faint,
+                                width: 24,
+                                height: 24,
+                                borderRadius: 99,
+                                display: "inline-grid",
+                                placeItems: "center",
+                                alignSelf: "center",
+                                background: Oe.cor + "22",
+                                color: Oe.cor,
                                 fontFamily: tema.mono,
-                                fontSize: 13,
+                                fontSize: 12,
+                                fontWeight: 600,
                               }}
                             >
                               {He + 1}
                             </span>
                             <span
+                              title="ver o histórico deste papel na BASE"
                               style={{
                                 fontFamily: tema.mono,
                                 fontSize: 20,
                                 fontWeight: 700,
+                                letterSpacing: 0.3,
                                 cursor: "pointer",
                               }}
                               onClick={() => {
@@ -3634,6 +3611,62 @@ export function App() {
                             >
                               {ke.ativo}
                             </span>
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 12,
+                            }}
+                          >
+                            <div
+                              style={{
+                                textAlign: "right",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  fontSize: 10.5,
+                                  fontWeight: 600,
+                                  color: tema.faint,
+                                  letterSpacing: 0.7,
+                                }}
+                              >
+                                FECHAMENTO
+                              </div>
+                              <div
+                                style={{
+                                  fontFamily: tema.mono,
+                                  fontSize: 17,
+                                  fontWeight: 700,
+                                }}
+                              >
+                                {"R$ "}
+                                {numBR(ke.preco)}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: 9.5,
+                                  fontFamily: tema.mono,
+                                  color: Ph(fe) ? tema.amber : tema.up,
+                                }}
+                              >
+                                {Ph(fe)
+                                  ? "⏳ provisório — muda no leilão"
+                                  : "✓ COTAHIST"}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {(ke.cruzado || Mt.length > 0) && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: 6,
+                              marginTop: 8,
+                            }}
+                          >
                             {ke.cruzado && (
                               <span
                                 style={{
@@ -3666,83 +3699,12 @@ export function App() {
                               </span>
                             )}
                           </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 12,
-                            }}
-                          >
-                            <div
-                              style={{
-                                textAlign: "right",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  fontSize: 11,
-                                  color: tema.faint,
-                                  letterSpacing: 0.4,
-                                }}
-                              >
-                                FECHAMENTO
-                              </div>
-                              <div
-                                style={{
-                                  fontFamily: tema.mono,
-                                  fontSize: 17,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                {"R$ "}
-                                {numBR(ke.preco)}
-                              </div>
-                              <div
-                                style={{
-                                  fontSize: 9.5,
-                                  fontFamily: tema.mono,
-                                  color: Ph(fe) ? tema.amber : tema.up,
-                                }}
-                              >
-                                {Ph(fe)
-                                  ? "⏳ provisório — muda no leilão"
-                                  : "✓ COTAHIST"}
-                              </div>
-                            </div>
-                            <button
-                              onClick={() =>
-                                Ck(
-                                  ke.ativo,
-                                  Oe.id,
-                                  Oe.nome,
-                                  ke.preco,
-                                  fe,
-                                  Lo ?? null,
-                                  Lo > 0 ? (Fa ?? 0) : null,
-                                )
-                              }
-                              title={
-                                Ph(fe)
-                                  ? "Vai para RESULTADOS com o preço de agora, marcado como provisório. O COTAHIST corrige sozinho à noite."
-                                  : "Vai para RESULTADOS com o fechamento oficial da B3."
-                              }
-                              style={{
-                                ...estiloBotao,
-                                padding: "5px 10px",
-                                fontSize: 11,
-                                color: Ce ? tema.up : tema.faint,
-                                borderColor: Ce ? tema.up : tema.line,
-                              }}
-                            >
-                              {Ce ? "✓ acompanhando" : "★ acompanhar"}
-                            </button>
-                          </div>
-                        </div>
+                        )}
                         <div
                           style={{
                             fontSize: 12.5,
                             color: tema.dim,
-                            marginTop: 9,
+                            marginTop: 10,
                             lineHeight: 1.6,
                           }}
                         >
@@ -3795,13 +3757,21 @@ export function App() {
                         )}
                         <div
                           style={{
-                            marginTop: 10,
+                            marginTop: "auto",
+                            paddingTop: 12,
                             display: "flex",
                             flexWrap: "wrap",
-                            gap: 12,
+                            gap: "8px 12px",
                             alignItems: "center",
                           }}
                         >
+                          <div
+                            style={{
+                              width: "100%",
+                              borderTop: `1px solid ${tema.lineSoft}`,
+                              marginBottom: 4,
+                            }}
+                          />
                           <span
                             style={{
                               fontSize: 12,
@@ -3885,6 +3855,38 @@ export function App() {
                               </span>
                             </span>
                           )}
+                          <button
+                            onClick={() =>
+                              Ck(
+                                ke.ativo,
+                                Oe.id,
+                                Oe.nome,
+                                ke.preco,
+                                fe,
+                                Lo ?? null,
+                                Lo > 0 ? (Fa ?? 0) : null,
+                              )
+                            }
+                            title={
+                              Ph(fe)
+                                ? "Vai para RESULTADOS com o preço de agora, marcado como provisório. O COTAHIST corrige sozinho à noite."
+                                : "Vai para RESULTADOS com o fechamento oficial da B3."
+                            }
+                            style={{
+                              ...estiloBotao,
+                              marginLeft: "auto",
+                              padding: "6px 12px",
+                              fontSize: 12,
+                              fontFamily: tema.sans,
+                              color: Ce ? tema.up : tema.dim,
+                              borderColor: Ce
+                                ? "rgba(61,199,150,.5)"
+                                : tema.line,
+                              background: Ce ? tema.upSoft : tema.panel,
+                            }}
+                          >
+                            {Ce ? "✓ acompanhando" : "★ acompanhar"}
+                          </button>
                         </div>
                         {ke.realizado != null && (
                           <div
@@ -3969,16 +3971,38 @@ export function App() {
                       >
                         <div
                           style={{
-                            flex: "1 1 190px",
+                            flex: "1 1 220px",
+                            background: tema.panelSoft,
+                            border: `1px solid ${tema.lineSoft}`,
+                            borderRadius: 12,
+                            padding: "10px 14px",
                           }}
                         >
                           <div
                             style={{
-                              fontSize: 11,
+                              fontSize: 10.5,
+                              fontWeight: 600,
                               color: tema.faint,
-                              letterSpacing: 0.4,
+                              letterSpacing: 0.7,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 7,
                             }}
                           >
+                            <span
+                              style={{
+                                width: 18,
+                                height: 18,
+                                borderRadius: 99,
+                                display: "inline-grid",
+                                placeItems: "center",
+                                background: Ee + "26",
+                                color: Ee,
+                                fontSize: 10.5,
+                              }}
+                            >
+                              1
+                            </span>
                             COMPRAR
                           </div>
                           <div
@@ -3993,6 +4017,7 @@ export function App() {
                           </div>
                         </div>
                         <div
+                          className="so-largo"
                           style={{
                             color: tema.faint,
                             fontSize: 18,
@@ -4003,16 +4028,38 @@ export function App() {
                         </div>
                         <div
                           style={{
-                            flex: "1 1 190px",
+                            flex: "1 1 220px",
+                            background: tema.panelSoft,
+                            border: `1px solid ${tema.lineSoft}`,
+                            borderRadius: 12,
+                            padding: "10px 14px",
                           }}
                         >
                           <div
                             style={{
-                              fontSize: 11,
+                              fontSize: 10.5,
+                              fontWeight: 600,
                               color: tema.faint,
-                              letterSpacing: 0.4,
+                              letterSpacing: 0.7,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 7,
                             }}
                           >
+                            <span
+                              style={{
+                                width: 18,
+                                height: 18,
+                                borderRadius: 99,
+                                display: "inline-grid",
+                                placeItems: "center",
+                                background: Ee + "26",
+                                color: Ee,
+                                fontSize: 10.5,
+                              }}
+                            >
+                              2
+                            </span>
                             VENDER
                           </div>
                           <div
@@ -4032,6 +4079,8 @@ export function App() {
                           style={{
                             textAlign: "right",
                             flex: "0 0 auto",
+                            marginLeft: "auto",
+                            paddingLeft: 8,
                           }}
                         >
                           <div
@@ -4297,13 +4346,41 @@ export function App() {
                     >
                       <div
                         style={{
-                          fontSize: 11,
-                          color: tema.faint,
-                          letterSpacing: 0.6,
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          gap: 10,
+                          flexWrap: "wrap",
                           marginBottom: 10,
                         }}
                       >
-                        QUAIS ESTRATÉGIAS VOCÊ VAI SEGUIR
+                        <div
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: tema.faint,
+                            letterSpacing: 0.7,
+                          }}
+                        >
+                          {seletorAberto
+                            ? "QUAIS ESTRATÉGIAS VOCÊ VAI SEGUIR"
+                            : "ESTRATÉGIAS QUE VOCÊ SEGUE"}
+                        </div>
+                        <button
+                          onClick={() => abrirSeletor((Oe) => !Oe)}
+                          aria-expanded={seletorAberto}
+                          style={{
+                            ...estiloBotao,
+                            padding: "5px 12px",
+                            fontSize: 12,
+                            fontFamily: tema.sans,
+                            color: seletorAberto ? tema.amber : tema.dim,
+                          }}
+                        >
+                          {seletorAberto
+                            ? "pronto"
+                            : `trocar · ${ORDEM_ESTRATEGIAS.filter((Oe) => St.carteiras[Oe]).length} disponíveis`}
+                        </button>
                       </div>
                       <div
                         style={{
@@ -4315,6 +4392,7 @@ export function App() {
                         {ORDEM_ESTRATEGIAS.map((Oe) => {
                           let ke = St.carteiras[Oe];
                           if (!ke) return null;
+                          if (!seletorAberto && !Ki.includes(Oe)) return null;
                           let He = Ki.includes(Oe);
                           return (
                             <span
@@ -4381,20 +4459,22 @@ export function App() {
                           );
                         })}
                       </div>
-                      <div
-                        style={{
-                          fontSize: 11.5,
-                          color: tema.faint,
-                          marginTop: 11,
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        O número ao lado do nome é quantos papéis aquela
-                        estratégia aponta hoje. Marque quantas quiser — cada uma
-                        vira um bloco separado abaixo, com o valor por papel
-                        decidido de forma independente. A escolha fica salva
-                        para as próximas vezes.
-                      </div>
+                      {seletorAberto && (
+                        <div
+                          style={{
+                            fontSize: 11.5,
+                            color: tema.faint,
+                            marginTop: 11,
+                            lineHeight: 1.6,
+                          }}
+                        >
+                          O número ao lado do nome é quantos papéis aquela
+                          estratégia aponta hoje. Marque quantas quiser — cada
+                          uma vira um bloco separado abaixo, com o valor por
+                          papel decidido de forma independente. A escolha fica
+                          salva para as próximas vezes.
+                        </div>
+                      )}
                       {ht.length > 0 && (
                         <div
                           style={{
@@ -4641,7 +4721,11 @@ export function App() {
                               hoje. Não operar também é decisão.
                             </div>
                           )}
-                          {Oe.itens.map((He, Mt) => Sr(Oe, He, Mt))}
+                          {Oe.itens.length > 0 && (
+                            <div className="grade-papeis">
+                              {Oe.itens.map((He, Mt) => Sr(Oe, He, Mt))}
+                            </div>
+                          )}
                         </section>
                       );
                     })}
