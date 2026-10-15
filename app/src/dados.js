@@ -402,6 +402,17 @@ export const FERIADOS_B3 = new Set([
   "2027-12-31",
 ]);
 
+/* pregão seguinte a `e` (pula fim de semana e feriado da B3) */
+export function proximoDiaUtil(e) {
+  const DIA_MS = 86400000;
+  let t = e + DIA_MS;
+  for (let r = 0; r < 15; r++, t += DIA_MS) {
+    let n = new Date(t).getUTCDay();
+    if (!(n === 0 || n === 6) && !FERIADOS_B3.has(new Date(t).toISOString().slice(0, 10))) return t;
+  }
+  return null;
+}
+
 export function ultimoPregaoEsperado(e = new Date()) {
   let t = e.toLocaleDateString("en-CA", {
       timeZone: "America/Sao_Paulo",

@@ -8,6 +8,7 @@ App de decisão para o leilão de fechamento, agora **sem download manual de dad
 |---|---|---|---|
 | **Histórico** | COTAHIST (arquivo oficial da B3) | automático, 20h de todo dia útil | fonte de verdade — sobrescreve tudo |
 | **Dia em andamento** | Yahoo Finance, via função no Netlify | quando você clica em **● cotação de agora** | retrato do pregão no instante do clique |
+| **Balanços** (aba SWING) | dados abertos da CVM (ITR/DFP) | automático, terça e sexta às 06h17 | lucro de 12 meses, patrimônio e ações por papel, em `public/fundamentos.json` |
 
 Regra fixa: o COTAHIST manda. O que a cotação ao vivo gravar durante o dia é
 provisório e será sobrescrito pelo arquivo oficial na coleta da noite.
@@ -261,6 +262,9 @@ Commit e pronto; vale a partir da próxima execução.
 | `netlify/functions/cotacao.js` | ponte que busca a cotação ao vivo |
 | `coleta_cotahist.py` | baixa e processa o arquivo oficial da B3 |
 | `.github/workflows/coleta-diaria.yml` | agenda a coleta para 20h todo dia útil |
+| `coleta_cvm.py` / `resumo_fundamentos.py` | baixam os balanços da CVM e geram o resumo da aba SWING |
+| `.github/workflows/fundamentos-cvm.yml` | agenda a coleta da CVM (terça e sexta) |
+| `public/fundamentos.json` | resumo dos balanços que o app lê |
 | `public/base_b3.json` | a base publicada (vem vazia, a coleta preenche) |
 | `netlify.toml` | diz ao Netlify como publicar |
 | `package.json` / `package-lock.json` / `vite.config.js` | dependências e build |

@@ -59,6 +59,7 @@ import {
   linhasParaBase,
   mesclarNaBase,
   montarDataset,
+  proximoDiaUtil,
   salvarBaseLocal,
   tsPregao,
   ultimoPregaoEsperado,
@@ -97,7 +98,6 @@ import {
   statsDaCurva,
   ultimasNoites,
 } from "./estrategias.js";
-import { proximoDiaUtil } from "./ir.js";
 import {
   baixarCsv,
   baseEmCsv,
@@ -106,7 +106,6 @@ import {
   operacoesDaSerie,
   planilhaOperacoes,
 } from "./relatorios.js";
-import { Resultados } from "./resultados.jsx";
 import { AbaSwing } from "./swing.jsx";
 import {
   BotaoImagem,
@@ -482,10 +481,7 @@ export function App() {
     ),
     [Eh, Ak] = useState("periodo"),
     [Iy, Ek] = useState(null),
-    [Fy, My] = useState(null),
-    [dW, Tk] = useState({}),
-    [pW, kk] = useState({}),
-    [mW, hW] = useState(null);
+    [Fy, My] = useState(null);
   useEffect(() => {
     (async () => {
       try {
@@ -499,14 +495,6 @@ export function App() {
       try {
         let D = await window.storage.get("ovr3:lotes");
         D?.value && pk(JSON.parse(D.value));
-      } catch {}
-      try {
-        let D = await window.storage.get("ovr3:tipos_ir");
-        D?.value && Tk(JSON.parse(D.value) || {});
-      } catch {}
-      try {
-        let D = await window.storage.get("ovr3:ir_ajustes");
-        D?.value && kk(JSON.parse(D.value) || {});
       } catch {}
       try {
         let D = await window.storage.get("ovr3:acomp_abertos");
@@ -660,47 +648,6 @@ export function App() {
           le
         );
       });
-    }, []),
-    xW = useCallback((D, V) => {
-      Tk((ne) => {
-        let le = {
-          ...ne,
-        };
-        return (
-          V ? (le[D] = V) : delete le[D],
-          window.storage
-            .set("ovr3:tipos_ir", JSON.stringify(le))
-            .catch(() => {}),
-          le
-        );
-      });
-    }, []),
-    yW = useCallback((D, V) => {
-      kk((ne) => {
-        let le = {
-          ...(ne[D] || {}),
-          ...V,
-        };
-        for (let Ke of Object.keys(le))
-          (le[Ke] == null || !Number.isFinite(le[Ke])) && delete le[Ke];
-        let ye = {
-          ...ne,
-        };
-        return (
-          Object.keys(le).length ? (ye[D] = le) : delete ye[D],
-          window.storage
-            .set("ovr3:ir_ajustes", JSON.stringify(ye))
-            .catch(() => {}),
-          ye
-        );
-      });
-    }, []),
-    Pk = useCallback((D) => {
-      (hW({
-        gid: D,
-        n: Date.now(),
-      }),
-        w("resultados"));
     }, []),
     nu = useCallback((D, V) => {
       Yi((ne) => {
@@ -1811,16 +1758,6 @@ export function App() {
         tr.rowhover:hover td:not([data-fixa]){background:${tema.panelSoft}}
         @media (prefers-reduced-motion: reduce){*{transition:none!important}}
         button:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid ${tema.amber}; outline-offset:1px}
-
-        /* impressão / PDF do relatório de IR: a versão clara mora fora do
-           #root e só aparece quando o relatório pede a impressão */
-        .so-impressao{display:none}
-        @media print{
-          body.imprimindo-ir{background:#fff!important}
-          body.imprimindo-ir #root{display:none!important}
-          body.imprimindo-ir .so-impressao{display:block!important}
-          @page{margin:12mm}
-        }
 
         /* barra de botões da cesta: grade de 12 colunas */
         .bbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 28px}
@@ -7650,17 +7587,6 @@ export function App() {
                     >
                       {hk ? "buscando…" : "🔄 cotação de agora"}
                     </button>
-                    <button
-                      onClick={() => Pk(null)}
-                      style={{
-                        ...estiloBotao,
-                        color: tema.amber,
-                        borderColor: tema.amber,
-                      }}
-                      title="relatório do mês para o imposto de renda, com o DARF"
-                    >
-                      📄 relatório IR / DARF
-                    </button>
                   </div>
                 </section>
                 {gk && (
@@ -8449,20 +8375,6 @@ export function App() {
                               {Xk ? "recolher tudo" : "abrir tudo"}
                             </button>
                           )}
-                          {Qt > 0 && (
-                            <button
-                              onClick={() => Pk(de.id)}
-                              style={{
-                                ...estiloBotao,
-                                padding: "4px 9px",
-                                fontSize: 11,
-                                color: tema.amber,
-                              }}
-                              title="relatório deste grupo para o imposto de renda"
-                            >
-                              relatório IR
-                            </button>
-                          )}
                           {de.tipo === "sim" && (
                             <button
                               onClick={() => wW(de.id)}
@@ -8831,19 +8743,6 @@ export function App() {
                     </section>
                   );
                 })}
-                <Resultados
-                  ds={_e}
-                  itens={di}
-                  grupos={Qi}
-                  feePct={k}
-                  lotes={Nl}
-                  tiposIR={dW}
-                  onTipo={xW}
-                  ajustes={pW}
-                  onAjuste={yW}
-                  nOrganizar={D.length}
-                  pedido={mW}
-                />
               </div>
             );
           })()}
@@ -10970,9 +10869,15 @@ export function App() {
                   onToggle={Ia}
                 >
                   <div style={V}>
-                    <Pe>A operação é uma só:</Pe>
+                    <Pe>A operação principal é uma só:</Pe>
                     {
-                      " comprar no leilão de fechamento de um pregão e vender no leilão de abertura do pregão seguinte. O resultado de uma noite é a abertura de amanhã dividida pelo fechamento de hoje, menos 1, menos a taxa. Todo número do app nasce dessa conta."
+                      " comprar no leilão de fechamento de um pregão e vender no leilão de abertura do pregão seguinte. O resultado de uma noite é a abertura de amanhã dividida pelo fechamento de hoje, menos 1, menos a taxa. Todo número do overnight nasce dessa conta."
+                    }
+                  </div>
+                  <div style={V}>
+                    <Pe>A exceção é a aba SWING:</Pe>
+                    {
+                      " ali a compra também é no fechamento, mas o papel fica na carteira por dias ou semanas, até bater o alvo, o stop ou o prazo. É uma estratégia separada, com regra e números próprios (seção 13)."
                     }
                   </div>
                   <div style={V}>
@@ -10998,6 +10903,10 @@ export function App() {
                           "Por que, e quanto rendeu: sinais do dia, backtest comparado, matriz mês a mês.",
                         )}
                         {De(
+                          "SWING",
+                          "Compra para segurar dias/semanas: o sinal do dia com entrada, alvo e stop, as operações em andamento e o histórico do sinal.",
+                        )}
+                        {De(
                           "RESULTADOS",
                           "O que você de fato operou: grupos lançados por você, contra a cesta padrão.",
                         )}
@@ -11017,7 +10926,7 @@ export function App() {
                 <Secao
                   id="dados"
                   titulo="2 · De onde vêm os dados"
-                  resumo="COTAHIST oficial, coleta diária no GitHub, cotação ao vivo, upload manual e os três filtros de qualidade."
+                  resumo="COTAHIST oficial, coleta diária no GitHub, balanços da CVM, cotação ao vivo, upload manual e os três filtros de qualidade."
                   aberta={it("dados")}
                   onToggle={Ia}
                 >
@@ -11025,6 +10934,12 @@ export function App() {
                     <Pe>Fonte primária: o COTAHIST da própria B3</Pe>
                     {
                       " — o arquivo oficial de fechamento, com abertura, máxima, mínima, fechamento, volume financeiro e quantidade de cada papel. Uma rotina diária no GitHub (Actions → “Coleta diária COTAHIST”) baixa o arquivo, acumula tudo num JSON e publica no repositório. O app lê esse JSON direto do GitHub, não do site: a base do dia entra sem precisar republicar nada."
+                    }
+                  </div>
+                  <div style={V}>
+                    <Pe>Balanços: dados abertos da CVM</Pe>
+                    {
+                      " — só para a aba SWING. Outra rotina no GitHub (Actions → “Fundamentos CVM”, toda terça e sexta) baixa os balanços trimestrais e anuais das companhias e grava um resumo por papel: lucro e receita de 12 meses, patrimônio, número de ações e lucro do trimestre contra o mesmo trimestre do ano anterior. Cada balanço vale a partir do pregão seguinte à entrega na CVM, nunca antes. Bancos, seguradoras e units ficam de fora."
                     }
                   </div>
                   <div style={V}>
@@ -11321,6 +11236,10 @@ export function App() {
                         {De(
                           "ESTRATÉGIAS · MÊS A MÊS",
                           "A matriz ano × mês de qualquer fonte — a sua carteira ou qualquer estratégia — com quantos quadros você quiser empilhar.",
+                        )}
+                        {De(
+                          "SWING",
+                          "O sinal “demanda retraída em empresa lucrativa”: quem deu sinal no último pregão (entrada, alvo, stop e prazo), as operações em andamento com o preço entre o stop e o alvo, o radar dos papéis a uma condição do sinal e o histórico com gráfico de cada operação. Os botões Padrão e Curto trocam o alvo, o stop e o prazo.",
                         )}
                         {De(
                           "RESULTADOS",
@@ -11759,7 +11678,7 @@ export function App() {
                 <Secao
                   id="export"
                   titulo="10 · O que dá para exportar"
-                  resumo="A base em CSV, o quadro em imagem e as operações, uma por uma, em Excel."
+                  resumo="A base em CSV, gráficos e quadros em imagem e as operações, uma por uma, em Excel."
                   aberta={it("export")}
                   onToggle={Ia}
                 >
@@ -11770,9 +11689,9 @@ export function App() {
                     }
                   </div>
                   <div style={V}>
-                    <Pe>Quadro mês a mês em imagem (aba MÊS A MÊS).</Pe>
+                    <Pe>Gráficos e quadros em imagem.</Pe>
                     {
-                      " PNG da matriz como ela está na tela, com as quatro colunas e o total. Cada quadro tem o seu botão."
+                      " O botão “⬇ imagem” baixa em PNG o quadro do MÊS A MÊS (com as quatro colunas e o total), os gráficos do COMPARAR e do RESULTADOS e o gráfico de operações do SWING, com título, período e legenda."
                     }
                   </div>
                   <div style={V}>
@@ -11781,12 +11700,6 @@ export function App() {
                     <Pe>uma aba por estratégia</Pe>
                     {
                       " mais uma aba RESUMO. Cada linha é uma compra: a data da compra e a da venda, o papel, a posição dele na lista daquela noite (TOP 1, 2, 3…), o OHLC do dia da compra, o volume financeiro do dia, a liquidez podada de 20 pregões, a abertura da venda, o resultado líquido da noite, o gap bruto, a variação do dia, o gap da noite anterior, IBS, RSI 14, posição nas faixas de 20 e 60 pregões, a taxa de acerto overnight em 60 noites, o placar que a estratégia deu ao papel, quantos votos ele teve (no MIX e no Consenso), quantos papéis o termômetro mandou, quantos a noite teve e o resultado da noite inteira. Os percentuais já vão formatados como % — dá para somar e filtrar direto no Excel."
-                    }
-                  </div>
-                  <div style={V}>
-                    <Pe>Relatório de IR em Excel ou PDF (aba RESULTADOS).</Pe>
-                    {
-                      " Por grupo, no mês da venda: cada operação com compra, quantidade e venda pelos preços do COTAHIST, a apuração do mês e o DARF (código 6015, vencimento, valor). O Excel traz também a apuração como a Receita enxerga, o quadro para a declaração anual e as premissas. Detalhes na seção 13."
                     }
                   </div>
                   <div
@@ -11888,7 +11801,7 @@ export function App() {
                   <div style={V}>
                     <Pe>Custos e imposto.</Pe>
                     {
-                      " A taxa é um número que você informa e cobre a ida e a volta. Os resultados das estratégias e dos grupos são antes do imposto de renda: o imposto só aparece no relatório de IR (seção 13). Emolumentos discriminados e aluguel não entram em conta nenhuma."
+                      " A taxa é um número que você informa e cobre a ida e a volta. Todos os resultados são antes do imposto de renda, e o app não apura imposto: use a nota de corretagem e o controle da sua corretora. Emolumentos discriminados e aluguel não entram em conta nenhuma."
                     }
                   </div>
                   <div style={V}>
@@ -11910,46 +11823,81 @@ export function App() {
                   </div>
                 </Secao>
                 <Secao
-                  id="ir"
-                  titulo="13 · Relatório de IR e DARF"
-                  resumo="O que o relatório da aba RESULTADOS calcula, de onde vêm os números e o que conferir antes de pagar."
-                  aberta={it("ir")}
+                  id="swing"
+                  titulo="13 · Swing: demanda retraída em empresa lucrativa"
+                  resumo="A regra do sinal, como sair (alvo, stop e prazo), de onde vêm os balanços, o que o estudo mostrou e o que conferir."
+                  aberta={it("swing")}
                   onToggle={Ia}
                 >
                   <div style={V}>
-                    <Pe>Onde fica.</Pe>
+                    <Pe>A ideia.</Pe>
                     {
-                      " No fim da aba RESULTADOS, com atalho no cabeçalho da aba e em cada grupo. Escolha o grupo e o mês da venda — ou o ano inteiro, ou um De/Até por dia — e baixe em Excel ou imprima/salve em PDF."
+                      " Um papel que vinha caindo, mas em que a venda perdeu força: o preço fez um fundo novo e o IFR não acompanhou, o volume secou e ele está abaixo da média de 200 — numa empresa que dá lucro. É um sinal para comprar e segurar por dias ou semanas, não para o overnight."
+                    }
+                  </div>
+                  <div style={Xe}>O SINAL — TUDO NO FECHAMENTO DO MESMO PREGÃO</div>
+                  <div
+                    style={{
+                      overflowX: "auto",
+                    }}
+                  >
+                    <table style={ne}>
+                      <tbody>
+                        {De(
+                          "divergência de IFR",
+                          "Nos últimos 10 pregões o preço fechou abaixo do menor fechamento dos 20 pregões anteriores, mas o menor IFR(14) dos últimos 10 ficou pelo menos 3 pontos acima do menor IFR daqueles 20.",
+                        )}
+                        {De(
+                          "volume secando",
+                          "Volume financeiro médio de 10 pregões até 0,792 vez o de 60 pregões.",
+                        )}
+                        {De(
+                          "abaixo da MM200",
+                          "Fechamento abaixo da média dos últimos 200 fechamentos.",
+                        )}
+                        {De(
+                          "empresa lucrativa",
+                          "Lucro líquido dos últimos 12 meses positivo, pelo último balanço entregue à CVM até o pregão anterior.",
+                        )}
+                        {De(
+                          "liquidez e preço",
+                          "Liquidez média de 20 pregões de pelo menos R$ 20 mi e preço de pelo menos R$ 1 (o piso daqui é fixo, não o de CONFIGURAÇÕES).",
+                        )}
+                        {De(
+                          "repetição",
+                          "Depois de um sinal, o mesmo papel só volta a sinalizar 12 pregões depois.",
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ ...V, marginTop: 11 }}>
+                    <Pe>Como sair.</Pe>
+                    {
+                      " Compra no fechamento do sinal. Sai no que vier primeiro: stop, alvo ou o último pregão do prazo (vende no fechamento). Padrão: alvo +12%, stop −10%, 30 pregões. Curto: alvo +10%, stop −10%, 20 pregões. Se a abertura já passar do stop ou do alvo, a saída é na abertura; se a mínima e a máxima do mesmo dia tocarem os dois, conta o stop. Resultados líquidos da taxa de 0,046%."
                     }
                   </div>
                   <div style={V}>
-                    <Pe>De onde vêm os números.</Pe>
+                    <Pe>Por que o stop é largo.</Pe>
                     {
-                      " Cada compra marcada em ★ acompanhar vira uma operação. O preço é sempre o do COTAHIST: fechamento do pregão da compra e abertura do pregão seguinte. Quantidade e valor são os do grupo. Sem o COTAHIST do dia, o relatório usa o preço do item e marca provisório — ele se corrige sozinho quando a base chega."
+                      " No caminho até subir, a queda típica foi de 4% a 6%, e nos 10% piores casos de 13% a 15%. Um stop de 7% derrubava muitas operações que terminariam no lucro."
                     }
                   </div>
                   <div style={V}>
-                    <Pe>Mês do imposto.</Pe>
+                    <Pe>O que o estudo mostrou.</Pe>
                     {
-                      " A operação conta no mês da venda. Comprou no último pregão do mês e vendeu na abertura do mês seguinte: entra no mês seguinte."
+                      " A regra foi escolhida com os dados de 2023-24 e conferida em 2025-26, período que ela não tinha visto. Com +12% / −10% / 30 pregões: +2,1% e +4,2% por operação (acerto de 59% e 67%), contra −0,6% e +2,2% de um papel qualquer comprado no mesmo esquema. São cerca de 80 operações por período — amostra pequena — e 2025-26 foi um mercado em alta."
                     }
                   </div>
                   <div style={V}>
-                    <Pe>As regras aplicadas.</Pe>
+                    <Pe>O que ficou de fora.</Pe>
                     {
-                      " 15% sobre o ganho líquido das operações comuns; 20% em day trade e em FII. Ganho em ações é isento quando as vendas de ações do mês não passam de R$ 20 mil — com o volume do overnight, na prática não se aplica. Custos somam à compra e saem da venda. Prejuízo compensa ganho futuro só na mesma modalidade. O IRRF de 0,005% das vendas abate do imposto. DARF código 6015, com vencimento no último dia útil do mês seguinte; abaixo de R$ 10, o valor passa para o mês seguinte."
+                      " “Balanço forte” (lucro do trimestre muito acima do ano anterior) parecia bom, mas perdeu quase toda a vantagem quando a compra passou a ser no pregão seguinte à entrega do balanço. Combinações de P/L baixo com outros sinais técnicos não se repetiram em 2025-26. Empresas em prejuízo, com margem baixa ou receita caindo foram as piores: evite mesmo com sinal técnico."
                     }
                   </div>
                   <div style={V}>
-                    <Pe>O caso que pega o overnight.</Pe>
+                    <Pe>Como ler a aba.</Pe>
                     {
-                      " Day trade não é só comprar e vender no mesmo dia: vender de manhã o que já se tinha e comprar o mesmo papel de novo no leilão de fechamento também é. O mesmo papel em duas noites seguidas gera um day trade no dia do meio (20%, prejuízo separado), e a posição antiga segue com o custo antigo. O relatório faz essa separação sozinho e avisa."
-                    }
-                  </div>
-                  <div style={V}>
-                    <Pe>O que conferir antes de pagar.</Pe>
-                    {
-                      " A nota de corretagem é o documento que vale. Em “ajustes para o DARF”, informe os custos e o IRRF das notas do mês, o prejuízo que você já tinha antes do app e o tipo de cada papel terminado em 11 (unit de empresa tributa como ação; cota de fundo, como FII). Se houve venda fora do grupo no mesmo CPF — outra corretora, posição de longo prazo no mesmo papel —, o imposto é da soma de tudo."
+                      " O sinal do dia usa a cotação mais recente da base; se o pregão ainda não fechou, ele pode mudar até o fechamento. “Em andamento” mostra onde o preço está entre o stop (esquerda) e o alvo (direita). O radar lista as empresas lucrativas a uma condição do sinal. O histórico conta só operações encerradas; a que atravessa um desdobramento ou grupamento sai da conta."
                     }
                   </div>
                   <div
@@ -11958,9 +11906,9 @@ export function App() {
                       marginBottom: 0,
                     }}
                   >
-                    <Pe>Clube de investimento.</Pe>
+                    <Pe>Não é recomendação.</Pe>
                     {
-                      " Operação feita pelo clube (CNPJ do clube) não gera DARF para o cotista: o IR é retido pelo administrador no resgate das cotas. Nesse caso o relatório serve só de controle."
+                      " É uma regra testada em dado passado. Resultado passado não garante resultado futuro; a decisão e o risco são seus."
                     }
                   </div>
                 </Secao>
