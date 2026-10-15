@@ -8,8 +8,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#0E1116",
-  "theme_color": "#0E1116",
+  "background_color": "#0B0E13",
+  "theme_color": "#0B0E13",
   "categories": ["finance"],
   "launch_handler": { "client_mode": ["focus-existing", "auto"] },
   "icons": [

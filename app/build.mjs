@@ -11,7 +11,20 @@ const opcoes = {
   target: ["es2020"],
   jsx: "automatic",
   loader: { ".js": "jsx" },
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: {
+    "process.env.NODE_ENV": '"production"',
+    // data e hora do build, mostrada no cabeçalho
+    __PUBLICADO_EM__: JSON.stringify(
+      new Date().toLocaleString("pt-BR", {
+        timeZone: "America/Sao_Paulo",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    ),
+  },
   legalComments: "eof",
   logLevel: "info",
 };

@@ -3,6 +3,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
   Legend,
   Line,
   LineChart,
@@ -104,6 +107,28 @@ import {
   planilhaOperacoes,
 } from "./relatorios.js";
 import { Resultados } from "./resultados.jsx";
+import {
+  CURSOR,
+  Degrade,
+  EIXO_X,
+  EIXO_Y,
+  GRADE,
+  LegendaGrafico,
+  MARGEM,
+  PONTO_ATIVO,
+  TooltipGrafico,
+} from "./graficos.jsx";
+import {
+  AbasCelular,
+  Aviso,
+  CSS_GLOBAL,
+  Cabecalho,
+  SubAbas,
+} from "./navegacao.jsx";
+
+/* Data e hora do build, injetada pelo build.mjs. */
+const PUBLICADO_EM =
+  typeof __PUBLICADO_EM__ === "string" ? __PUBLICADO_EM__ : "dev";
 import {
   COR_MIX_FIXO,
   COR_MIX_NR,
@@ -1728,45 +1753,31 @@ export function App() {
           T(false);
         }
       }
-    }, [$d, Wd, No]),
-    cu = (D, V) => (
-      <button
-        onClick={() => w(D)}
-        style={{
-          padding: "8px 16px",
-          cursor: "pointer",
-          background: "transparent",
-          whiteSpace: "nowrap",
-          flexShrink: 0,
-          border: "none",
-          borderBottom: `2px solid ${A === D ? tema.amber : "transparent"}`,
-          color: A === D ? tema.text : tema.faint,
-          fontFamily: tema.mono,
-          fontSize: 13,
-          letterSpacing: 0.5,
-        }}
-      >
-        {V}
-      </button>
-    ),
-    Xd = (D, V, ne, le) => (
-      <button
-        onClick={() => le(D)}
-        style={{
-          padding: "5px 13px",
-          cursor: "pointer",
-          borderRadius: 20,
-          background: ne === D ? tema.amberSoft : "transparent",
-          border: `1px solid ${ne === D ? tema.amber : tema.line}`,
-          color: ne === D ? tema.amber : tema.faint,
-          fontFamily: tema.mono,
-          fontSize: 11.5,
-          letterSpacing: 0.4,
-        }}
-      >
-        {V}
-      </button>
-    );
+    }, [$d, Wd, No]);
+  // navegação pelo endereço: #operar, #comparar, #acompanhar… (o botão
+  // voltar do navegador volta para a aba anterior)
+  useEffect(() => {
+    let ir = () => {
+      let h = decodeURIComponent(window.location.hash.slice(1));
+      h && M(h);
+    };
+    ir();
+    window.addEventListener("hashchange", ir);
+    return () => window.removeEventListener("hashchange", ir);
+  }, [M]);
+  let rotaInicial = useRef(true);
+  useEffect(() => {
+    let alvo = "#" + R;
+    if (rotaInicial.current) {
+      rotaInicial.current = false;
+      window.location.hash || window.history.replaceState(null, "", alvo);
+      return;
+    }
+    window.location.hash !== alvo && window.history.pushState(null, "", alvo);
+  }, [R]);
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [A]);
   return (
     <div
       style={{
@@ -1776,6 +1787,7 @@ export function App() {
         fontFamily: tema.sans,
       }}
     >
+      <style>{CSS_GLOBAL}</style>
       <style>{`
         input[type=number]::-webkit-inner-spin-button{opacity:.4}
         select option{background:${tema.panel}}
@@ -1794,93 +1806,26 @@ export function App() {
         }
 
         /* barra de botões da cesta: grade de 12 colunas */
-        .bbar{display:grid;grid-template-columns:repeat(12,1fr);gap:12px 22px;align-items:end}
-        .bstats{grid-column:span 8;display:flex;flex-wrap:wrap;gap:10px 26px;align-items:flex-end}
-        .bacts{grid-column:span 4;display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:flex-end}
-        @media (max-width:1350px){
-          .bbar{grid-template-columns:repeat(6,1fr)}
-          .bstats{grid-column:span 6}
-          .bacts{grid-column:span 6;justify-content:flex-start}
-        }
+        .bbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 28px}
+        .bstats{display:flex;flex-wrap:wrap;gap:12px 30px;align-items:flex-end}
+        .bacts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
         @media (max-width:720px){
-          .bbar{grid-template-columns:1fr}
-          .bstats,.bacts{grid-column:span 1}
+          .bacts{width:100%}
+          .bacts > button{flex:1 1 auto}
         }
       `}</style>
-      <header
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 14,
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "18px 26px 0",
-          borderBottom: `1px solid ${tema.line}`,
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: tema.mono,
-              fontSize: 11,
-              letterSpacing: 2.5,
-              color: tema.amber,
-            }}
-          >
-            B3 · ESTRATÉGIA OVERNIGHT
-          </div>
-          <h1
-            style={{
-              margin: "2px 0 0",
-              fontSize: 22,
-              fontWeight: 650,
-              letterSpacing: -0.3,
-            }}
-          >
-            Leilão Overnight{" "}
-            <span
-              style={{
-                fontSize: 12,
-                color: tema.faint,
-                fontFamily: tema.mono,
-              }}
-              title="Data e hora em que este app foi publicado"
-            >
-              {"atualizado em "}
-              {"2026-09-24 17:27".replace(
-                /^(\d{4})-(\d{2})-(\d{2})/,
-                "$3/$2/$1",
-              )}
-            </span>{" "}
+      <Cabecalho
+        aba={A}
+        aoTrocar={w}
+        publicadoEm={PUBLICADO_EM}
+        extras={
+          <>
             <StatusNuvem />
-          </h1>
-        </div>
-        <RelogioLeilao />
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            gap: 4,
-            overflowX: "auto",
-          }}
-        >
-          {cu("operar", "OPERAR")}
-          {cu("estrategias", "ESTRATÉGIAS")}
-          {cu("resultados", "RESULTADOS")}
-          {cu("base", "BASE")}
-          {cu("config", "CONFIGURAÇÕES")}
-          {cu("readme", "READ ME")}
-        </div>
-      </header>
-      <main
-        style={{
-          width: "100%",
-          maxWidth: "none",
-          margin: 0,
-          padding: "22px 28px 60px",
-          boxSizing: "border-box",
-        }}
-      >
+            <RelogioLeilao />
+          </>
+        }
+      />
+      <main className="conteudo">
         {n && (
           <div
             style={{
@@ -1898,7 +1843,7 @@ export function App() {
             style={{
               border: `1px solid ${tema.down}`,
               background: "rgba(239,68,68,.08)",
-              borderRadius: 10,
+              borderRadius: 14,
               padding: "12px 16px",
               marginBottom: 16,
               fontSize: 13,
@@ -1945,7 +1890,7 @@ export function App() {
             style={{
               background: tema.panel,
               border: `1px solid ${tema.line}`,
-              borderRadius: 10,
+              borderRadius: 14,
               padding: "12px 18px",
               marginBottom: 16,
               display: "flex",
@@ -2062,35 +2007,44 @@ export function App() {
         {!n && _e && (A === "operar" || A === "estrategias") && (
           <div
             style={{
-              display: "flex",
-              gap: 7,
-              marginBottom: 16,
-              flexWrap: "wrap",
+              marginBottom: 18,
             }}
           >
             {A === "operar" && (
-              <>
-                {Xd("executar", "EXECUTAR", _, E)}
-                {Xd("hoje", "RANKING E ALOCAÇÃO", _, E)}
-              </>
+              <SubAbas
+                valor={_}
+                aoTrocar={E}
+                opcoes={[
+                  ["executar", "Executar"],
+                  ["hoje", "Ranking e alocação"],
+                ]}
+              />
             )}
             {A === "estrategias" && (
-              <>
-                {Xd("estrategias", "SINAIS DO DIA", P, O)}
-                {Xd("comparar", "COMPARAR", P, O)}
-                {Xd("mesames", "MÊS A MÊS", P, O)}
-              </>
+              <SubAbas
+                valor={P}
+                aoTrocar={O}
+                opcoes={[
+                  ["estrategias", "Sinais do dia"],
+                  ["comparar", "Comparar"],
+                  ["mesames", "Mês a mês"],
+                ]}
+              />
             )}
           </div>
         )}
-        {!n && (
+        {!n && A !== "config" && A !== "readme" && (
           <div
             className="bbar"
             style={{
               fontFamily: tema.mono,
               fontSize: 12,
               color: tema.dim,
-              marginBottom: 18,
+              marginBottom: 14,
+              background: tema.panel,
+              border: `1px solid ${tema.line}`,
+              borderRadius: tema.raio,
+              padding: "14px 18px",
             }}
           >
             <div className="bstats">
@@ -2149,7 +2103,8 @@ export function App() {
                 style={{
                   ...estiloBotao,
                   color: tema.up,
-                  borderColor: tema.up,
+                  borderColor: "rgba(61,199,150,.45)",
+                  background: tema.upSoft,
                 }}
                 onClick={() => LW()}
                 disabled={S || m || !_e}
@@ -2169,7 +2124,8 @@ export function App() {
                 style={{
                   ...estiloBotao,
                   color: tema.amber,
-                  borderColor: tema.amber,
+                  borderColor: "rgba(244,183,64,.45)",
+                  background: tema.amberSoft,
                 }}
                 onClick={() => $d()}
                 disabled={m}
@@ -2200,7 +2156,7 @@ export function App() {
                       zIndex: 20,
                       background: tema.panelSoft,
                       border: `1px solid ${tema.line}`,
-                      borderRadius: 8,
+                      borderRadius: 10,
                       padding: 6,
                       display: "flex",
                       flexDirection: "column",
@@ -2271,55 +2227,18 @@ export function App() {
             (Bk(D.target.files), (D.target.value = ""));
           }}
         />
-        {s && (
-          <div
-            style={{
-              border: `1px solid ${tema.line}`,
-              background: tema.panel,
-              borderRadius: 8,
-              padding: "9px 14px",
-              marginBottom: 16,
-              fontFamily: tema.mono,
-              fontSize: 12,
-              color: tema.up,
-            }}
-          >
+        {s && A !== "config" && A !== "readme" && (
+          <Aviso tipo="ok" aoFechar={() => l(null)}>
             {s}
-          </div>
+          </Aviso>
         )}
         {h && (
-          <div
-            style={{
-              border: `1px solid ${tema.down}`,
-              background: tema.panel,
-              borderRadius: 8,
-              padding: "9px 14px",
-              marginBottom: 16,
-              fontFamily: tema.mono,
-              fontSize: 12,
-              color: tema.down,
-            }}
-          >
+          <Aviso tipo="erro">
             {h}
             {" — os dados já carregados seguem disponíveis."}
-          </div>
+          </Aviso>
         )}
-        {c && (
-          <div
-            style={{
-              border: `1px solid ${tema.down}`,
-              background: tema.panel,
-              borderRadius: 8,
-              padding: "9px 14px",
-              marginBottom: 16,
-              fontFamily: tema.mono,
-              fontSize: 12,
-              color: tema.down,
-            }}
-          >
-            {c}
-          </div>
-        )}
+        {c && <Aviso tipo="erro">{c}</Aviso>}
         {!n && !_e && (
           <div
             onClick={() => Th.current?.click()}
@@ -2420,7 +2339,7 @@ export function App() {
               style={{
                 background: tema.panel,
                 border: `1px solid ${tema.line}`,
-                borderRadius: 10,
+                borderRadius: 14,
                 padding: "16px 18px",
                 marginBottom: 20,
               }}
@@ -2543,7 +2462,7 @@ export function App() {
                 style={{
                   background: tema.panel,
                   border: `1px solid ${tema.line}`,
-                  borderRadius: 10,
+                  borderRadius: 14,
                   overflow: "hidden",
                 }}
               >
@@ -3283,7 +3202,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "14px 16px",
                   }}
                 >
@@ -3350,7 +3269,7 @@ export function App() {
                               style={{
                                 width: 8,
                                 height: 8,
-                                borderRadius: 8,
+                                borderRadius: 10,
                                 background: D.est.cor,
                                 flexShrink: 0,
                               }}
@@ -3418,7 +3337,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "14px 16px",
                   }}
                 >
@@ -3571,7 +3490,7 @@ export function App() {
                 style={{
                   background: tema.panel,
                   border: `1px solid ${tema.line}`,
-                  borderRadius: 10,
+                  borderRadius: 14,
                   padding: 16,
                   fontSize: 13,
                   color: tema.dim,
@@ -3586,7 +3505,7 @@ export function App() {
                 style={{
                   background: tema.panel,
                   border: `1px solid ${tema.line}`,
-                  borderRadius: 10,
+                  borderRadius: 14,
                   padding: 16,
                   fontSize: 13,
                   color: tema.dim,
@@ -4025,7 +3944,7 @@ export function App() {
                       style={{
                         background: tema.panel,
                         border: `1px solid ${Ee}55`,
-                        borderRadius: 10,
+                        borderRadius: 14,
                         padding: "16px 18px",
                       }}
                     >
@@ -4372,7 +4291,7 @@ export function App() {
                       style={{
                         background: tema.panel,
                         border: `1px solid ${tema.line}`,
-                        borderRadius: 10,
+                        borderRadius: 14,
                         padding: "14px 16px",
                       }}
                     >
@@ -4515,7 +4434,7 @@ export function App() {
                           key={Oe.id}
                           style={{
                             background: tema.panel,
-                            borderRadius: 10,
+                            borderRadius: 14,
                             padding: "14px 16px",
                             border: `1px solid ${tema.line}`,
                             borderLeft: `3px solid ${Oe.cor}`,
@@ -4624,7 +4543,7 @@ export function App() {
                                     fontSize: 12,
                                     marginTop: 10,
                                     padding: "9px 11px",
-                                    borderRadius: 8,
+                                    borderRadius: 10,
                                     background: tema.panelSoft,
                                     border: `1px solid ${Oe.cor}44`,
                                     lineHeight: 1.6,
@@ -4730,7 +4649,7 @@ export function App() {
                       style={{
                         background: tema.panel,
                         border: `1px solid ${tema.line}`,
-                        borderRadius: 10,
+                        borderRadius: 14,
                         padding: "12px 16px",
                       }}
                     >
@@ -5046,7 +4965,7 @@ export function App() {
                       style={{
                         background: tema.panel,
                         border: `1px solid ${tema.line}`,
-                        borderRadius: 10,
+                        borderRadius: 14,
                         padding: "12px 16px",
                       }}
                     >
@@ -5171,7 +5090,7 @@ export function App() {
                 style={{
                   background: tema.panel,
                   border: `1px solid ${tema.line}`,
-                  borderRadius: 10,
+                  borderRadius: 14,
                   padding: 16,
                   fontSize: 13,
                   color: tema.dim,
@@ -5188,7 +5107,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "14px 16px",
                   }}
                 >
@@ -5357,7 +5276,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "14px 16px",
                   }}
                 >
@@ -5572,7 +5491,7 @@ export function App() {
                           style={{
                             background: tema.panel,
                             border: `1px solid ${tema.amber}66`,
-                            borderRadius: 10,
+                            borderRadius: 14,
                             padding: "14px 16px",
                           }}
                         >
@@ -5694,7 +5613,7 @@ export function App() {
                             style={{
                               background: tema.panel,
                               border: `1px solid ${tema.line}`,
-                              borderRadius: 10,
+                              borderRadius: 14,
                               padding: "14px 16px",
                             }}
                           >
@@ -5748,7 +5667,7 @@ export function App() {
                         style={{
                           background: tema.panel,
                           border: `1px solid ${ne ? D.est.cor + "66" : tema.line}`,
-                          borderRadius: 10,
+                          borderRadius: 14,
                           padding: "14px 16px",
                         }}
                       >
@@ -6207,7 +6126,7 @@ export function App() {
                     style={{
                       background: tema.panel,
                       border: `1px solid ${tema.line}`,
-                      borderRadius: 10,
+                      borderRadius: 14,
                       padding: "14px 16px",
                     }}
                   >
@@ -6368,7 +6287,7 @@ export function App() {
             style={{
               background: tema.panel,
               border: `1px solid ${tema.line}`,
-              borderRadius: 10,
+              borderRadius: 14,
               overflow: "hidden",
               marginBottom: 20,
             }}
@@ -6559,7 +6478,7 @@ export function App() {
             style={{
               background: tema.panel,
               border: `1px solid ${tema.line}`,
-              borderRadius: 10,
+              borderRadius: 14,
               overflow: "hidden",
             }}
           >
@@ -7549,7 +7468,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "14px 16px",
                     display: "flex",
                     flexWrap: "wrap",
@@ -7659,7 +7578,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "13px 16px",
                     display: "flex",
                     flexWrap: "wrap",
@@ -7812,7 +7731,7 @@ export function App() {
                     style={{
                       background: tema.panel,
                       border: `1px solid ${tema.amber}`,
-                      borderRadius: 10,
+                      borderRadius: 14,
                       padding: "14px 16px",
                     }}
                   >
@@ -7982,7 +7901,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "14px 16px",
                   }}
                 >
@@ -8027,84 +7946,77 @@ export function App() {
                       }}
                     >
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart
-                          data={hi}
-                          margin={{
-                            top: 6,
-                            right: 14,
-                            bottom: 4,
-                            left: 0,
-                          }}
-                        >
-                          <XAxis
-                            dataKey="label"
-                            tick={{
-                              fill: tema.faint,
-                              fontSize: 10,
-                              fontFamily: tema.mono,
-                            }}
-                            minTickGap={40}
-                            axisLine={{
-                              stroke: tema.line,
-                            }}
-                            tickLine={false}
-                          />
+                        <ComposedChart data={hi} margin={MARGEM}>
+                          <defs>
+                            {He.map((de) => (
+                              <Degrade
+                                key={de.id}
+                                id={"grad_g_" + de.id}
+                                cor={wt(de, Qi.indexOf(de))}
+                                opacidade={He.length > 2 ? 0.1 : 0.2}
+                              />
+                            ))}
+                          </defs>
+                          <CartesianGrid {...GRADE} />
+                          <XAxis {...EIXO_X} dataKey="label" minTickGap={48} />
                           <YAxis
-                            tick={{
-                              fill: tema.faint,
-                              fontSize: 10,
-                              fontFamily: tema.mono,
-                            }}
-                            axisLine={{
-                              stroke: tema.line,
-                            }}
-                            tickLine={false}
-                            tickFormatter={(de) => de.toFixed(1) + "%"}
-                            width={54}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              background: tema.panelSoft,
-                              border: `1px solid ${tema.line}`,
-                              fontFamily: tema.mono,
-                              fontSize: 12,
-                            }}
-                            labelStyle={{
-                              color: tema.dim,
-                            }}
-                            formatter={(de) =>
-                              de == null ? "—" : de.toFixed(2) + "%"
+                            {...EIXO_Y}
+                            tickFormatter={(de) =>
+                              de.toFixed(Ms === "acum" ? 0 : 1) + "%"
                             }
                           />
-                          <Legend
-                            wrapperStyle={{
-                              fontFamily: tema.mono,
-                              fontSize: 11.5,
-                            }}
+                          <Tooltip
+                            content={<TooltipGrafico casas={2} />}
+                            cursor={CURSOR}
                           />
-                          <ReferenceLine y={0} stroke={tema.line} />
+                          <Legend content={<LegendaGrafico />} />
+                          <ReferenceLine
+                            y={0}
+                            stroke={tema.faint}
+                            strokeOpacity={0.6}
+                          />
                           <Line
                             type="monotone"
                             dataKey={ht}
                             stroke={tema.dim}
                             dot={false}
+                            activeDot={PONTO_ATIVO}
                             strokeWidth={1.6}
-                            strokeDasharray="5 3"
+                            strokeDasharray="5 4"
                             connectNulls={Ms === "acum"}
+                            animationDuration={700}
                           />
-                          {He.map((de) => (
-                            <Line
-                              key={de.id}
-                              type="monotone"
-                              dataKey={"g_" + de.id}
-                              name={de.nome}
-                              stroke={wt(de, Qi.indexOf(de))}
-                              dot={false}
-                              strokeWidth={Ms === "acum" ? 2 : 1.3}
-                              connectNulls={Ms === "acum"}
-                            />
-                          ))}
-                        </LineChart>
+                          {He.map((de) =>
+                            Ms === "acum" ? (
+                              <Area
+                                key={de.id}
+                                type="monotone"
+                                dataKey={"g_" + de.id}
+                                name={de.nome}
+                                stroke={wt(de, Qi.indexOf(de))}
+                                fill={`url(#grad_g_${de.id})`}
+                                dot={false}
+                                activeDot={PONTO_ATIVO}
+                                strokeWidth={2.2}
+                                connectNulls={true}
+                                animationDuration={700}
+                              />
+                            ) : (
+                              <Line
+                                key={de.id}
+                                type="monotone"
+                                dataKey={"g_" + de.id}
+                                name={de.nome}
+                                stroke={wt(de, Qi.indexOf(de))}
+                                dot={false}
+                                activeDot={PONTO_ATIVO}
+                                strokeWidth={1.4}
+                                connectNulls={false}
+                                animationDuration={700}
+                              />
+                            ),
+                          )}
+                        </ComposedChart>
                       </ResponsiveContainer>
                     </div>
                   )}
@@ -8113,7 +8025,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "12px 16px",
                     display: "flex",
                     gap: 9,
@@ -8292,7 +8204,7 @@ export function App() {
                       style={{
                         background: tema.panel,
                         border: `1px solid ${tema.line}`,
-                        borderRadius: 10,
+                        borderRadius: 14,
                         overflow: "hidden",
                       }}
                     >
@@ -8812,7 +8724,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "16px 18px",
                     marginBottom: 20,
                   }}
@@ -9053,7 +8965,7 @@ export function App() {
                         fontSize: 12.5,
                         color: tema.amber,
                         border: `1px solid ${tema.amber}`,
-                        borderRadius: 8,
+                        borderRadius: 10,
                         padding: "9px 12px",
                         marginBottom: 12,
                         lineHeight: 1.55,
@@ -9394,64 +9306,29 @@ export function App() {
                             }}
                           >
                             <ResponsiveContainer>
-                              <LineChart
-                                data={uu}
-                                margin={{
-                                  top: 6,
-                                  right: 18,
-                                  left: 0,
-                                  bottom: 4,
-                                }}
-                              >
+                              <LineChart data={uu} margin={MARGEM}>
+                                <CartesianGrid {...GRADE} />
                                 <XAxis
+                                  {...EIXO_X}
                                   dataKey="label"
-                                  tick={{
-                                    fill: tema.faint,
-                                    fontSize: 10,
-                                    fontFamily: tema.mono,
-                                  }}
                                   minTickGap={60}
-                                  axisLine={{
-                                    stroke: tema.line,
-                                  }}
-                                  tickLine={false}
                                 />
                                 <YAxis
-                                  tick={{
-                                    fill: tema.faint,
-                                    fontSize: 10,
-                                    fontFamily: tema.mono,
-                                  }}
-                                  axisLine={{
-                                    stroke: tema.line,
-                                  }}
-                                  tickLine={false}
+                                  {...EIXO_Y}
                                   tickFormatter={(Ce) =>
                                     Ce.toFixed(he === "acum" ? 0 : 1) + "%"
                                   }
-                                  width={54}
                                 />
                                 <Tooltip
-                                  contentStyle={{
-                                    background: tema.panelSoft,
-                                    border: `1px solid ${tema.line}`,
-                                    fontFamily: tema.mono,
-                                    fontSize: 12,
-                                  }}
-                                  labelStyle={{
-                                    color: tema.dim,
-                                  }}
-                                  formatter={(Ce) =>
-                                    Ce == null ? "—" : Ce.toFixed(2) + "%"
-                                  }
+                                  content={<TooltipGrafico casas={2} />}
+                                  cursor={CURSOR}
                                 />
-                                <Legend
-                                  wrapperStyle={{
-                                    fontFamily: tema.mono,
-                                    fontSize: 11.5,
-                                  }}
+                                <Legend content={<LegendaGrafico />} />
+                                <ReferenceLine
+                                  y={0}
+                                  stroke={tema.faint}
+                                  strokeOpacity={0.6}
                                 />
-                                <ReferenceLine y={0} stroke={tema.line} />
                                 {Sr.map((Ce) => (
                                   <Line
                                     key={Ce.id}
@@ -9462,19 +9339,22 @@ export function App() {
                                     dot={
                                       Ce.grupo
                                         ? {
-                                            r: 2.8,
+                                            r: 2.6,
                                             strokeWidth: 0,
                                             fill: Ce.cor,
                                           }
                                         : false
                                     }
+                                    activeDot={PONTO_ATIVO}
                                     strokeDasharray={
                                       Ce.grupo ? "7 3" : undefined
                                     }
                                     strokeWidth={
-                                      Ce.grupo ? 2.4 : he === "acum" ? 2 : 1.3
+                                      Ce.grupo ? 2.4 : he === "acum" ? 1.9 : 1.2
                                     }
+                                    strokeOpacity={0.95}
                                     connectNulls={he === "acum"}
+                                    animationDuration={700}
                                   />
                                 ))}
                               </LineChart>
@@ -9776,7 +9656,7 @@ export function App() {
                                     key={Ce.id}
                                     style={{
                                       border: `1px solid ${tema.line}`,
-                                      borderRadius: 8,
+                                      borderRadius: 10,
                                       padding: "10px 12px",
                                     }}
                                   >
@@ -10004,7 +9884,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     padding: "16px 18px",
                     marginBottom: 20,
                   }}
@@ -10108,7 +9988,7 @@ export function App() {
             let D = {
                 background: tema.panel,
                 border: `1px solid ${tema.line}`,
-                borderRadius: 10,
+                borderRadius: 14,
                 padding: "16px 18px",
                 marginBottom: 16,
               },
@@ -10219,7 +10099,7 @@ export function App() {
                       padding: "11px 13px",
                       background: tema.panelSoft,
                       border: `1px solid ${tema.line}`,
-                      borderRadius: 8,
+                      borderRadius: 10,
                     }}
                   >
                     {Ee}
@@ -12070,7 +11950,7 @@ export function App() {
                   style={{
                     background: tema.panel,
                     border: `1px solid ${tema.line}`,
-                    borderRadius: 10,
+                    borderRadius: 14,
                     overflow: "hidden",
                     marginBottom: 16,
                   }}
@@ -12418,6 +12298,7 @@ export function App() {
             );
           })()}
       </main>
+      <AbasCelular aba={A} aoTrocar={w} />
     </div>
   );
 }

@@ -135,7 +135,7 @@ function MesIR({ m: e }) {
       <div
         style={{
           border: `1px solid ${tema.line}`,
-          borderRadius: 8,
+          borderRadius: 10,
           padding: "12px 14px",
         }}
       >
@@ -172,7 +172,7 @@ function MesIR({ m: e }) {
     <div
       style={{
         border: `1px solid ${e.darf ? tema.amber : tema.line}`,
-        borderRadius: 8,
+        borderRadius: 10,
         overflow: "hidden",
       }}
     >
@@ -942,7 +942,7 @@ export function Resultados({
       style={{
         background: tema.panel,
         border: `1px solid ${tema.line}`,
-        borderRadius: 10,
+        borderRadius: 14,
         overflow: "hidden",
         scrollMarginTop: 12,
       }}
@@ -1067,7 +1067,7 @@ export function Resultados({
                     display: "inline-block",
                     width: 8,
                     height: 8,
-                    borderRadius: 8,
+                    borderRadius: 10,
                     background: corDoGrupo(te, Ae),
                     marginRight: 6,
                   }}
@@ -1253,7 +1253,7 @@ export function Resultados({
                 style={{
                   overflowX: "auto",
                   border: `1px solid ${tema.line}`,
-                  borderRadius: 8,
+                  borderRadius: 10,
                 }}
               >
                 <table

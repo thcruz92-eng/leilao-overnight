@@ -32,7 +32,7 @@ export function Secao({
       style={{
         background: tema.panel,
         border: `1px solid ${n ? tema.amber : tema.line}`,
-        borderRadius: 10,
+        borderRadius: 14,
         marginBottom: 10,
         overflow: "hidden",
       }}
@@ -132,7 +132,7 @@ export function QuadroMesAMes({
       style={{
         background: tema.panel,
         border: `1px solid ${tema.line}`,
-        borderRadius: 10,
+        borderRadius: 14,
         overflow: "hidden",
         marginBottom: 16,
       }}
@@ -719,7 +719,7 @@ export function PainelAbertura({ c: e, aoVivo: t, abrirManual: r }) {
     <section
       style={{
         background: tema.panel,
-        borderRadius: 10,
+        borderRadius: 14,
         padding: "14px 16px",
         border: `1px solid ${tema.line}`,
         borderLeft: `3px solid ${e.cor}`,
@@ -798,7 +798,7 @@ export function PainelAbertura({ c: e, aoVivo: t, abrirManual: r }) {
               marginTop: 12,
               padding: "11px 13px",
               background: tema.panelSoft,
-              borderRadius: 8,
+              borderRadius: 10,
               border: `1px solid ${tema.line}`,
             }}
           >
@@ -1095,17 +1095,17 @@ export function Chip({
       onClick={r}
       disabled={n}
       style={{
-        padding: "6px 12px",
-        borderRadius: 6,
+        padding: "6px 13px",
+        borderRadius: 999,
         cursor: n ? "not-allowed" : "pointer",
-        fontFamily: tema.mono,
+        fontFamily: tema.sans,
+        fontWeight: e ? 600 : 500,
         fontSize: 12.5,
-        letterSpacing: 0.3,
-        border: `1px solid ${e ? tema.amber : tema.line}`,
-        background: e ? tema.amberSoft : "transparent",
+        letterSpacing: 0.1,
+        border: `1px solid ${e ? "rgba(244,183,64,.5)" : tema.line}`,
+        background: e ? tema.amberSoft : tema.panelSoft,
         color: n ? tema.faint : e ? tema.amber : tema.dim,
         opacity: n ? 0.6 : 1,
-        transition: "all .15s",
       }}
     >
       {t}
@@ -1124,11 +1124,12 @@ export function Campo({ label: e, children: t }) {
     >
       <span
         style={{
-          fontSize: 10.5,
-          letterSpacing: 1.4,
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: 0.7,
           textTransform: "uppercase",
           color: tema.faint,
-          fontFamily: tema.mono,
+          fontFamily: tema.sans,
         }}
       >
         {e}
@@ -1149,9 +1150,10 @@ export function Estatistica({ label: e, children: t, color: r }) {
     >
       <span
         style={{
-          fontFamily: tema.mono,
-          fontSize: 9.5,
-          letterSpacing: 1.3,
+          fontFamily: tema.sans,
+          fontSize: 10.5,
+          fontWeight: 600,
+          letterSpacing: 0.7,
           textTransform: "uppercase",
           color: tema.faint,
         }}
@@ -1161,7 +1163,8 @@ export function Estatistica({ label: e, children: t, color: r }) {
       <span
         style={{
           fontFamily: tema.mono,
-          fontSize: 12.5,
+          fontSize: 13.5,
+          fontWeight: 500,
           color: r || tema.text,
         }}
       >
@@ -1302,7 +1305,7 @@ function Calendario({
       color: tema.text,
       fontFamily: tema.mono,
       fontSize: 13,
-      borderRadius: 6,
+      borderRadius: 8,
       cursor: "pointer",
       padding: 0,
       lineHeight: 1,
@@ -1356,7 +1359,7 @@ function Calendario({
               zIndex: 41,
               background: tema.panelSoft,
               border: `1px solid ${tema.line}`,
-              borderRadius: 10,
+              borderRadius: 14,
               padding: 12,
               width: 268,
               boxShadow: "0 12px 32px rgba(0,0,0,.55)",
@@ -1834,7 +1837,7 @@ export function StatusNuvem() {
               maxWidth: "88vw",
               background: tema.panel,
               border: `1px solid ${tema.line}`,
-              borderRadius: 8,
+              borderRadius: 10,
               padding: 14,
               boxShadow: "0 10px 30px rgba(0,0,0,.45)",
               fontFamily: tema.sans,
@@ -1936,7 +1939,7 @@ export function StatusNuvem() {
               <div
                 style={{
                   border: `1px solid ${tema.amber}`,
-                  borderRadius: 6,
+                  borderRadius: 8,
                   padding: 10,
                   marginBottom: 10,
                   background: tema.amberSoft,
@@ -2065,6 +2068,7 @@ export function RelogioLeilao() {
   } else s = "fora da janela do leilão";
   return (
     <div
+      className="relogio"
       style={{
         display: "flex",
         alignItems: "center",
@@ -2138,7 +2142,7 @@ export function EditorCarteira({
       : {
           background: tema.panel,
           border: `1px solid ${tema.line}`,
-          borderRadius: 10,
+          borderRadius: 14,
           padding: "16px 18px",
           marginBottom: 20,
         },
@@ -2308,7 +2312,7 @@ export function EditorCarteira({
                 gap: 8,
                 padding: "5px 10px",
                 border: `1px solid ${tema.line}`,
-                borderRadius: 6,
+                borderRadius: 8,
                 fontFamily: tema.mono,
                 fontSize: 12,
                 background: tema.panelSoft,
@@ -2452,7 +2456,7 @@ export function LinhaBenchmark({ bm: e, onRename: t, onRemove: r }) {
         alignItems: "center",
         padding: "7px 10px",
         border: `1px solid ${tema.line}`,
-        borderRadius: 6,
+        borderRadius: 8,
         fontFamily: tema.mono,
         fontSize: 12,
       }}

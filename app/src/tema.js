@@ -1,19 +1,31 @@
 /* Cores, formatação de números e datas e estilos compartilhados. */
 
 export const tema = {
-    bg: "#0E1116",
-    panel: "#161B22",
-    panelSoft: "#1C232C",
-    line: "#28313D",
-    text: "#E8E4DA",
-    dim: "#8B94A1",
-    faint: "#5C6672",
-    up: "#3FBF8F",
-    down: "#E06055",
-    amber: "#F0B347",
-    amberSoft: "rgba(240,179,71,0.12)",
-    mono: "ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace",
-    sans: "'Segoe UI', system-ui, -apple-system, sans-serif",
+    // superfícies, do fundo para cima
+    bg: "#0B0E13",
+    panel: "#131920",
+    panelSoft: "#19202A",
+    panelHover: "#1F2732",
+    line: "#252F3B",
+    lineSoft: "#1C242E",
+    // texto
+    text: "#ECE7DC",
+    dim: "#9AA3AF",
+    faint: "#66717E",
+    // sinais
+    up: "#3DC796",
+    upSoft: "rgba(61,199,150,0.12)",
+    down: "#EF6A5E",
+    downSoft: "rgba(239,106,94,0.12)",
+    amber: "#F4B740",
+    amberSoft: "rgba(244,183,64,0.12)",
+    // forma
+    raio: 14,
+    raioP: 10,
+    sombra:
+      "0 1px 0 rgba(255,255,255,0.025) inset, 0 12px 32px -18px rgba(0,0,0,0.7)",
+    mono: "'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace",
+    sans: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
   },
   DIAS_SEMANA = [
     "domingo",
@@ -80,9 +92,9 @@ export const MESES = [
 export const estiloInput = {
     background: tema.panelSoft,
     border: `1px solid ${tema.line}`,
-    borderRadius: 6,
+    borderRadius: 8,
     color: tema.text,
-    padding: "7px 10px",
+    padding: "7px 11px",
     fontFamily: tema.mono,
     fontSize: 13,
     minWidth: 90,
@@ -91,6 +103,7 @@ export const estiloInput = {
     ...estiloInput,
     cursor: "pointer",
     minWidth: 0,
+    fontWeight: 500,
   };
 
 export const MESES_LONGOS = [
