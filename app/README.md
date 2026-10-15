@@ -19,13 +19,15 @@ Depois de alterar o código, rode `npm run build` e faça commit dos dois:
 |---|---|
 | `src/main.jsx` | ponto de entrada |
 | `src/App.jsx` | componente principal: estado, abas e telas |
-| `src/resultados.jsx` | tela RESULTADOS (acompanhamento e IR) |
 | `src/componentes.jsx` | componentes reaproveitados (calendário, gráficos de mês a mês, fichas…) |
 | `src/tema.js` | cores, formatação e estilos compartilhados |
 | `src/estrategias.js` | indicadores, estratégias, MIX e backtests |
 | `src/dados.js` | base oficial, cotação ao vivo, CSV, calendário de pregões |
 | `src/acompanhamento.js` | cálculos dos itens acompanhados |
-| `src/ir.js` | apuração de IR (DARF) |
+| `src/swing.js` | regra do SWING: sinais, operações, alvo/stop e histórico |
+| `src/swing.jsx` | tela SWING |
+| `src/navegacao.jsx` | cabeçalho, abas e sub-abas |
+| `src/graficos.jsx` | peças dos gráficos (eixos, tooltip, hastes, imagem) |
 | `src/relatorios.js` | exportações (Excel, CSV, PNG) |
 | `src/nuvem.js` | sincronização entre aparelhos (`window.storage`) |
 
