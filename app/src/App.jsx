@@ -85,11 +85,13 @@ import {
   datasDasCurvas,
   liquidezNoDia,
   mesAMesCarteira,
+  normalizarVigencias,
   mesAMesCurva,
   pregaoAnterior,
   prepararIndicadores,
   qtdPara,
   rankingOvernight,
+  vigenciaEm,
   recortarResultado,
   recortarResultados,
   rotuloBenchmark,
@@ -107,6 +109,7 @@ import {
   planilhaOperacoes,
 } from "./relatorios.js";
 import { AbaSwing } from "./swing.jsx";
+import { VigenciasCesta } from "./cesta.jsx";
 import {
   BotaoImagem,
   CURSOR,
@@ -290,11 +293,58 @@ export function App() {
       } catch {}
     })();
   }, []);
-  let It = (D) => {
+  // grava as vigências da cesta; "cesta_padrao" segue com a cesta atual
+  // para aparelhos com a versão antiga do app
+  let salvarVigencias = (D) => {
       (_k(D),
         window.storage
-          .set("ovr3:cesta_padrao", JSON.stringify(D))
+          .set("ovr3:cesta_vigencias", JSON.stringify(D))
+          .catch(() => {}),
+        window.storage
+          .set("ovr3:cesta_padrao", JSON.stringify(D[D.length - 1].itens))
           .catch(() => {}));
+    },
+    selVig = () => Math.min(Vs ?? Vg.length - 1, Vg.length - 1),
+    It = (D) =>
+      salvarVigencias(
+        Vg.map((V, ne) =>
+          ne === selVig()
+            ? {
+                ...V,
+                itens: D,
+              }
+            : V,
+        ),
+      ),
+    criarVigencia = (ts) => {
+      let V = vigenciaEm(Vg, ts) || Vg[0],
+        ne = normalizarVigencias([
+          ...Vg,
+          {
+            desde: ts,
+            itens: V.itens.map((le) => ({
+              ...le,
+            })),
+          },
+        ]);
+      (salvarVigencias(ne), Ws(ne.findIndex((le) => le.desde === ts)));
+    },
+    mudarDataVigencia = (D, ts) =>
+      salvarVigencias(
+        normalizarVigencias(
+          Vg.map((V, ne) =>
+            ne === D
+              ? {
+                  ...V,
+                  desde: ts,
+                }
+              : V,
+          ),
+        ),
+      ),
+    apagarVigencia = (D) => {
+      D > 0 &&
+        (salvarVigencias(Vg.filter((V, ne) => ne !== D)), Ws(D - 1));
     },
     Lt = (D) => {
       (yt(D),
@@ -473,12 +523,17 @@ export function App() {
     [ru, bk] = useState(""),
     [Ms, wk] = useState("acum"),
     [Py, Sk] = useState({}),
-    [Ll, _k] = useState(() =>
-      TICKERS_EXEMPLO.map((D) => ({
-        ativo: D,
-        valor: 10000,
-      })),
-    ),
+    [Vg, _k] = useState(() => [
+      {
+        desde: null,
+        itens: TICKERS_EXEMPLO.map((D) => ({
+          ativo: D,
+          valor: 10000,
+        })),
+      },
+    ]),
+    [Vs, Ws] = useState(null),
+    Ll = Vg[Vg.length - 1].itens,
     [Eh, Ak] = useState("periodo"),
     [Iy, Ek] = useState(null),
     [Fy, My] = useState(null);
@@ -541,9 +596,21 @@ export function App() {
           );
       } catch {}
       try {
-        let D = await window.storage.get("ovr3:cesta_padrao"),
-          V = D?.value ? JSON.parse(D.value) : null;
-        Array.isArray(V) && V.length && _k(V);
+        let W = await window.storage.get("ovr3:cesta_vigencias"),
+          Wv = W?.value ? normalizarVigencias(JSON.parse(W.value)) : [];
+        if (Wv.length) _k(Wv);
+        else {
+          let D = await window.storage.get("ovr3:cesta_padrao"),
+            V = D?.value ? JSON.parse(D.value) : null;
+          Array.isArray(V) &&
+            V.length &&
+            _k([
+              {
+                desde: null,
+                itens: V,
+              },
+            ]);
+        }
       } catch {}
       try {
         let D = await window.storage.get("ovr3:estr_operar"),
@@ -1110,11 +1177,11 @@ export function App() {
           fee: k,
           encadear: xa,
           bench: Bn,
-          cesta: Ll,
+          cesta: Vg,
           lotes: Nl,
           ultimo: pi,
         }),
-      [q, C, X, L, j, k, xa, Bn, Ll, Nl, pi],
+      [q, C, X, L, j, k, xa, Bn, Vg, Nl, pi],
     ),
     IW = useCallback(() => {
       !_e ||
@@ -1163,7 +1230,7 @@ export function App() {
             let Pe = (() => {
               let ve = curvaCarteira(
                 _e,
-                Ll,
+                Vg,
                 xa,
                 k,
                 (Ee) => Nl[Ee] ?? LOTE_PADRAO,
@@ -1199,7 +1266,7 @@ export function App() {
             Q(false);
           }
         }, 40));
-    }, [_e, Yr, q, C, X, Bn, Wy, Vt, j, L, Ll, xa, k, Nl]),
+    }, [_e, Yr, q, C, X, Bn, Wy, Vt, j, L, Vg, Ll, xa, k, Nl]),
     [zk, qk] = useState(false),
     [Uk, Oh] = useState(null),
     FW = useCallback(() => {
@@ -6924,7 +6991,7 @@ export function App() {
               },
               wt = corDoGrupo,
               ht = "Overnight padrão",
-              Ft = curvaCarteira(_e, Ll, xa, k, ne)
+              Ft = curvaCarteira(_e, Vg, xa, k, ne)
                 .map((de) => ({
                   ...de,
                   tsVenda: de.ts,
@@ -7636,7 +7703,7 @@ export function App() {
                       }}
                     >
                       {
-                        "Cesta fixa, reconstruída do COTAHIST no intervalo escolhido — não depende de lançamento. Mexa nos ativos e no valor de cada um; a curva sai desses valores, com arredondamento de lote igual ao da aba OPERAR. Série disponível desde "
+                        "Cesta reconstruída do COTAHIST no intervalo escolhido — não depende de lançamento. A curva sai dos ativos e valores da cesta, com arredondamento de lote igual ao da aba OPERAR. Cada noite usa a cesta que valia na data da compra: para trocar os papéis sem mexer no histórico, crie uma nova vigência. Série disponível desde "
                       }
                       {Oe != null ? fmtData(Oe) : "—"}.
                     </div>
@@ -7646,8 +7713,20 @@ export function App() {
                       flex: "1 1 100%",
                     }}
                   >
+                    <VigenciasCesta
+                      versoes={Vg}
+                      sel={selVig()}
+                      onSel={Ws}
+                      onCriar={criarVigencia}
+                      onData={mudarDataVigencia}
+                      onApagar={apagarVigencia}
+                      padraoNova={
+                        (pi != null && proximoDiaUtil(pi)) ||
+                        tsPregao(new Date())
+                      }
+                    />
                     <EditorCarteira
-                      carteira={Ll}
+                      carteira={Vg[selVig()].itens}
                       onChange={It}
                       tickers={ql}
                       marked={null}
@@ -11577,7 +11656,7 @@ export function App() {
                 <Secao
                   id="carteiras"
                   titulo="8 · Carteira, cesta padrão e grupos de acompanhamento"
-                  resumo="As três formas de acompanhar resultado: simulada, régua fixa e o que você operou de verdade."
+                  resumo="As três formas de acompanhar resultado: simulada, régua fixa (com vigências) e o que você operou de verdade."
                   aberta={it("carteiras")}
                   onToggle={Ia}
                 >
@@ -11591,6 +11670,12 @@ export function App() {
                     <Pe>2. A cesta padrão (RESULTADOS).</Pe>
                     {
                       " A régua. Mesma ideia da carteira, mas com um papel específico: é contra ela que todo grupo é comparado. A curva dela é reconstruída do COTAHIST em qualquer intervalo que você pedir, sem depender de lançamento nenhum — estratégia que não bate a cesta não vale o trabalho."
+                    }
+                  </div>
+                  <div style={V}>
+                    <Pe>Trocar os papéis da cesta sem mexer no histórico.</Pe>
+                    {
+                      " A cesta tem vigências: cada versão vale para as compras a partir de uma data. Quando o seu Overnight padrão mudar, clique em “+ nova vigência” acima dos ativos, escolha a data da primeira compra com a cesta nova (o padrão é o próximo pregão) e troque os papéis — a versão nova começa como cópia da que valia naquela data. Cada noite usa a cesta que valia na data da compra, então as noites anteriores continuam como estavam, no RESULTADOS, no COMPARAR e no MÊS A MÊS. Clique numa vigência para ver ou corrigir os papéis, a data de início, ou apagar a versão (as noites dela voltam para a cesta anterior). Mexer numa vigência passada muda o histórico daquelas noites — o app avisa."
                     }
                   </div>
                   <div style={V}>

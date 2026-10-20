@@ -43,6 +43,7 @@ function tipoDaChave(e) {
 
 export const DESCRICAO_CHAVES = {
     "ovr3:cesta_padrao": "cesta padrão (RESULTADOS)",
+    "ovr3:cesta_vigencias": "vigências da cesta padrão (RESULTADOS)",
     "ovr3:tipos_ir": "tipo fiscal dos papéis (relatório de IR)",
     "ovr3:ir_ajustes":
       "ajustes do relatório de IR (custos, IRRF, prejuízo anterior)",

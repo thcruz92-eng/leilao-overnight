@@ -7,23 +7,61 @@ import {
 } from "./dados.js";
 import { COR_MIX_FIXO, COR_MIX_NR, MESES, anoMes } from "./tema.js";
 
+/* Cesta padrão com vigência: [{ desde, itens: [{ ativo, valor }] }] em ordem
+   de data. `desde` é a data da compra a partir da qual a versão vale (null =
+   desde o início). Aceita também a cesta antiga, uma lista simples de itens. */
+export function normalizarVigencias(t) {
+  if (!Array.isArray(t) || t.length === 0) return [];
+  if (!Array.isArray(t[0]?.itens))
+    return [
+      {
+        desde: null,
+        itens: t,
+      },
+    ];
+  return t
+    .filter((v) => v && Array.isArray(v.itens))
+    .map((v) => ({
+      desde: Number.isFinite(v.desde) ? v.desde : null,
+      itens: v.itens,
+    }))
+    .sort((a, b) => (a.desde ?? -1 / 0) - (b.desde ?? -1 / 0));
+}
+
+/* versão da cesta que vale para a compra feita em `ts` */
+export function vigenciaEm(versoes, ts) {
+  let v = null;
+  for (let x of versoes) (x.desde ?? -1 / 0) <= ts && (v = x);
+  return v;
+}
+
+/* Curva do Overnight padrão: em cada noite, compra no fechamento os papéis
+   da cesta que valia na data da compra e vende na abertura seguinte.
+   t: lista de itens (cesta única) ou lista de vigências. */
 export function curvaCarteira(e, t, r, n, a = () => LOTE_PADRAO) {
-  let o = (t || []).filter((c) => c && c.ativo && c.valor > 0);
-  if (o.length === 0) return [];
-  let i = o.map((c) => ({
-      ...c,
-      s: serieEncadeada(e, c.ativo, r, n),
-    })),
+  let versoes = normalizarVigencias(t).map((v) => ({
+    ...v,
+    itens: v.itens.filter((c) => c && c.ativo && c.valor > 0),
+  }));
+  if (!versoes.some((v) => v.itens.length)) return [];
+  let series = new Map(),
+    serie = (ativo) => (
+      series.has(ativo) || series.set(ativo, serieEncadeada(e, ativo, r, n)),
+      series.get(ativo)
+    ),
     s = (n || 0) / 100,
     l = [];
-  for (let c of e.dates) {
+  for (let k = 0; k < e.dates.length; k++) {
+    let c = e.dates[k],
+      v = vigenciaEm(versoes, k > 0 ? e.dates[k - 1] : c);
+    if (!v || v.itens.length === 0) continue;
     let u = 0,
       f = 0,
       p = 0,
       h = 0,
       g = [];
-    for (let m of i) {
-      let x = m.s.linhas.get(c);
+    for (let m of v.itens) {
+      let x = serie(m.ativo).linhas.get(c);
       if (!x || !(x.fechAnt > 0)) continue;
       let y = a(m.ativo) > 0 ? a(m.ativo) : LOTE_PADRAO,
         S = lotesPara(m.valor, x.fechAnt, y) * y;

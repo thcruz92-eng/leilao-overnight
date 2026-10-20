@@ -26,6 +26,7 @@ Depois de alterar o código, rode `npm run build` e faça commit dos dois:
 | `src/acompanhamento.js` | cálculos dos itens acompanhados |
 | `src/swing.js` | regra do SWING: sinais, operações, alvo/stop e histórico |
 | `src/swing.jsx` | tela SWING |
+| `src/cesta.jsx` | vigências da cesta do Overnight padrão |
 | `src/navegacao.jsx` | cabeçalho, abas e sub-abas |
 | `src/graficos.jsx` | peças dos gráficos (eixos, tooltip, hastes, imagem) |
 | `src/relatorios.js` | exportações (Excel, CSV, PNG) |
