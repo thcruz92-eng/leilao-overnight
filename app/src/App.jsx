@@ -110,6 +110,7 @@ import {
 } from "./relatorios.js";
 import { AbaSwing } from "./swing.jsx";
 import { VigenciasCesta } from "./cesta.jsx";
+import { OrdensLeilao } from "./ordens.jsx";
 import {
   BotaoImagem,
   CURSOR,
@@ -187,6 +188,16 @@ function sanearConfig(e) {
   for (let r of ["topN", "queda", "normal", "janela"]) t[r] = Math.round(t[r]);
   return t;
 }
+
+// cesta do Overnight padrão que passou a valer em 20/10/2026
+const CESTA_NOVA = {
+  chave: "ovr3:migr_cesta_20261020",
+  desde: Date.UTC(2026, 9, 20),
+  itens: [
+    { ativo: "MGLU3", valor: 160000 },
+    { ativo: "EMBJ3", valor: 40000 },
+  ],
+};
 
 export function App() {
   let e = useRef(new Map()),
@@ -596,21 +607,41 @@ export function App() {
           );
       } catch {}
       try {
-        let W = await window.storage.get("ovr3:cesta_vigencias"),
-          Wv = W?.value ? normalizarVigencias(JSON.parse(W.value)) : [];
-        if (Wv.length) _k(Wv);
-        else {
-          let D = await window.storage.get("ovr3:cesta_padrao"),
-            V = D?.value ? JSON.parse(D.value) : null;
+        // window.storage.get lança erro quando a chave não existe
+        let ler = async (D) => {
+            try {
+              return (await window.storage.get(D))?.value ?? null;
+            } catch {
+              return null;
+            }
+          },
+          W = await ler("ovr3:cesta_vigencias"),
+          Wv = W ? normalizarVigencias(JSON.parse(W)) : [];
+        if (!Wv.length) {
+          let D = await ler("ovr3:cesta_padrao"),
+            V = D ? JSON.parse(D) : null;
           Array.isArray(V) &&
             V.length &&
-            _k([
+            (Wv = [
               {
                 desde: null,
                 itens: V,
               },
             ]);
         }
+        // Overnight padrão novo a partir de 20/10/2026 (aplicado uma vez só)
+        if (!(await ler(CESTA_NOVA.chave))) {
+          let base = Wv.length ? Wv : Vg;
+          ((Wv = normalizarVigencias([
+            ...base.filter((le) => le.desde !== CESTA_NOVA.desde),
+            {
+              desde: CESTA_NOVA.desde,
+              itens: CESTA_NOVA.itens,
+            },
+          ])),
+            salvarVigencias(Wv),
+            window.storage.set(CESTA_NOVA.chave, "1").catch(() => {}));
+        } else Wv.length && _k(Wv);
       } catch {}
       try {
         let D = await window.storage.get("ovr3:estr_operar"),
@@ -4517,6 +4548,55 @@ export function App() {
                         </div>
                       )}
                     </section>
+                    {(() => {
+                      // uma linha por papel: cesta do Overnight padrão que
+                      // vale na data + papéis das estratégias seguidas
+                      let porAtivo = new Map(),
+                        itensDoDia = Ji.flatMap((Oe) => Oe.itens),
+                        precoDe = (Oe) => {
+                          let ke = itensDoDia.find((He) => He.ativo === Oe);
+                          if (ke?.preco > 0) return ke.preco;
+                          let He = (_e.byTicker.get(Oe) || []).find(
+                            (Mt) => Mt.ts === fe,
+                          );
+                          return He?.fech > 0 ? He.fech : null;
+                        },
+                        add = (Oe, ke) => {
+                          let He = porAtivo.get(Oe) ?? {
+                            ativo: Oe,
+                            preco: precoDe(Oe),
+                            lote: Nl[Oe] ?? LOTE_PADRAO,
+                            provisorio: Ph(fe),
+                            origens: [],
+                          };
+                          (He.origens.push(ke), porAtivo.set(Oe, He));
+                        };
+                      for (let Oe of vigenciaEm(Vg, fe)?.itens ?? [])
+                        Oe.valor > 0 &&
+                          add(Oe.ativo, {
+                            nome: "Overnight padrão",
+                            cor: tema.amber,
+                            valor: Oe.valor,
+                          });
+                      for (let Oe of Ji)
+                        if (!Oe.intraday)
+                          for (let ke of Oe.itens) {
+                            let He = ne(V(Oe.id, ke.ativo));
+                            He > 0 &&
+                              add(ke.ativo, {
+                                nome: Oe.nome,
+                                cor: Oe.cor,
+                                valor: He,
+                              });
+                          }
+                      return (
+                        <OrdensLeilao
+                          linhas={Array.from(porAtivo.values())}
+                          dataTxt={ve(fe)}
+                          provisorio={Ph(fe)}
+                        />
+                      );
+                    })()}
                     {Ji.map((Oe) => {
                       if (Oe.intraday)
                         return (
@@ -10975,7 +11055,7 @@ export function App() {
                       <tbody>
                         {De(
                           "OPERAR",
-                          "O que fazer hoje: a carteira da noite pronta para virar ordem, e o ranking do dia com alocação.",
+                          "O que fazer hoje: as ordens do leilão de fechamento linha a linha (Overnight padrão + estratégias seguidas, com quantidade e preço da ordem), a carteira da noite e o ranking do dia com alocação.",
                         )}
                         {De(
                           "ESTRATÉGIAS",
@@ -11298,7 +11378,7 @@ export function App() {
                       <tbody>
                         {De(
                           "OPERAR · EXECUTAR",
-                          "A carteira da noite, pronta para virar ordem. Você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app converte valor em lotes, avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
+                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço. Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
                         )}
                         {De(
                           "OPERAR · RANKING E ALOCAÇÃO",
