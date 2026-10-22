@@ -18,7 +18,7 @@ export function baixarOrdensPNG(rows, { titulo, subtitulo, arquivo }) {
       { t: "QUANTIDADE", w: 130, a: "right", v: (r) => (r.qtd > 0 ? fmtNum(r.qtd) : "—"), f: "700 17px" },
       { t: "PREÇO DA ORDEM", w: 160, a: "right", v: (r) => (r.ordem ? "R$ " + numBR(r.ordem) : "—"), f: "700 17px", c: tema.up },
       { t: "VALOR", w: 140, a: "right", v: (r) => "R$ " + fmtNum(r.valor) },
-      { t: "DE ONDE VEM", w: 300, a: "left", v: (r) => r.origens.map((o) => o.nome).join(" + "), f: "400 13px", c: tema.dim },
+      { t: "DE ONDE VEM", w: 300, a: "left", v: (r) => r.origens.map((o) => o.nome).join(" + ") + (r.reforco ? " · ★ MIX também apontou" : ""), f: "400 13px", c: tema.dim },
     ],
     pad = 28,
     lh = 44,
@@ -265,6 +265,9 @@ export function OrdensLeilao({ linhas, dataTxt, dataIso, provisorio, onImagem })
                   <td style={{ ...td, color: tema.dim }}>{r.qtd > 0 ? `R$ ${fmtNum(r.total, 2)}` : "—"}</td>
                   <td style={{ ...td, color: tema.dim }}>{r.qtd > 0 ? `R$ ${fmtNum(r.reserva, 2)}` : "—"}</td>
                   <td style={{ ...td, textAlign: "left", fontFamily: tema.sans, fontSize: 12 }}>
+                    {r.reforco && (
+                      <div style={{ color: tema.up, fontSize: 11.5, marginBottom: 3 }}>★ {r.reforco}</div>
+                    )}
                     {r.origens.map((o, i) => (
                       <span key={i} style={{ color: o.cor, marginRight: 8 }}>
                         ● {o.nome}
