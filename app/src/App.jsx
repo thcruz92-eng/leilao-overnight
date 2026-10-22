@@ -214,39 +214,42 @@ export function App() {
     [m, x] = useState(false),
     [y, b] = useState(null),
     [S, T] = useState(false),
+    // abas: OPERAR (executar) · RESULTADOS (realizado | teórico) · SWING ·
+    // ESTRATÉGIAS (sinais | ranking | mês a mês | base) · CONFIGURAÇÕES · READ ME
     [A, w] = useState("operar"),
-    [_, E] = useState("executar"),
+    [_, E] = useState("acompanhar"),
     [P, O] = useState("estrategias"),
     R =
       A === "operar"
-        ? _
+        ? "executar"
         : A === "estrategias"
           ? P
           : A === "resultados"
-            ? "acompanhar"
+            ? _
             : A === "swing"
               ? "swing"
               : A === "config"
-              ? "config"
-              : A === "readme"
-                ? "readme"
-                : "base",
+                ? "config"
+                : "readme",
     M = useCallback((D) => {
-      D === "executar" || D === "hoje"
-        ? (w("operar"), E(D))
-        : D === "estrategias" || D === "comparar" || D === "mesames"
-          ? (w("estrategias"), O(D))
-          : w(
-              D === "acompanhar" || D === "resultados"
-                ? "resultados"
-                : D === "swing"
+      D === "executar" || D === "operar"
+        ? w("operar")
+        : D === "acompanhar" || D === "resultados" || D === "comparar"
+          ? (w("resultados"), E(D === "comparar" ? "comparar" : "acompanhar"))
+          : D === "estrategias" ||
+              D === "hoje" ||
+              D === "mesames" ||
+              D === "base"
+            ? (w("estrategias"), O(D))
+            : w(
+                D === "swing"
                   ? "swing"
-                  : D === "readme" || D === "manual"
-                  ? "readme"
                   : D === "config"
                     ? "config"
-                    : "base",
-            );
+                    : D === "readme" || D === "manual"
+                      ? "readme"
+                      : "operar",
+              );
     }, []),
     [H, Y] = useState(CONFIG_PADRAO),
     G = useCallback((D) => {
@@ -1919,7 +1922,7 @@ export function App() {
     }, [$d, Wd, No]);
   // seletor de estratégias do OPERAR: fechado mostra só as seguidas
   let [seletorAberto, abrirSeletor] = useState(false);
-  // largura dos gráficos de RESULTADOS e COMPARAR, para o modo em hastes
+  // largura dos gráficos do REALIZADO e do TEÓRICO, para o modo em hastes
   let [refGrafResultados, largGrafResultados] = useLargura(),
     [refGrafComparar, largGrafComparar] = useLargura();
   // navegação pelo endereço: #operar, #comparar, #acompanhar… (o botão
@@ -2043,7 +2046,41 @@ export function App() {
             </div>
           </div>
         )}
-        {!n && _e && (A === "operar" || A === "estrategias") && (
+        {!n && (A === "resultados" || A === "estrategias") && (
+          <div
+            style={{
+              marginBottom: 18,
+            }}
+          >
+            {A === "resultados" && (
+              <SubAbas
+                valor={_}
+                aoTrocar={E}
+                opcoes={[
+                  ["acompanhar", "Realizado"],
+                  ["comparar", "Teórico"],
+                ]}
+              />
+            )}
+            {A === "estrategias" && (
+              <SubAbas
+                valor={P}
+                aoTrocar={O}
+                opcoes={[
+                  ["estrategias", "Sinais do dia"],
+                  ["hoje", "Ranking e alocação"],
+                  ["mesames", "Mês a mês"],
+                  ["base", "Base"],
+                ]}
+              />
+            )}
+          </div>
+        )}
+        {!n &&
+          _e &&
+          ["executar", "hoje", "estrategias", "comparar", "mesames"].includes(
+            R,
+          ) && (
           <section
             style={{
               background: tema.panel,
@@ -2121,35 +2158,6 @@ export function App() {
               ⚙ ajustar
             </button>
           </section>
-        )}
-        {!n && _e && (A === "operar" || A === "estrategias") && (
-          <div
-            style={{
-              marginBottom: 18,
-            }}
-          >
-            {A === "operar" && (
-              <SubAbas
-                valor={_}
-                aoTrocar={E}
-                opcoes={[
-                  ["executar", "Executar"],
-                  ["hoje", "Ranking e alocação"],
-                ]}
-              />
-            )}
-            {A === "estrategias" && (
-              <SubAbas
-                valor={P}
-                aoTrocar={O}
-                opcoes={[
-                  ["estrategias", "Sinais do dia"],
-                  ["comparar", "Comparar"],
-                  ["mesames", "Mês a mês"],
-                ]}
-              />
-            )}
-          </div>
         )}
         {!n && A !== "config" && A !== "readme" && (
           <div
@@ -5386,7 +5394,7 @@ export function App() {
                         }}
                       >
                         {
-                          '"Papéis por estratégia" é o mesmo número usado na aba ESTRATÉGIAS e no COMPARAR — o que você segue e o que você mede precisam ser a mesma coisa. O acumulado supõe o mesmo valor em cada papel da lista. Cada papel começa com R$ '
+                          '"Papéis por estratégia" é o mesmo número usado na aba ESTRATÉGIAS e no TEÓRICO — o que você segue e o que você mede precisam ser a mesma coisa. O acumulado supõe o mesmo valor em cada papel da lista. Cada papel começa com R$ '
                         }
                         {fmtNum(VALOR_PADRAO)}; para mudar, digite no campo do
                         papel e o app converte em ações, sempre em lotes de 100.
@@ -5684,7 +5692,7 @@ export function App() {
                       lineHeight: 1.6,
                     }}
                   >
-                    Período compartilhado com a aba COMPARAR — mudar aqui também
+                    Período compartilhado com a aba RESULTADOS · TEÓRICO — mudar aqui também
                     muda lá, e vice-versa.
                     <b
                       style={{
@@ -10722,7 +10730,7 @@ export function App() {
                   >
                     Cada número grava ao sair do campo e segue para os outros
                     aparelhos pela nuvem. Depois de mudar algo aqui, as listas
-                    do OPERAR se refazem sozinhas; no COMPARAR, aperte “rodar
+                    do OPERAR se refazem sozinhas; no TEÓRICO, aperte “rodar
                     comparação” de novo.
                   </div>
                 </div>
@@ -10787,7 +10795,7 @@ export function App() {
                   <div style={ne}>
                     {le(
                       "Papéis por estratégia",
-                      "Quantos papéis cada uma das oito vota. Vale também no COMPARAR e no SINAIS DO DIA.",
+                      "Quantos papéis cada uma das oito vota. Vale também no TEÓRICO e no SINAIS DO DIA.",
                       ye("topN", "papéis", 90),
                     )}
                     {le(
@@ -10873,7 +10881,7 @@ export function App() {
                         R$ 70/noite · tombo −8,0%
                       </div>
                       <div>
-                        A série “MIX sem repetir · sem termômetro” no COMPARAR
+                        A série “MIX sem repetir · sem termômetro” no TEÓRICO
                         acompanha essa diferença daqui para a frente.
                       </div>
                     </>,
@@ -10890,7 +10898,7 @@ export function App() {
                     }}
                   >
                     {V(
-                      "Estratégias no COMPARAR e no MÊS A MÊS",
+                      "Estratégias no TEÓRICO e no MÊS A MÊS",
                       "Desmarque o que você não quer ver nas listas de comparação. Esconder não tira nada do cálculo: as oito continuam votando no MIX e o backtest continua rodando todas.",
                     )}
                     <div
@@ -11042,7 +11050,7 @@ export function App() {
                   <div style={ne}>
                     {le(
                       "Janela (pregões)",
-                      "Vale só para a tabela RANKING E ALOCAÇÃO do OPERAR e para a MÉDIA e a MÉDIA APARADA. As outras estratégias têm janela própria no indicador.",
+                      "Vale só para a tabela RANKING E ALOCAÇÃO (aba ESTRATÉGIAS) e para a MÉDIA e a MÉDIA APARADA. As outras estratégias têm janela própria no indicador.",
                       ye("janela", "pregões", 90),
                     )}
                   </div>
@@ -11260,27 +11268,23 @@ export function App() {
                       <tbody>
                         {De(
                           "OPERAR",
-                          "O que fazer hoje: as ordens do leilão de fechamento linha a linha (Overnight padrão + estratégias seguidas, com quantidade e preço da ordem), a carteira da noite e o ranking do dia com alocação.",
+                          "O que fazer hoje: as ordens do leilão de fechamento linha a linha (Overnight padrão + estratégias seguidas, com quantidade e preço da ordem) e a carteira da noite.",
                         )}
                         {De(
-                          "ESTRATÉGIAS",
-                          "Por que, e quanto rendeu: sinais do dia, backtest comparado, matriz mês a mês.",
+                          "RESULTADOS",
+                          "Quanto rendeu. REALIZADO: o que você operou de verdade, grupo a grupo, contra a cesta padrão. TEÓRICO: todas as estratégias, a cesta e os grupos no mesmo gráfico, com estatísticas, benchmarks e exportação.",
                         )}
                         {De(
                           "SWING",
                           "Compra para segurar dias/semanas: o sinal do dia com entrada, alvo e stop, as operações em andamento e o histórico do sinal.",
                         )}
                         {De(
-                          "RESULTADOS",
-                          "O que você de fato operou: grupos lançados por você, contra a cesta padrão.",
-                        )}
-                        {De(
-                          "BASE",
-                          "Os dados crus: pregões por ativo, eventos descartados, upload e download da base.",
+                          "ESTRATÉGIAS",
+                          "Por que: sinais do dia, ranking e alocação, matriz mês a mês e a BASE (os dados crus: pregões por ativo, eventos descartados, upload e download).",
                         )}
                         {De(
                           "CONFIGURAÇÕES",
-                          "Os números que valem para o app inteiro — piso de liquidez, taxa, preço mínimo, impacto, papéis por estratégia, termômetro do MIX, janela do ranking — e quais séries aparecem no COMPARAR e no MÊS A MÊS.",
+                          "Os números que valem para o app inteiro — piso de liquidez, taxa, preço mínimo, impacto, papéis por estratégia, termômetro do MIX, janela do ranking — e quais séries aparecem no TEÓRICO e no MÊS A MÊS.",
                         )}
                         {De("READ ME", "Esta aba.")}
                       </tbody>
@@ -11321,7 +11325,7 @@ export function App() {
                   <div style={V}>
                     <Pe>Upload manual</Pe>
                     {
-                      " (aba BASE) aceita o CSV consolidado, com 7 ou 8 colunas separadas por ponto e vírgula. O merge não apaga nada: data nova entra, data que já existia é revisada se o arquivo trouxer valor diferente. Lembre que o que o COTAHIST cobrir será sobrescrito na próxima sincronização — o oficial ganha."
+                      " (aba ESTRATÉGIAS · BASE) aceita o CSV consolidado, com 7 ou 8 colunas separadas por ponto e vírgula. O merge não apaga nada: data nova entra, data que já existia é revisada se o arquivo trouxer valor diferente. Lembre que o que o COTAHIST cobrir será sobrescrito na próxima sincronização — o oficial ganha."
                     }
                   </div>
                   <div style={V}>
@@ -11344,7 +11348,7 @@ export function App() {
                         )}
                         {De(
                           "evento societário",
-                          "Gap acima de 20%, ou acima de 12% quando o NÍVEL de preço se desloca junto, é split, grupamento ou bonificação — não oportunidade. A noite inteira é descartada, e a aba BASE lista os casos para você conferir.",
+                          "Gap acima de 20%, ou acima de 12% quando o NÍVEL de preço se desloca junto, é split, grupamento ou bonificação — não oportunidade. A noite inteira é descartada, e a aba ESTRATÉGIAS · BASE lista os casos para você conferir.",
                         )}
                         {De(
                           "emenda de ticker",
@@ -11352,7 +11356,7 @@ export function App() {
                         )}
                         {De(
                           "fora do universo",
-                          "IBOV11 não entra em estratégia nenhuma: na base ele é o próprio índice, com abertura, máxima, mínima e fechamento iguais — não é papel que se compra no leilão. Continua visível na aba BASE.",
+                          "IBOV11 não entra em estratégia nenhuma: na base ele é o próprio índice, com abertura, máxima, mínima e fechamento iguais — não é papel que se compra no leilão. Continua visível na aba ESTRATÉGIAS · BASE.",
                         )}
                       </tbody>
                     </table>
@@ -11365,8 +11369,8 @@ export function App() {
                     }}
                   >
                     A emenda vale para o motor das estratégias e para a cesta; a
-                    aba BASE continua mostrando cada ticker como ele é. Dá para
-                    desligar no seletor da aba BASE.
+                    aba ESTRATÉGIAS · BASE continua mostrando cada ticker como ele é. Dá para
+                    desligar no seletor da aba ESTRATÉGIAS · BASE.
                   </div>
                 </Secao>
                 <Secao
@@ -11490,14 +11494,14 @@ export function App() {
                         )}
                         {De(
                           "Papéis por estratégia",
-                          "Quantos papéis cada estratégia compra por noite — e, nas oito do júri, quantos votos cada uma dá no MIX. Vale no OPERAR, no SINAIS DO DIA, no COMPARAR e no MÊS A MÊS, inclusive para as três do motor de janela. Não vale para a cesta padrão (que usa a sua lista) nem para o MIX (que usa o termômetro).",
+                          "Quantos papéis cada estratégia compra por noite — e, nas oito do júri, quantos votos cada uma dá no MIX. Vale no OPERAR, no SINAIS DO DIA, no TEÓRICO e no MÊS A MÊS, inclusive para as três do motor de janela. Não vale para a cesta padrão (que usa a sua lista) nem para o MIX (que usa o termômetro).",
                         )}
                         {De(
                           "Termômetro (dia de queda / outros dias / limiar)",
                           "Quantos papéis o MIX e o MIX sem repetir levam em cada noite. “Outros dias” é também o tamanho da lista do Consenso no OPERAR e o número fixo da régua “MIX sem repetir · sem termômetro”.",
                         )}
                         {De(
-                          "Estratégias no COMPARAR e no MÊS A MÊS",
+                          "Estratégias no TEÓRICO e no MÊS A MÊS",
                           "Só o que aparece nas listas de comparação. Esconder não tira nada do cálculo: as oito continuam votando no MIX.",
                         )}
                         {De(
@@ -11545,12 +11549,12 @@ export function App() {
                       <tbody>
                         {De(
                           "Período (de / até)",
-                          "COMPARAR e MÊS A MÊS",
+                          "TEÓRICO e MÊS A MÊS",
                           "Só o recorte do que já foi calculado: a rodada cobre a base inteira. Depois de mudar algo em CONFIGURAÇÕES, aperte “rodar comparação” de novo — o gráfico fica congelado na última rodada de propósito, e um aviso aparece quando ela ficou velha.",
                         )}
                         {De(
                           "Top N e ordenar por",
-                          "OPERAR · RANKING E ALOCAÇÃO",
+                          "ESTRATÉGIAS · RANKING E ALOCAÇÃO",
                           "Só a tabela do ranking e a alocação sugerida. Não mexe em estratégia nenhuma.",
                         )}
                         {De(
@@ -11586,31 +11590,31 @@ export function App() {
                           "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço, e o “⬇ imagem” baixa a tabela em PNG e já lança cada linha como ★ acompanhar no grupo Entradas reais da aba RESULTADOS (baixar de novo no mesmo dia atualiza as linhas, não duplica). Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Os papéis do Overnight padrão não entram como sugestão do MIX: se o MIX apontar um deles, ele fica fora, entra o próximo da lista, e a linha do Overnight padrão ganha um ★ dizendo que o MIX também apontou o papel — reforço da entrada. Também não bloqueiam o MIX do dia seguinte; só os do MIX contam. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
                         )}
                         {De(
-                          "OPERAR · RANKING E ALOCAÇÃO",
-                          "O ranking do dia pelo motor de janela — média, média aparada e taxa de acerto na janela de CONFIGURAÇÕES — com a alocação sugerida por impacto. É a visão “tabela”, boa para conferir um papel específico.",
+                          "RESULTADOS · REALIZADO",
+                          "O que você operou de verdade: cada grupo lançado, com valor investido e preço de entrada, o realizado na abertura, e a comparação com a cesta padrão no mesmo período. Em cada cesta do dia dá para trocar o papel (✎ ao lado do código — o preço de entrada passa a ser o fechamento do papel novo naquele pregão e a quantidade é refeita pelo valor), mudar valor, ações e lote, ou tirar a compra (×).",
                         )}
                         {De(
-                          "ESTRATÉGIAS · SINAIS DO DIA",
-                          "O que cada estratégia aponta hoje, com o placar de cada papel e o motivo, o termômetro do pregão e o botão que roda o backtest de todas.",
-                        )}
-                        {De(
-                          "ESTRATÉGIAS · COMPARAR",
-                          "Todas as curvas no mesmo eixo e no mesmo período, a tabela de estatísticas, a contribuição de cada ativo (com o ▼ de liquidez de hoje), o gerenciador de benchmarks e a exportação das operações em Excel.",
-                        )}
-                        {De(
-                          "ESTRATÉGIAS · MÊS A MÊS",
-                          "A matriz ano × mês de qualquer fonte — a sua carteira ou qualquer estratégia — com quantos quadros você quiser empilhar.",
+                          "RESULTADOS · TEÓRICO",
+                          "O teórico: todas as estratégias, a cesta padrão e os seus grupos no mesmo eixo e no mesmo período, a tabela de estatísticas, a contribuição de cada ativo (com o ▼ de liquidez de hoje), o gerenciador de benchmarks e a exportação das operações em Excel.",
                         )}
                         {De(
                           "SWING",
                           "O sinal “demanda retraída em empresa lucrativa”: quem deu sinal no último pregão (entrada, alvo, stop e prazo), as operações em andamento com o preço entre o stop e o alvo, o radar dos papéis a uma condição do sinal e o histórico com gráfico de cada operação. Os botões Padrão e Curto trocam o alvo, o stop e o prazo.",
                         )}
                         {De(
-                          "RESULTADOS",
-                          "O que você operou de verdade: cada grupo lançado, com valor investido e preço de entrada, o realizado na abertura, e a comparação com a cesta padrão no mesmo período. Em cada cesta do dia dá para trocar o papel (✎ ao lado do código — o preço de entrada passa a ser o fechamento do papel novo naquele pregão e a quantidade é refeita pelo valor), mudar valor, ações e lote, ou tirar a compra (×).",
+                          "ESTRATÉGIAS · SINAIS DO DIA",
+                          "O que cada estratégia aponta hoje, com o placar de cada papel e o motivo, o termômetro do pregão e o botão que roda o backtest de todas.",
                         )}
                         {De(
-                          "BASE",
+                          "ESTRATÉGIAS · RANKING E ALOCAÇÃO",
+                          "O ranking do dia pelo motor de janela — média, média aparada e taxa de acerto na janela de CONFIGURAÇÕES — com a alocação sugerida por impacto. É a visão “tabela”, boa para conferir um papel específico.",
+                        )}
+                        {De(
+                          "ESTRATÉGIAS · MÊS A MÊS",
+                          "A matriz ano × mês de qualquer fonte — a sua carteira ou qualquer estratégia — com quantos quadros você quiser empilhar.",
+                        )}
+                        {De(
+                          "ESTRATÉGIAS · BASE",
                           "Quantos pregões cada ativo tem, os eventos societários descartados, a lista de exclusões, o upload de CSV, o download do consolidado e o seletor da emenda de ticker.",
                         )}
                         {De(
@@ -11903,7 +11907,7 @@ export function App() {
                         )}
                         {De(
                           "planilha sua",
-                          "Arquivo .xlsx, .xls ou .csv com duas colunas: data e resultado do dia, com ou sem símbolo de %. Sobe na aba COMPARAR, em “Benchmarks personalizados”; você dá um nome e ele fica salvo neste navegador, aparecendo como opção nos gráficos e como chip no mês a mês. É o caminho para comparar com CDI, com a carteira de um fundo, ou com o seu próprio extrato.",
+                          "Arquivo .xlsx, .xls ou .csv com duas colunas: data e resultado do dia, com ou sem símbolo de %. Sobe na aba RESULTADOS · TEÓRICO, em “Benchmarks personalizados”; você dá um nome e ele fica salvo neste navegador, aparecendo como opção nos gráficos e como chip no mês a mês. É o caminho para comparar com CDI, com a carteira de um fundo, ou com o seu próprio extrato.",
                         )}
                       </tbody>
                     </table>
@@ -11916,7 +11920,7 @@ export function App() {
                   >
                     <Pe>Onde eles aparecem:</Pe>
                     {
-                      " como série no gráfico da aba COMPARAR, como coluna BENCH da matriz mês a mês (valendo para todos os quadros) e como linha de comparação nos grupos do RESULTADOS."
+                      " como série no gráfico da aba RESULTADOS · TEÓRICO, como coluna BENCH da matriz mês a mês (valendo para todos os quadros) e como linha de comparação nos grupos do RESULTADOS."
                     }
                   </div>
                   <div
@@ -11946,7 +11950,7 @@ export function App() {
                   onToggle={Ia}
                 >
                   <div style={V}>
-                    <Pe>1. A carteira (COMPARAR e MÊS A MÊS).</Pe>
+                    <Pe>1. A carteira (TEÓRICO e MÊS A MÊS).</Pe>
                     {
                       " Uma lista de ativo + valor em R$, montada no editor no topo dessas abas. Responde “e se eu comprasse esses papéis toda noite, com esses valores?”. O peso de cada papel é o valor que você digitou, com o lote arredondado como na vida real — é a única série do app que não usa peso igual. Fica salva no navegador."
                     }
@@ -11960,7 +11964,7 @@ export function App() {
                   <div style={V}>
                     <Pe>Trocar os papéis da cesta sem mexer no histórico.</Pe>
                     {
-                      " A cesta tem vigências: cada versão vale para as compras a partir de uma data. Quando o seu Overnight padrão mudar, clique em “+ nova vigência” acima dos ativos, escolha a data da primeira compra com a cesta nova (o padrão é o próximo pregão) e troque os papéis — a versão nova começa como cópia da que valia naquela data. Cada noite usa a cesta que valia na data da compra, então as noites anteriores continuam como estavam, no RESULTADOS, no COMPARAR e no MÊS A MÊS. Clique numa vigência para ver ou corrigir os papéis, a data de início, ou apagar a versão (as noites dela voltam para a cesta anterior). Mexer numa vigência passada muda o histórico daquelas noites — o app avisa."
+                      " A cesta tem vigências: cada versão vale para as compras a partir de uma data. Quando o seu Overnight padrão mudar, clique em “+ nova vigência” acima dos ativos, escolha a data da primeira compra com a cesta nova (o padrão é o próximo pregão) e troque os papéis — a versão nova começa como cópia da que valia naquela data. Cada noite usa a cesta que valia na data da compra, então as noites anteriores continuam como estavam, no RESULTADOS, no TEÓRICO e no MÊS A MÊS. Clique numa vigência para ver ou corrigir os papéis, a data de início, ou apagar a versão (as noites dela voltam para a cesta anterior). Mexer numa vigência passada muda o histórico daquelas noites — o app avisa."
                     }
                   </div>
                   <div style={V}>
@@ -12024,7 +12028,7 @@ export function App() {
                   >
                     <Pe>Vários quadros.</Pe>
                     {
-                      " O botão “adicionar quadro” empilha quantas matrizes você quiser, e cada uma escolhe a fonte: a carteira ou qualquer estratégia do app, inclusive as três do motor de janela. As estratégias usam os números de CONFIGURAÇÕES (papéis por estratégia, termômetro, janela e piso), os mesmos do gráfico do COMPARAR. Série escondida em CONFIGURAÇÕES não aparece na lista de fontes. Os quadros ficam salvos neste navegador."
+                      " O botão “adicionar quadro” empilha quantas matrizes você quiser, e cada uma escolhe a fonte: a carteira ou qualquer estratégia do app, inclusive as três do motor de janela. As estratégias usam os números de CONFIGURAÇÕES (papéis por estratégia, termômetro, janela e piso), os mesmos do gráfico do TEÓRICO. Série escondida em CONFIGURAÇÕES não aparece na lista de fontes. Os quadros ficam salvos neste navegador."
                     }
                   </div>
                   <div style={V}>
@@ -12053,7 +12057,7 @@ export function App() {
                   onToggle={Ia}
                 >
                   <div style={V}>
-                    <Pe>Base consolidada (aba BASE).</Pe>
+                    <Pe>Base consolidada (aba ESTRATÉGIAS · BASE).</Pe>
                     {
                       " CSV com a base inteira: ativo, data, abertura, máxima, mínima, fechamento, volume financeiro e quantidade, ordenado por ativo e da data mais nova para a mais antiga. É o arquivo que volta pelo upload, então serve de backup."
                     }
@@ -12061,11 +12065,11 @@ export function App() {
                   <div style={V}>
                     <Pe>Gráficos e quadros em imagem.</Pe>
                     {
-                      " O botão “⬇ imagem” baixa em PNG o quadro do MÊS A MÊS (com as quatro colunas e o total), os gráficos do COMPARAR e do RESULTADOS e o gráfico de operações do SWING, com título, período e legenda."
+                      " O botão “⬇ imagem” baixa em PNG o quadro do MÊS A MÊS (com as quatro colunas e o total), os gráficos do TEÓRICO e do REALIZADO e o gráfico de operações do SWING, com título, período e legenda."
                     }
                   </div>
                   <div style={V}>
-                    <Pe>Operações em Excel (aba COMPARAR).</Pe>
+                    <Pe>Operações em Excel (aba RESULTADOS · TEÓRICO).</Pe>
                     {" Uma planilha com "}
                     <Pe>uma aba por estratégia</Pe>
                     {

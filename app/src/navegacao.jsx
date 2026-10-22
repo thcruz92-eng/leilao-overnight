@@ -5,19 +5,18 @@ import { tema } from "./tema.js";
 export const ABAS = [
   { id: "operar", rotulo: "Operar", curto: "Operar", icone: "alvo" },
   {
-    id: "estrategias",
-    rotulo: "Estratégias",
-    curto: "Estratégias",
-    icone: "camadas",
-  },
-  { id: "swing", rotulo: "Swing", curto: "Swing", icone: "onda" },
-  {
     id: "resultados",
     rotulo: "Resultados",
     curto: "Resultados",
     icone: "curva",
   },
-  { id: "base", rotulo: "Base", curto: "Base", icone: "banco" },
+  { id: "swing", rotulo: "Swing", curto: "Swing", icone: "onda" },
+  {
+    id: "estrategias",
+    rotulo: "Estratégias",
+    curto: "Estratégias",
+    icone: "camadas",
+  },
   {
     id: "config",
     rotulo: "Configurações",
@@ -194,7 +193,7 @@ export function AbasCelular({ aba, aoTrocar }) {
   );
 }
 
-/* Sub-abas (EXECUTAR / RANKING…, SINAIS / COMPARAR / MÊS A MÊS). */
+/* Sub-abas (REALIZADO / TEÓRICO, SINAIS / RANKING / MÊS A MÊS / BASE). */
 export function SubAbas({ opcoes, valor, aoTrocar }) {
   return (
     <div className="subabas" role="tablist">
@@ -267,7 +266,7 @@ export const CSS_GLOBAL = `
     .so-largo{display:none}
     .cabecalho-extras{gap:6px}
     .conteudo{padding:16px 12px calc(92px + env(safe-area-inset-bottom))}
-    .abas-celular{display:grid;grid-template-columns:repeat(7,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;
+    .abas-celular{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:45;
       background:rgba(15,19,26,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
       border-top:1px solid ${tema.line};padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
     .abas-celular button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;border:none;background:none;
