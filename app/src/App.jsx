@@ -189,12 +189,15 @@ function sanearConfig(e) {
   return t;
 }
 
+// correção: na cesta de 20/10/2026, MGLU3 é R$ 165 mil (estava 160 mil)
+const CESTA_MGLU_165 = "ovr3:migr_cesta_20261020_mglu165";
+
 // cesta do Overnight padrão que passou a valer em 20/10/2026
 const CESTA_NOVA = {
   chave: "ovr3:migr_cesta_20261020",
   desde: Date.UTC(2026, 9, 20),
   itens: [
-    { ativo: "MGLU3", valor: 160000 },
+    { ativo: "MGLU3", valor: 165000 },
     { ativo: "EMBJ3", valor: 40000 },
   ],
 };
@@ -544,6 +547,7 @@ export function App() {
       },
     ]),
     [Vs, Ws] = useState(null),
+    [trocaId, setTrocaId] = useState(null),
     Ll = Vg[Vg.length - 1].itens,
     [Eh, Ak] = useState("periodo"),
     [Iy, Ek] = useState(null),
@@ -630,6 +634,7 @@ export function App() {
             ]);
         }
         // Overnight padrão novo a partir de 20/10/2026 (aplicado uma vez só)
+        let mudou = false;
         if (!(await ler(CESTA_NOVA.chave))) {
           let base = Wv.length ? Wv : Vg;
           ((Wv = normalizarVigencias([
@@ -639,9 +644,30 @@ export function App() {
               itens: CESTA_NOVA.itens,
             },
           ])),
-            salvarVigencias(Wv),
+            (mudou = true),
             window.storage.set(CESTA_NOVA.chave, "1").catch(() => {}));
-        } else Wv.length && _k(Wv);
+        }
+        if (!(await ler(CESTA_MGLU_165))) {
+          let base = Wv.length ? Wv : Vg;
+          ((Wv = base.map((le) =>
+            le.desde === CESTA_NOVA.desde
+              ? {
+                  ...le,
+                  itens: le.itens.map((ye) =>
+                    ye.ativo === "MGLU3"
+                      ? {
+                          ...ye,
+                          valor: 165000,
+                        }
+                      : ye,
+                  ),
+                }
+              : le,
+          )),
+            (mudou = true),
+            window.storage.set(CESTA_MGLU_165, "1").catch(() => {}));
+        }
+        mudou ? salvarVigencias(Wv) : Wv.length && _k(Wv);
       } catch {}
       try {
         let D = await window.storage.get("ovr3:estr_operar"),
@@ -720,6 +746,68 @@ export function App() {
           ve
         );
       });
+    }, []),
+    // ⬇ imagem do OPERAR: cada linha vira um ★ acompanhar no grupo
+    // Entradas reais (uma linha por papel, valores somados)
+    lancarReais = useCallback((D, V) => {
+      (_h((ne) => {
+        if (ne.some((le) => le.id === "reais")) return ne;
+        let le = [
+          ...ne,
+          {
+            id: "reais",
+            nome: "Entradas reais",
+            tipo: "reais",
+          },
+        ];
+        return (
+          window.storage
+            .set("ovr3:acomp_grupos", JSON.stringify(le))
+            .catch(() => {}),
+          le
+        );
+      }),
+        Yi((ne) => {
+          let le = ne.slice();
+          D.forEach((ye, Ke) => {
+            let Xe = {
+                ticker: ye.ativo,
+                estrategiaId: ye.origens.map((De) => De.id).join("+"),
+                estrategiaNome: ye.origens.map((De) => De.nome).join(" + "),
+                dataEnvio: V,
+                grupoId: "reais",
+                valorInvestido: ye.valor,
+                qtd: ye.qtd,
+              },
+              De = le.findIndex(
+                (Pe) =>
+                  Pe.ticker === ye.ativo &&
+                  Pe.dataEnvio === V &&
+                  Pe.grupoId === "reais",
+              );
+            De >= 0
+              ? (le[De] = {
+                  ...le[De],
+                  ...Xe,
+                })
+              : le.push({
+                  id: `${ye.ativo}_reais_${V}_${Date.now()}_${Ke}`,
+                  ...Xe,
+                  precoEntrada: ye.preco,
+                  origemPreco: "provisorio",
+                  precoProvisorio: ye.preco,
+                  abertura: null,
+                  origemAbertura: null,
+                });
+          });
+          return (
+            window.storage
+              .set("ovr3:acomp_itens", JSON.stringify(le))
+              .catch(() => {}),
+            le
+          );
+        }));
+      return D.length;
     }, []),
     Ry = useCallback((D) => {
       Sk((V) => {
@@ -1516,7 +1604,12 @@ export function App() {
         ? ""
         : Array.from(
             new Set(
-              di.filter((ne) => ne.dataEnvio === V).map((ne) => ne.ticker),
+              di
+                .filter(
+                  (ne) =>
+                    ne.dataEnvio === V && ne.estrategiaId !== "overnight_padrao",
+                )
+                .map((ne) => ne.ticker),
             ),
           )
             .sort()
@@ -2132,18 +2225,6 @@ export function App() {
                     ? "● cotação de agora"
                     : "● atualizar (fora do pregão)"}
               </button>
-              <button
-                style={{
-                  ...estiloBotao,
-                  color: tema.amber,
-                  borderColor: "rgba(244,183,64,.45)",
-                  background: tema.amberSoft,
-                }}
-                onClick={() => $d()}
-                disabled={m}
-              >
-                {m ? "sincronizando…" : "↻ sincronizar base"}
-              </button>
               <div
                 style={{
                   position: "relative",
@@ -2177,6 +2258,20 @@ export function App() {
                       boxShadow: "0 8px 24px rgba(0,0,0,.45)",
                     }}
                   >
+                    <button
+                      style={{
+                        ...estiloBotao,
+                        border: "none",
+                        textAlign: "left",
+                      }}
+                      onClick={() => {
+                        (jy(false), $d());
+                      }}
+                      disabled={m}
+                      title="baixa de novo a base oficial (COTAHIST) do GitHub — o app já faz isso sozinho ao abrir"
+                    >
+                      {m ? "sincronizando…" : "↻ sincronizar base"}
+                    </button>
                     <button
                       style={{
                         ...estiloBotao,
@@ -4574,6 +4669,7 @@ export function App() {
                       for (let Oe of vigenciaEm(Vg, fe)?.itens ?? [])
                         Oe.valor > 0 &&
                           add(Oe.ativo, {
+                            id: "overnight_padrao",
                             nome: "Overnight padrão",
                             cor: tema.amber,
                             valor: Oe.valor,
@@ -4584,6 +4680,7 @@ export function App() {
                             let He = ne(V(Oe.id, ke.ativo));
                             He > 0 &&
                               add(ke.ativo, {
+                                id: Oe.id,
                                 nome: Oe.nome,
                                 cor: Oe.cor,
                                 valor: He,
@@ -4593,7 +4690,9 @@ export function App() {
                         <OrdensLeilao
                           linhas={Array.from(porAtivo.values())}
                           dataTxt={ve(fe)}
+                          dataIso={new Date(fe).toISOString().slice(0, 10)}
                           provisorio={Ph(fe)}
+                          onImagem={(Oe) => lancarReais(Oe, fe)}
                         />
                       );
                     })()}
@@ -6953,6 +7052,27 @@ export function App() {
             let D = di.filter((de) => !de.grupoId),
               V = (de) => di.filter((Fe) => Fe.grupoId === de),
               ne = (de) => Nl[de] ?? LOTE_PADRAO,
+              // troca o papel do item: preço de entrada do novo papel no
+              // mesmo pregão (o COTAHIST confirma), abertura recalculada
+              trocarPapel = (de, Fe) => {
+                if (!Fe || Fe === de.ticker) return;
+                let Le = (_e.byTicker.get(Fe) || []).find(
+                    (ct) => ct.ts === de.dataEnvio,
+                  ),
+                  ct = Le?.fech > 0 ? Le.fech : null;
+                nu(de.id, {
+                  ticker: Fe,
+                  precoEntrada: ct,
+                  origemPreco: "provisorio",
+                  precoProvisorio: ct,
+                  abertura: null,
+                  origemAbertura: null,
+                  qtd:
+                    de.valorInvestido > 0 && ct > 0
+                      ? (qtdPara(de.valorInvestido, ct, ne(Fe)) ?? 0)
+                      : de.qtd,
+                });
+              },
               le = (de) => resultadoDoItem(de, k, ne(de.ticker)),
               ye = (de, Fe) => {
                 let Le = Fe === "" ? null : Math.max(0, +Fe),
@@ -7373,13 +7493,59 @@ export function App() {
                               style={{
                                 padding: "6px 10px",
                                 fontWeight: 700,
-                                cursor: "pointer",
-                              }}
-                              onClick={() => {
-                                (ui(Fe.ticker), M("base"));
+                                whiteSpace: "nowrap",
                               }}
                             >
-                              {Fe.ticker}
+                              {trocaId === Fe.id ? (
+                                <select
+                                  autoFocus
+                                  defaultValue={Fe.ticker}
+                                  onChange={(Mo) => {
+                                    (trocarPapel(Fe, Mo.target.value),
+                                      setTrocaId(null));
+                                  }}
+                                  onBlur={() => setTrocaId(null)}
+                                  style={{
+                                    ...estiloInput,
+                                    padding: "3px 6px",
+                                  }}
+                                >
+                                  {ql.map((Mo) => (
+                                    <option key={Mo} value={Mo}>
+                                      {Mo}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <>
+                                  <span
+                                    style={{
+                                      cursor: "pointer",
+                                    }}
+                                    title="ver o histórico deste papel na BASE"
+                                    onClick={() => {
+                                      (ui(Fe.ticker), M("base"));
+                                    }}
+                                  >
+                                    {Fe.ticker}
+                                  </span>
+                                  <button
+                                    onClick={() => setTrocaId(Fe.id)}
+                                    title="trocar o papel desta compra"
+                                    style={{
+                                      ...estiloBotao,
+                                      padding: "0 6px",
+                                      marginLeft: 6,
+                                      fontSize: 11,
+                                      color: tema.amber,
+                                      border: "none",
+                                      background: "transparent",
+                                    }}
+                                  >
+                                    ✎
+                                  </button>
+                                </>
+                              )}
                               {Ir && (
                                 <span
                                   title={`volume médio de 20 pregões em ${fmtData(Fe.dataEnvio)}: ${Qt == null ? "sem dado" : "R$ " + fmtNum(Qt / 1000000) + " MM"} — abaixo do piso de R$ ${fmtNum(X)} MM`}
@@ -11122,7 +11288,7 @@ export function App() {
                   <div style={V}>
                     <Pe>Base atrasada</Pe>
                     {
-                      " tem faixa vermelha no topo: o app compara o último pregão da base com o último pregão que já deveria ter arquivo (calendário da B3 com feriados, publicação perto das 22h). Para tapar um buraco: GitHub → Actions → Coleta diária COTAHIST → Run workflow → campo “Pregão específico”."
+                      " tem faixa vermelha no topo: o app compara o último pregão da base com o último pregão que já deveria ter arquivo (calendário da B3 com feriados, publicação perto das 22h). Para tapar um buraco: GitHub → Actions → Coleta diária COTAHIST → Run workflow → campo “Pregão específico”. O app baixa a base sozinho toda vez que abre; o “↻ sincronizar base” fica no menu “⋯ mais” para forçar uma nova leitura sem recarregar a página."
                     }
                   </div>
                   <div style={Xe}>OS TRÊS FILTROS DE QUALIDADE</div>
@@ -11378,7 +11544,7 @@ export function App() {
                       <tbody>
                         {De(
                           "OPERAR · EXECUTAR",
-                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço. Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
+                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço, e o “⬇ imagem” baixa a tabela em PNG e já lança cada linha como ★ acompanhar no grupo Entradas reais da aba RESULTADOS (baixar de novo no mesmo dia atualiza as linhas, não duplica). Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Os papéis do Overnight padrão não bloqueiam o MIX do dia seguinte; só os do MIX contam. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
                         )}
                         {De(
                           "OPERAR · RANKING E ALOCAÇÃO",
@@ -11402,7 +11568,7 @@ export function App() {
                         )}
                         {De(
                           "RESULTADOS",
-                          "O que você operou de verdade: cada grupo lançado, com valor investido e preço de entrada, o realizado na abertura, e a comparação com a cesta padrão no mesmo período.",
+                          "O que você operou de verdade: cada grupo lançado, com valor investido e preço de entrada, o realizado na abertura, e a comparação com a cesta padrão no mesmo período. Em cada cesta do dia dá para trocar o papel (✎ ao lado do código — o preço de entrada passa a ser o fechamento do papel novo naquele pregão e a quantidade é refeita pelo valor), mudar valor, ações e lote, ou tirar a compra (×).",
                         )}
                         {De(
                           "BASE",

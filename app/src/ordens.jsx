@@ -10,9 +10,86 @@ export const FOLGA_ORDEM = 0.05;
 export const precoDaOrdem = (preco, folga = FOLGA_ORDEM) =>
   Math.ceil(preco * (1 + folga) * 100 - 1e-6) / 100;
 
-/* linhas: [{ ativo, preco, lote, provisorio, origens: [{ nome, cor, valor }] }] */
-export function OrdensLeilao({ linhas, dataTxt, provisorio }) {
+/* Desenha as ordens num PNG (canvas) e baixa. */
+export function baixarOrdensPNG(rows, { titulo, subtitulo, arquivo }) {
+  let cols = [
+      { t: "PAPEL", w: 110, a: "left", v: (r) => r.ativo, f: "700 17px" },
+      { t: "FECHAMENTO", w: 130, a: "right", v: (r) => (r.preco > 0 ? "R$ " + numBR(r.preco) : "—") },
+      { t: "QUANTIDADE", w: 130, a: "right", v: (r) => (r.qtd > 0 ? fmtNum(r.qtd) : "—"), f: "700 17px" },
+      { t: "PREÇO DA ORDEM", w: 160, a: "right", v: (r) => (r.ordem ? "R$ " + numBR(r.ordem) : "—"), f: "700 17px", c: tema.up },
+      { t: "VALOR", w: 140, a: "right", v: (r) => "R$ " + fmtNum(r.valor) },
+      { t: "DE ONDE VEM", w: 300, a: "left", v: (r) => r.origens.map((o) => o.nome).join(" + "), f: "400 13px", c: tema.dim },
+    ],
+    pad = 28,
+    lh = 44,
+    W = pad * 2 + cols.reduce((s, c) => s + c.w, 0) + 20 * (cols.length - 1),
+    H = pad + 64 + 34 + lh * rows.length + 56,
+    esc = 2,
+    cv = document.createElement("canvas");
+  cv.width = W * esc;
+  cv.height = H * esc;
+  let g = cv.getContext("2d"),
+    sans = "Inter, 'Segoe UI', system-ui, sans-serif",
+    mono = "'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace";
+  g.scale(esc, esc);
+  g.fillStyle = tema.bg;
+  g.fillRect(0, 0, W, H);
+  g.fillStyle = tema.up;
+  g.font = `600 12px ${sans}`;
+  g.fillText(titulo.toUpperCase(), pad, pad + 10);
+  g.fillStyle = tema.dim;
+  g.font = `400 13px ${sans}`;
+  g.fillText(subtitulo, pad, pad + 32);
+  let y = pad + 78,
+    xs = [],
+    x = pad;
+  for (let c of cols) (xs.push(x), (x += c.w + 20));
+  g.font = `600 11px ${sans}`;
+  g.fillStyle = tema.faint;
+  cols.forEach((c, i) => {
+    g.textAlign = c.a;
+    g.fillText(c.t, c.a === "right" ? xs[i] + c.w : xs[i], y);
+  });
+  y += 14;
+  for (let r of rows) {
+    g.strokeStyle = tema.line;
+    g.beginPath();
+    g.moveTo(pad, y);
+    g.lineTo(W - pad, y);
+    g.stroke();
+    let base = y + lh / 2 + 6;
+    cols.forEach((c, i) => {
+      g.textAlign = c.a;
+      g.fillStyle = c.c || tema.text;
+      g.font = `${c.f || "400 15px"} ${c.f && c.f.endsWith("13px") ? sans : i === 0 ? mono : mono}`;
+      g.fillText(c.v(r), c.a === "right" ? xs[i] + c.w : xs[i], base);
+    });
+    y += lh;
+  }
+  g.strokeStyle = tema.line;
+  g.beginPath();
+  g.moveTo(pad, y);
+  g.lineTo(W - pad, y);
+  g.stroke();
+  g.textAlign = "left";
+  g.fillStyle = tema.faint;
+  g.font = `400 12px ${sans}`;
+  g.fillText(
+    `Preço da ordem = fechamento + ${fmtNum(FOLGA_ORDEM * 100)}% (ordem limitada de compra no leilão de fechamento) · Leilão Overnight`,
+    pad,
+    y + 30,
+  );
+  let a = document.createElement("a");
+  a.download = `${arquivo}.png`;
+  a.href = cv.toDataURL("image/png");
+  a.click();
+}
+
+/* linhas: [{ ativo, preco, lote, provisorio, origens: [{ id, nome, cor, valor }] }]
+   onImagem(rows): chamado depois de baixar a imagem (lança em Entradas reais) */
+export function OrdensLeilao({ linhas, dataTxt, dataIso, provisorio, onImagem }) {
   let [copiado, setCopiado] = useState(false),
+    [aviso, setAviso] = useState(null),
     rows = linhas.map((l) => {
       let valor = l.origens.reduce((s, o) => s + o.valor, 0),
         lote = l.lote > 0 ? l.lote : 100,
@@ -39,6 +116,23 @@ export function OrdensLeilao({ linhas, dataTxt, provisorio }) {
       () => (setCopiado(true), setTimeout(() => setCopiado(false), 1800)),
       () => {},
     );
+  };
+
+  const imagem = () => {
+    let validas = rows.filter((r) => r.qtd > 0);
+    if (!validas.length) return;
+    baixarOrdensPNG(validas, {
+      titulo: `Ordens do leilão de fechamento · ${dataTxt}`,
+      subtitulo: `${validas.length} ${validas.length === 1 ? "papel" : "papéis"} · total R$ ${fmtNum(validas.reduce((s, r) => s + r.total, 0), 2)} no fechamento${provisorio ? " (provisório)" : ""}`,
+      arquivo: `ordens_leilao_${dataIso}`,
+    });
+    let n = onImagem ? onImagem(validas) : 0;
+    setAviso(
+      n > 0
+        ? `✓ imagem baixada · ${n} ${n === 1 ? "papel lançado" : "papéis lançados"} em RESULTADOS → Entradas reais`
+        : "✓ imagem baixada",
+    );
+    setTimeout(() => setAviso(null), 6000);
   };
 
   let th = {
@@ -94,6 +188,21 @@ export function OrdensLeilao({ linhas, dataTxt, provisorio }) {
           </div>
         </div>
         {rows.length > 0 && (
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button
+            onClick={imagem}
+            style={{
+              ...estiloBotao,
+              padding: "5px 12px",
+              fontSize: 12,
+              color: tema.amber,
+              borderColor: "rgba(244,183,64,.45)",
+              background: tema.amberSoft,
+            }}
+            title="baixa as ordens em PNG e lança todos os papéis como ★ acompanhar em RESULTADOS, no grupo Entradas reais"
+          >
+            ⬇ imagem
+          </button>
           <button
             onClick={copiar}
             style={{ ...estiloBotao, padding: "5px 12px", fontSize: 12, color: copiado ? tema.up : tema.dim }}
@@ -101,8 +210,12 @@ export function OrdensLeilao({ linhas, dataTxt, provisorio }) {
           >
             {copiado ? "✓ copiado" : "copiar ordens"}
           </button>
+          </div>
         )}
       </div>
+      {aviso && (
+        <div style={{ fontSize: 12, color: tema.up, margin: "6px 0 2px" }}>{aviso}</div>
+      )}
       {provisorio && (
         <div style={{ fontSize: 11.5, color: tema.amber, margin: "6px 0 2px" }}>
           ⏳ Fechamento provisório (cotação de agora): atualize perto do leilão,
