@@ -2343,8 +2343,14 @@ export function sinaisDoDia(e, t, r) {
       (q.push(k.est), S.set(F.ativo, q));
     }
   for (let k of y) for (let F of k.itens) F.porques = S.get(F.ativo) ?? [];
-  let T = montarMix(x, l, e, {
+  // papéis do Overnight padrão não entram no MIX do dia: o próximo da lista
+  // entra no lugar, e quem saiu fica registrado para reforçar a entrada
+  let cestaFora = new Set(r.excluirCesta ?? []),
+    cestaPulados = [],
+    T = montarMix(x, l, e, {
       mixMax: f,
+      excluir: cestaFora.size ? cestaFora : null,
+      pulados: cestaPulados,
     }).map((k) =>
       g(k.k, {
         n: k.n,
@@ -2372,7 +2378,7 @@ export function sinaisDoDia(e, t, r) {
   let _ = [],
     E = montarMix(x, l, e, {
       mixMax: f,
-      excluir: new Set(A),
+      excluir: new Set([...A, ...cestaFora]),
       pulados: _,
     }).map((k) =>
       g(k.k, {
@@ -2427,6 +2433,13 @@ export function sinaisDoDia(e, t, r) {
         dormindo: false,
         resultado: H,
         papeisHoje: f,
+        // papéis que o MIX apontaria, mas já estão no Overnight padrão
+        naCesta: cestaPulados.map((k) => ({
+          ativo: k.ativo,
+          pos: k.pos,
+          n: k.n,
+          cruzado: k.cruzado,
+        })),
       },
       mix_nr: {
         id: "mix_nr",
@@ -2444,7 +2457,7 @@ export function sinaisDoDia(e, t, r) {
           origem: w,
           ontemTs: l > 0 ? e.dates[l - 1] : null,
           ontem: Array.from(new Set(A)).sort(),
-          pulados: _.map((k) => ({
+          pulados: _.filter((k) => !cestaFora.has(k.ativo)).map((k) => ({
             ativo: k.ativo,
             pos: k.pos,
           })),

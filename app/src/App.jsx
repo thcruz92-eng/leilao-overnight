@@ -1615,6 +1615,18 @@ export function App() {
             .sort()
             .join(",");
     }, [Vt, fe, di]),
+    // papéis do Overnight padrão na data: ficam fora das sugestões do MIX
+    cestaHoje = useMemo(
+      () =>
+        fe == null
+          ? ""
+          : (vigenciaEm(Vg, fe)?.itens ?? [])
+              .filter((D) => D.valor > 0)
+              .map((D) => D.ativo)
+              .sort()
+              .join(","),
+      [Vg, fe],
+    ),
     St = useMemo(
       () =>
         !Vt || fe == null
@@ -1626,8 +1638,9 @@ export function App() {
               termometro: L,
               excluirOntem: Vy ? Vy.split(",") : [],
               origemExclusao: "acompanhar",
+              excluirCesta: cestaHoje ? cestaHoje.split(",") : [],
             }),
-      [Vt, fe, X, j, I, L, Vy],
+      [Vt, fe, X, j, I, L, Vy, cestaHoje],
     ),
     Ji = useMemo(
       () =>
@@ -4686,6 +4699,14 @@ export function App() {
                                 valor: He,
                               });
                           }
+                      // o MIX apontaria um papel que já está no Overnight
+                      // padrão: fica fora do MIX e vira reforço da entrada
+                      for (let Oe of Ji)
+                        for (let ke of Oe.naCesta ?? []) {
+                          let He = porAtivo.get(ke.ativo);
+                          He &&
+                            (He.reforco = `${Oe.nome} também apontou este papel neste pregão (seria o nº ${ke.pos}) — reforça a entrada`);
+                        }
                       return (
                         <OrdensLeilao
                           linhas={Array.from(porAtivo.values())}
@@ -4808,6 +4829,24 @@ export function App() {
                           >
                             {Oe.resumo}
                           </div>
+                          {Oe.naCesta?.length > 0 && (
+                            <div
+                              style={{
+                                fontSize: 12,
+                                color: tema.up,
+                                marginTop: 6,
+                                lineHeight: 1.55,
+                              }}
+                            >
+                              {"★ "}
+                              {Oe.naCesta
+                                .map((He) => `${He.ativo} (seria o nº ${He.pos})`)
+                                .join(" · ")}
+                              {Oe.naCesta.length === 1
+                                ? " também apareceu no MIX, mas já está no Overnight padrão: fica fora daqui e entra o próximo da lista. Bom sinal para essa entrada."
+                                : " também apareceram no MIX, mas já estão no Overnight padrão: ficam fora daqui e entram os próximos da lista. Bom sinal para essas entradas."}
+                            </div>
+                          )}
                           {Oe.semRepetir &&
                             (() => {
                               let He = Oe.semRepetir,
@@ -11544,7 +11583,7 @@ export function App() {
                       <tbody>
                         {De(
                           "OPERAR · EXECUTAR",
-                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço, e o “⬇ imagem” baixa a tabela em PNG e já lança cada linha como ★ acompanhar no grupo Entradas reais da aba RESULTADOS (baixar de novo no mesmo dia atualiza as linhas, não duplica). Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Os papéis do Overnight padrão não bloqueiam o MIX do dia seguinte; só os do MIX contam. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
+                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço, e o “⬇ imagem” baixa a tabela em PNG e já lança cada linha como ★ acompanhar no grupo Entradas reais da aba RESULTADOS (baixar de novo no mesmo dia atualiza as linhas, não duplica). Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Os papéis do Overnight padrão não entram como sugestão do MIX: se o MIX apontar um deles, ele fica fora, entra o próximo da lista, e a linha do Overnight padrão ganha um ★ dizendo que o MIX também apontou o papel — reforço da entrada. Também não bloqueiam o MIX do dia seguinte; só os do MIX contam. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
                         )}
                         {De(
                           "OPERAR · RANKING E ALOCAÇÃO",
