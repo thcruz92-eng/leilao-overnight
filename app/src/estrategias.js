@@ -2345,11 +2345,14 @@ export function sinaisDoDia(e, t, r) {
   for (let k of y) for (let F of k.itens) F.porques = S.get(F.ativo) ?? [];
   // papéis do Overnight padrão não entram no MIX do dia: o próximo da lista
   // entra no lugar, e quem saiu fica registrado para reforçar a entrada
+  // papéis que divulgam resultado nesta noite também ficam fora
   let cestaFora = new Set(r.excluirCesta ?? []),
+    resultadoFora = new Set(r.excluirResultado ?? []),
+    foraDoMix = new Set([...cestaFora, ...resultadoFora]),
     cestaPulados = [],
     T = montarMix(x, l, e, {
       mixMax: f,
-      excluir: cestaFora.size ? cestaFora : null,
+      excluir: foraDoMix.size ? foraDoMix : null,
       pulados: cestaPulados,
     }).map((k) =>
       g(k.k, {
@@ -2378,7 +2381,7 @@ export function sinaisDoDia(e, t, r) {
   let _ = [],
     E = montarMix(x, l, e, {
       mixMax: f,
-      excluir: new Set([...A, ...cestaFora]),
+      excluir: new Set([...A, ...foraDoMix]),
       pulados: _,
     }).map((k) =>
       g(k.k, {
@@ -2434,12 +2437,21 @@ export function sinaisDoDia(e, t, r) {
         resultado: H,
         papeisHoje: f,
         // papéis que o MIX apontaria, mas já estão no Overnight padrão
-        naCesta: cestaPulados.map((k) => ({
-          ativo: k.ativo,
-          pos: k.pos,
-          n: k.n,
-          cruzado: k.cruzado,
-        })),
+        naCesta: cestaPulados
+          .filter((k) => cestaFora.has(k.ativo))
+          .map((k) => ({
+            ativo: k.ativo,
+            pos: k.pos,
+            n: k.n,
+            cruzado: k.cruzado,
+          })),
+        // papéis que o MIX apontaria, mas divulgam resultado nesta noite
+        porResultado: cestaPulados
+          .filter((k) => !cestaFora.has(k.ativo) && resultadoFora.has(k.ativo))
+          .map((k) => ({
+            ativo: k.ativo,
+            pos: k.pos,
+          })),
       },
       mix_nr: {
         id: "mix_nr",
@@ -2457,7 +2469,7 @@ export function sinaisDoDia(e, t, r) {
           origem: w,
           ontemTs: l > 0 ? e.dates[l - 1] : null,
           ontem: Array.from(new Set(A)).sort(),
-          pulados: _.filter((k) => !cestaFora.has(k.ativo)).map((k) => ({
+          pulados: _.filter((k) => !foraDoMix.has(k.ativo)).map((k) => ({
             ativo: k.ativo,
             pos: k.pos,
           })),

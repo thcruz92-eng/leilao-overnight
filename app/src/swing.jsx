@@ -34,6 +34,24 @@ import {
   calcularSwing,
 } from "./swing.js";
 import { fmtData, fmtNum, tema } from "./tema.js";
+import { QUANDO, resultadoNaNoite, textoResultado } from "./resultados.js";
+
+/* próximo balanço do papel a partir de `desde`, até `dias` corridos */
+function proximoBalanco(cal, ativo, desde, dias) {
+  return (cal?.porTicker?.get(ativo) ?? []).find(
+    (e) => e.ts >= desde && e.ts <= desde + dias * 86400000,
+  );
+}
+function AvisoBalanco({ e, bloqueio }) {
+  if (!e && !bloqueio) return null;
+  return (
+    <div style={{ fontSize: 12, color: bloqueio ? tema.down : tema.amber, lineHeight: 1.5 }}>
+      {bloqueio
+        ? `⛔ Não entrar hoje: ${bloqueio}.`
+        : `⚠ Resultado em ${fmtData(e.ts)} (${QUANDO[e.quando] ?? QUANDO["?"]}) — dentro do prazo da operação.`}
+    </div>
+  );
+}
 
 const cartao = {
   background: tema.panel,
@@ -157,7 +175,7 @@ function Trilho({ ret, saida }) {
   );
 }
 
-function CartaoSinal({ o, saida }) {
+function CartaoSinal({ o, saida, balanco, bloqueio }) {
   let linha = (r, v, cor) => (
     <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
       <span style={{ color: tema.dim, fontSize: 12.5 }}>{r}</span>
@@ -178,8 +196,11 @@ function CartaoSinal({ o, saida }) {
     >
       <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
         <b style={{ fontSize: 18, fontFamily: tema.mono }}>{o.ativo}</b>
-        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: tema.up }}>COMPRE</span>
+        <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: bloqueio ? tema.down : tema.up }}>
+          {bloqueio ? "ESPERE O BALANÇO" : "COMPRE"}
+        </span>
       </div>
+      <AvisoBalanco e={balanco} bloqueio={bloqueio} />
       {linha("Entrada (fechamento)", reais(o.entrada))}
       {linha(`Alvo +${saida.alvo * 100}%`, reais(o.alvoPreco), tema.up)}
       {linha(`Stop −${saida.stop * 100}%`, reais(o.stopPreco), tema.down)}
@@ -196,7 +217,7 @@ function CartaoSinal({ o, saida }) {
   );
 }
 
-function CartaoAberta({ o, saida }) {
+function CartaoAberta({ o, saida, balanco }) {
   let par = (r, v, cor) => (
     <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <span style={rotulo}>{r}</span>
@@ -223,6 +244,7 @@ function CartaoAberta({ o, saida }) {
           pregão {o.dias} de {saida.prazo}
         </span>
       </div>
+      <AvisoBalanco e={balanco} />
       <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: tema.mono, fontSize: 11.5 }}>
         <span style={{ color: tema.down }}>{reais(o.stopPreco)}</span>
         <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
@@ -238,7 +260,7 @@ function CartaoAberta({ o, saida }) {
   );
 }
 
-export function AbaSwing({ ind }) {
+export function AbaSwing({ ind, cal }) {
   let [fund, setFund] = useState(null),
     [erro, setErro] = useState(null),
     [modo, setModo] = useState("padrao"),
@@ -318,7 +340,13 @@ export function AbaSwing({ ind }) {
         {hoje.length ? (
           <div className="grade-papeis" style={{ marginTop: 0 }}>
             {hoje.map((o) => (
-              <CartaoSinal key={o.ativo} o={o} saida={saida} />
+              <CartaoSinal
+                key={o.ativo}
+                o={o}
+                saida={saida}
+                bloqueio={textoResultado(resultadoNaNoite(cal, o.ativo, o.data), o.data)}
+                balanco={proximoBalanco(cal, o.ativo, o.data, Math.ceil(saida.prazo * 1.45))}
+              />
             ))}
           </div>
         ) : (
@@ -342,7 +370,12 @@ export function AbaSwing({ ind }) {
         ) : (
           <div className="grade-papeis" style={{ marginTop: 0 }}>
             {abertas.map((o) => (
-              <CartaoAberta key={o.ativo + o.w} o={o} saida={saida} />
+              <CartaoAberta
+                key={o.ativo + o.w}
+                o={o}
+                saida={saida}
+                balanco={proximoBalanco(cal, o.ativo, r.ultimoDia, Math.ceil((saida.prazo - o.dias) * 1.45))}
+              />
             ))}
           </div>
         )}

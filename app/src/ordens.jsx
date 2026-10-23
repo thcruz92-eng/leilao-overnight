@@ -93,7 +93,8 @@ export function OrdensLeilao({ linhas, dataTxt, dataIso, provisorio, onImagem })
     rows = linhas.map((l) => {
       let valor = l.origens.reduce((s, o) => s + o.valor, 0),
         lote = l.lote > 0 ? l.lote : 100,
-        qtd = l.preco > 0 ? Math.floor(valor / l.preco / lote) * lote : 0,
+        // balanço dentro da noite: a linha fica, mas sem ordem
+        qtd = l.bloqueio ? 0 : l.preco > 0 ? Math.floor(valor / l.preco / lote) * lote : 0,
         ordem = l.preco > 0 ? precoDaOrdem(l.preco) : null;
       return {
         ...l,
@@ -105,7 +106,7 @@ export function OrdensLeilao({ linhas, dataTxt, dataIso, provisorio, onImagem })
         reserva: qtd * (ordem || 0),
       };
     }),
-    soma = (k) => rows.reduce((s, r) => s + r[k], 0);
+    soma = (k) => rows.filter((r) => !r.bloqueio).reduce((s, r) => s + r[k], 0);
 
   const copiar = () => {
     let txt = [
@@ -244,13 +245,15 @@ export function OrdensLeilao({ linhas, dataTxt, dataIso, provisorio, onImagem })
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.ativo}>
+                <tr key={r.ativo} style={r.bloqueio ? { opacity: 0.75, background: tema.downSoft } : undefined}>
                   <td style={{ ...td, textAlign: "left", paddingLeft: 0, fontWeight: 700, fontSize: 15 }}>{r.ativo}</td>
                   <td style={{ ...td, color: r.provisorio ? tema.amber : tema.text }}>
                     {r.preco > 0 ? `R$ ${numBR(r.preco)}` : "—"}
                   </td>
                   <td style={{ ...td, fontWeight: 700, fontSize: 15 }}>
-                    {r.qtd > 0 ? (
+                    {r.bloqueio ? (
+                      <span style={{ color: tema.down, fontSize: 12, fontWeight: 700 }}>⛔ NÃO ENTRAR</span>
+                    ) : r.qtd > 0 ? (
                       fmtNum(r.qtd)
                     ) : (
                       <span style={{ color: tema.down, fontSize: 12 }}>
@@ -259,12 +262,15 @@ export function OrdensLeilao({ linhas, dataTxt, dataIso, provisorio, onImagem })
                     )}
                   </td>
                   <td style={{ ...td, color: tema.up, fontWeight: 700, fontSize: 15 }}>
-                    {r.ordem ? `R$ ${numBR(r.ordem)}` : "—"}
+                    {r.ordem && !r.bloqueio ? `R$ ${numBR(r.ordem)}` : "—"}
                   </td>
-                  <td style={td}>R$ {fmtNum(r.valor)}</td>
+                  <td style={{ ...td, textDecoration: r.bloqueio ? "line-through" : "none" }}>R$ {fmtNum(r.valor)}</td>
                   <td style={{ ...td, color: tema.dim }}>{r.qtd > 0 ? `R$ ${fmtNum(r.total, 2)}` : "—"}</td>
                   <td style={{ ...td, color: tema.dim }}>{r.qtd > 0 ? `R$ ${fmtNum(r.reserva, 2)}` : "—"}</td>
                   <td style={{ ...td, textAlign: "left", fontFamily: tema.sans, fontSize: 12 }}>
+                    {r.bloqueio && (
+                      <div style={{ color: tema.down, fontSize: 11.5, marginBottom: 3 }}>⛔ {r.bloqueio}</div>
+                    )}
                     {r.reforco && (
                       <div style={{ color: tema.up, fontSize: 11.5, marginBottom: 3 }}>★ {r.reforco}</div>
                     )}

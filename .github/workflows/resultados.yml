@@ -1,0 +1,55 @@
+name: Calendário de resultados
+
+# Gera public/resultados.json (datas de divulgação dos balanços), que o
+# app usa para não entrar num papel quando o balanço sai dentro da noite.
+# Junta a pesquisa conferida (dados/resultados_pesquisa.json) com as
+# datas do Yahoo Finance para os demais papéis.
+#
+# "[skip netlify]": o app lê o arquivo direto do GitHub, sem republicar.
+
+on:
+  schedule:
+    - cron: "41 9 * * 1-5"    # 06h41 de Brasília, antes do pregão
+    - cron: "41 19 * * 1-5"   # 16h41 de Brasília, antes do leilão
+  workflow_dispatch:
+  push:
+    branches: [claude/app-site-adjustments-l3mh5d]
+    paths:
+      - coleta_resultados.py
+      - dados/resultados_pesquisa.json
+      - .github/workflows/resultados.yml
+
+concurrency:
+  group: resultados
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Montar o calendário
+        env:
+          PYTHONUNBUFFERED: "1"
+          TZ: America/Sao_Paulo
+        run: python coleta_resultados.py
+
+      - name: Gravar no ramo
+        run: |
+          git config user.name  "coleta-bot"
+          git config user.email "coleta-bot@users.noreply.github.com"
+          git add public/resultados.json
+          if git diff --staged --quiet; then
+            echo "Nada mudou."
+          else
+            git commit -m "Calendário de resultados — $(date +'%Y-%m-%d %H:%M') [skip netlify]"
+            git pull --rebase
+            git push
+          fi
