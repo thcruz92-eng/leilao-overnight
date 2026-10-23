@@ -39,6 +39,13 @@
 "obs": "Já divulgou (22/10 à noite)"
 },
 {
+"ticker": "GGBR3",
+"data": "2026-10-26",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "GGBR4",
 "data": "2026-10-26",
 "quando": "apos",
@@ -79,6 +86,13 @@
 "obs": "Acionista.com.br também traz 28/10."
 },
 {
+"ticker": "KLBN3",
+"data": "2026-10-28",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "MOTV3",
 "data": "2026-10-28",
 "quando": "apos",
@@ -93,6 +107,13 @@
 "confianca": "confirmada",
 "fonte": "RI Santander (santander.com.br/ri) / Money Times / Seu Dinheiro",
 "obs": "Videoconferência às 10h"
+},
+{
+"ticker": "SANB3",
+"data": "2026-10-28",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "ABEV3",
@@ -125,6 +146,13 @@
 "confianca": "confirmada",
 "fonte": "Comunicado Vale 01/10/2026; Money Times; Seu Dinheiro",
 "obs": "Teleconferência 30/10 às 11h"
+},
+{
+"ticker": "USIM3",
+"data": "2026-10-30",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "USIM5",
@@ -237,6 +265,13 @@
 "confianca": "confirmada",
 "fonte": "Calendário anual de eventos corporativos da Dexco (api.mziq.com) + ADVFN / Forbes (BTG) / InfoMoney",
 "obs": "Apresentação pública em 05/11. O horário vem dos calendários, não da empresa"
+},
+{
+"ticker": "MYPK3",
+"data": "2026-11-04",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "PCAR3",
@@ -359,6 +394,13 @@
 "obs": "Teleconferência 06/11 às 11h"
 },
 {
+"ticker": "GRND3",
+"data": "2026-11-05",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "LREN3",
 "data": "2026-11-05",
 "quando": "apos",
@@ -477,6 +519,13 @@
 "confianca": "confirmada",
 "fonte": "Money Times / BPMoney / Suno",
 "obs": "Teleconferência em 10/11"
+},
+{
+"ticker": "ITSA3",
+"data": "2026-11-09",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "ITSA4",
@@ -687,6 +736,13 @@
 "obs": ""
 },
 {
+"ticker": "FRAS3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "HAPV3",
 "data": "2026-11-11",
 "quando": "apos",
@@ -727,6 +783,13 @@
 "obs": "A data aparece em várias fontes, o horário só na Forbes/BTG. Apresentação em 12/11"
 },
 {
+"ticker": "QUAL3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "RAIL3",
 "data": "2026-11-11",
 "quando": "apos",
@@ -765,6 +828,13 @@
 "confianca": "confirmada",
 "fonte": "Money Times; ADVFN; Investidor10",
 "obs": ""
+},
+{
+"ticker": "VLID3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "VTRU3",
@@ -901,6 +971,13 @@
 "confianca": "confirmada",
 "fonte": "Money Times / Investfy / Acionista.com.br",
 "obs": "Teleconferência 13/11."
+},
+{
+"ticker": "LIGT3",
+"data": "2026-11-12",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "LWSA3",
