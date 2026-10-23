@@ -1,0 +1,1087 @@
+{
+"gerado_em": "2026-10-23",
+"temporada": "3T26",
+"fontes": [
+"pesquisa conferida (dados/resultados_pesquisa.json)",
+"Yahoo Finance (estimativa) para o resto"
+],
+"eventos": [
+{
+"ticker": "SAUD3",
+"data": "2026-10-21",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "InfoMoney",
+"obs": "Em 2026 SAUD3 é a BradSaúde S.A. Já divulgou em 21/10 após o fechamento."
+},
+{
+"ticker": "WEGE3",
+"data": "2026-10-21",
+"quando": "antes",
+"confianca": "confirmada",
+"fonte": "Money Times; Seu Dinheiro; BP Money",
+"obs": "Já divulgou"
+},
+{
+"ticker": "BBDC3",
+"data": "2026-10-22",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Finance News; BM&C",
+"obs": "Já divulgou (22/10 à noite)"
+},
+{
+"ticker": "BBDC4",
+"data": "2026-10-22",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Finance News; BM&C",
+"obs": "Já divulgou (22/10 à noite)"
+},
+{
+"ticker": "GGBR3",
+"data": "2026-10-26",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "GGBR4",
+"data": "2026-10-26",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Rankia / Acionista / BPMoney",
+"obs": "Teleconferência 27/10 às 12h"
+},
+{
+"ticker": "GOAU4",
+"data": "2026-10-26",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Acionista.com.br",
+"obs": "Divulga junto com a Gerdau"
+},
+{
+"ticker": "HYPE3",
+"data": "2026-10-27",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Forbes (calendário BTG)",
+"obs": "Data em várias fontes; horário só na Forbes/BTG. Teleconferência em 28/10"
+},
+{
+"ticker": "INTB3",
+"data": "2026-10-28",
+"quando": "?",
+"confianca": "prevista",
+"fonte": "Seu Dinheiro / Money Times / BPMoney / Acionista / Investidor10",
+"obs": "Todos dão a mesma data. O horário aparece como 'não informado/ND' em todos. Teleconferência em 29/10"
+},
+{
+"ticker": "KLBN11",
+"data": "2026-10-28",
+"quando": "antes",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro / Safra (via Money Times)",
+"obs": "Acionista.com.br também traz 28/10."
+},
+{
+"ticker": "KLBN3",
+"data": "2026-10-28",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MOTV3",
+"data": "2026-10-28",
+"quando": "apos",
+"confianca": "divergente",
+"fonte": "Seu Dinheiro; Acionista; Money Times",
+"obs": "Um calendário cita 29/10"
+},
+{
+"ticker": "SANB11",
+"data": "2026-10-28",
+"quando": "antes",
+"confianca": "confirmada",
+"fonte": "RI Santander (santander.com.br/ri) / Money Times / Seu Dinheiro",
+"obs": "Videoconferência às 10h"
+},
+{
+"ticker": "SANB3",
+"data": "2026-10-28",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ABEV3",
+"data": "2026-10-29",
+"quando": "antes",
+"confianca": "confirmada",
+"fonte": "RI Ambev; Suno; BTG; InfoMoney",
+"obs": "Antes da abertura; Money Times e Seu Dinheiro listam 28/10 (parece erro)"
+},
+{
+"ticker": "MOTV3",
+"data": "2026-10-29",
+"quando": "?",
+"confianca": "alternativa",
+"fonte": "Seu Dinheiro; Acionista; Money Times",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "MULT3",
+"data": "2026-10-29",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Forbes (calendário BTG)",
+"obs": "Data em várias fontes; horário só na Forbes/BTG. Teleconferência em 30/10"
+},
+{
+"ticker": "VALE3",
+"data": "2026-10-29",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado Vale 01/10/2026; Money Times; Seu Dinheiro",
+"obs": "Teleconferência 30/10 às 11h"
+},
+{
+"ticker": "USIM3",
+"data": "2026-10-30",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "USIM5",
+"data": "2026-10-30",
+"quando": "?",
+"confianca": "prevista",
+"fonte": "Acionista.com.br / Investidor10 / Money Times / BP Money",
+"obs": "Data consistente; horário 'não informado' em todos os calendários."
+},
+{
+"ticker": "BBSE3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Finance News (anúncio da empresa) / Seu Dinheiro",
+"obs": "Teleconferência em 04/11"
+},
+{
+"ticker": "ISAE4",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "https://ri.isaenergiabrasil.com.br/",
+"obs": "RI da empresa: divulgação 03/11 depois do fechamento; teleconferência 04/11 às 10h. BP Money também traz 03/11."
+},
+{
+"ticker": "ITUB3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Seu Dinheiro; Broadcast; BP Money",
+"obs": "Teleconferência 04/11 às 10h"
+},
+{
+"ticker": "ITUB4",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Seu Dinheiro; Broadcast; BP Money",
+"obs": "Teleconferência 04/11 às 10h"
+},
+{
+"ticker": "POMO4",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times",
+"obs": "BP Money também traz 03/11. Só o Money Times dá o horário. Teleconferência 04/11 às 11h."
+},
+{
+"ticker": "RADL3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI Raia Drogasil (ri.rdsaude.com.br)",
+"obs": "Call em 04/11"
+},
+{
+"ticker": "TIMS3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "alternativa",
+"fonte": "Money Times / Seu Dinheiro / Suno / Forbes",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "AXIA3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI Axia; Money Times; Acionista",
+"obs": "Webcast 05/11 às 11h"
+},
+{
+"ticker": "AXIA7",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI Axia; Money Times; Acionista",
+"obs": "Webcast 05/11 às 11h"
+},
+{
+"ticker": "BEEF3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro",
+"obs": "Teleconferência 05/11."
+},
+{
+"ticker": "CBAV3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro",
+"obs": "Teleconferência 05/11."
+},
+{
+"ticker": "CEAB3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro",
+"obs": "Teleconferência 05/11 às 11h"
+},
+{
+"ticker": "DXCO3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Calendário anual de eventos corporativos da Dexco (api.mziq.com) + ADVFN / Forbes (BTG) / InfoMoney",
+"obs": "Apresentação pública em 05/11. O horário vem dos calendários, não da empresa"
+},
+{
+"ticker": "MYPK3",
+"data": "2026-11-04",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "PCAR3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investidor10",
+"obs": "Teleconferência em 05/11"
+},
+{
+"ticker": "PGMN3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Investfy",
+"obs": "Investing.com também traz 04/11. Teleconferência 05/11."
+},
+{
+"ticker": "PRIO3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Investidor10; Forbes",
+"obs": ""
+},
+{
+"ticker": "RIAA3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "alternativa",
+"fonte": "Suno / Euqueroinvestir / Money Times e Investfy (listado como GUAR3)",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "SMFT3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Seu Dinheiro",
+"obs": "Conferência 05/11 às 13h30"
+},
+{
+"ticker": "TEND3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Money Times",
+"obs": "Teleconferência em 05/11"
+},
+{
+"ticker": "TOTS3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Suno / BPMoney",
+"obs": "Teleconferência 05/11 às 11h"
+},
+{
+"ticker": "VBBR3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Investidor10",
+"obs": ""
+},
+{
+"ticker": "ABCB4",
+"data": "2026-11-05",
+"quando": "?",
+"confianca": "prevista",
+"fonte": "InfoMoney / Suno / BPMoney / Status Invest / Investing.com",
+"obs": "Data consistente entre as fontes. Status Invest dá o horário como não informado; Oceans14 diz após o fechamento. No 3T25 o banco divulgou de manhã, antes da abertura"
+},
+{
+"ticker": "ALOS3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro / Suno",
+"obs": "Teleconferência em 06/11"
+},
+{
+"ticker": "ALUP11",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Money Times / ADVFN",
+"obs": "Teleconferência 06/11."
+},
+{
+"ticker": "ANIM3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI Ânima / Money Times",
+"obs": "Webinar 06/11."
+},
+{
+"ticker": "ASAI3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / BPMoney / Suno",
+"obs": "Teleconferência em 06/11"
+},
+{
+"ticker": "EZTC3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Calendário de eventos da Eztec (via ADVFN) / Forbes (BTG) / Seu Dinheiro",
+"obs": "Teleconferência 06/11."
+},
+{
+"ticker": "FLRY3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI Fleury (ri.fleury.com.br)",
+"obs": "Teleconferência 06/11 às 11h"
+},
+{
+"ticker": "GRND3",
+"data": "2026-11-05",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "LREN3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro; Money Times",
+"obs": "Conferência 06/11 às 10h"
+},
+{
+"ticker": "MDNE3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Forbes (BTG) / Investfy / Money Times / Seu Dinheiro",
+"obs": "Teleconferência 06/11."
+},
+{
+"ticker": "MGLU3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "alternativa",
+"fonte": "RI Magazine Luiza; Money Times; Investfy",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "PSSA3",
+"data": "2026-11-05",
+"quando": "antes",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro",
+"obs": "Teleconferência no mesmo dia (05/11). Suno e InfoMoney trazem a data de 05/11 sem horário."
+},
+{
+"ticker": "RECV3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI PetroReconcavo (ri.petroreconcavo.com.br) / comunicado de período de silêncio de 16/10 (Acionista)",
+"obs": "Apresentação pública em 06/11"
+},
+{
+"ticker": "RENT3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro; Investfy; SpaceMoney",
+"obs": "Conferência 06/11 às 11h"
+},
+{
+"ticker": "SBSP3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; Seu Dinheiro; Investfy; InfoMoney",
+"obs": "Conferência 06/11"
+},
+{
+"ticker": "SUZB3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Calendário de eventos corporativos da Suzano; Seu Dinheiro; Money Times",
+"obs": "Conferência 06/11 às 10h"
+},
+{
+"ticker": "VIVA3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy",
+"obs": "Suno e Investing.com também trazem 05/11. Teleconferência 06/11."
+},
+{
+"ticker": "ALPA4",
+"data": "2026-11-06",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times",
+"obs": "InvesTalk e Suno também trazem 06/11. Um trecho cita 09/11, provavelmente a teleconferência."
+},
+{
+"ticker": "BRAV3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro",
+"obs": "Teleconferência 10/11."
+},
+{
+"ticker": "CSMG3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado Copasa 19/10/2026; Investfy; Money Times",
+"obs": "Teleconferência 10/11 às 11h"
+},
+{
+"ticker": "CXSE3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "alternativa",
+"fonte": "Money Times / Investidor10",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "DIRR3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Forbes (BTG)",
+"obs": "Teleconferência em 10/11"
+},
+{
+"ticker": "ECOR3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / BPMoney / Suno",
+"obs": "Teleconferência em 10/11"
+},
+{
+"ticker": "ITSA3",
+"data": "2026-11-09",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ITSA4",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "ADVFN; Money Times; Investfy",
+"obs": "Horário só na ADVFN"
+},
+{
+"ticker": "LOGG3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro / Suno",
+"obs": "Teleconferência em 10/11 às 10h"
+},
+{
+"ticker": "MGLU3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "divergente",
+"fonte": "RI Magazine Luiza; Money Times; Investfy",
+"obs": "Call 10/11 às 9h. SpaceMoney, ADVFN e BP Money citam 05/11"
+},
+{
+"ticker": "RIAA3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "divergente",
+"fonte": "Suno / Euqueroinvestir / Money Times e Investfy (listado como GUAR3)",
+"obs": "Alternativa: 04/11 após o fechamento (InfoMoney, ADVFN, Forbes/BTG). Teleconferência em 10/11 às 10h segundo o Money Times. Investing.com estima 04/11"
+},
+{
+"ticker": "SBFG3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times",
+"obs": "Investing.com também traz 09/11, sem horário. Teleconferência 10/11 às 11h."
+},
+{
+"ticker": "SMTO3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI São Martinho (ri.saomartinho.com.br, agenda)",
+"obs": "Para a empresa é o 2T27 (safra 2026/27). Teleconferência em 10/11 às 15h; Investfy e Forbes dão a mesma data"
+},
+{
+"ticker": "TIMS3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "divergente",
+"fonte": "Money Times / Seu Dinheiro / Suno / Forbes",
+"obs": "Alternativa: 03/11 (BPMoney, Acionista)"
+},
+{
+"ticker": "AURE3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times",
+"obs": "Suno e Investing.com também trazem 10/11. Só o Money Times dá o horário. Teleconferência 11/11."
+},
+{
+"ticker": "BPAC11",
+"data": "2026-11-10",
+"quando": "antes",
+"confianca": "alternativa",
+"fonte": "RI BTG; Investing.com",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "CMIN3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "InfoMoney (calendário de mineração e siderurgia 3T26) / Investfy / Money Times / IstoÉ Dinheiro",
+"obs": "Teleconferência em 11/11"
+},
+{
+"ticker": "CSNA3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Investidor10",
+"obs": ""
+},
+{
+"ticker": "CURY3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Forbes (BTG) / Investfy",
+"obs": ""
+},
+{
+"ticker": "EGIE3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Seu Dinheiro / Forbes (BTG)",
+"obs": "Teleconferência 11/11."
+},
+{
+"ticker": "EMBJ3",
+"data": "2026-11-10",
+"quando": "antes",
+"confianca": "prevista",
+"fonte": "Forbes (calendário BTG)",
+"obs": "Money Times e Investfy trazem 10/11 sem horário"
+},
+{
+"ticker": "ENGI11",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times; Investidor10",
+"obs": "Call 11/11"
+},
+{
+"ticker": "IGTI11",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI Iguatemi / Investidor10",
+"obs": "Call em 11/11"
+},
+{
+"ticker": "PETR3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado Petrobras 13/10/2026; Seu Dinheiro; InfoMoney",
+"obs": "Webcast 11/11 às 11h30"
+},
+{
+"ticker": "PETR4",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado Petrobras 13/10/2026; Seu Dinheiro; InfoMoney",
+"obs": "Webcast 11/11 às 11h30"
+},
+{
+"ticker": "VIVT3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro / Suno",
+"obs": "Teleconferência 11/11 às 11h"
+},
+{
+"ticker": "VULC3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro / Investfy",
+"obs": "Teleconferência em 11/11"
+},
+{
+"ticker": "AZZA3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Investfy / Money Times / Oceans14",
+"obs": "Teleconferência em 12/11"
+},
+{
+"ticker": "BBAS3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Seu Dinheiro; Broadcast",
+"obs": "Conferência 12/11"
+},
+{
+"ticker": "COGN3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Seu Dinheiro / Forbes (BTG)",
+"obs": "Teleconferência em 12/11"
+},
+{
+"ticker": "CVCB3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "divergente",
+"fonte": "Seu Dinheiro / Investing.com",
+"obs": "Seu Dinheiro: teleconferência em 12/11 às 10h. A página de RI da CVC (cvccorp.com.br) lista o release do 3T26 em 12/11"
+},
+{
+"ticker": "ENEV3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times; Acionista",
+"obs": "Teleconferência 12/11"
+},
+{
+"ticker": "EQTL3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Acionista; Investfy",
+"obs": ""
+},
+{
+"ticker": "FRAS3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "HAPV3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy",
+"obs": "Suno também traz 11/11. Teleconferência 12/11 às 9h."
+},
+{
+"ticker": "JSLG3",
+"data": "2026-11-11",
+"quando": "antes",
+"confianca": "prevista",
+"fonte": "Calendário anual de eventos corporativos da JSL (ITR em 11/11) / Acionista",
+"obs": "A data vem da própria empresa. 'Antes da abertura' aparece em um único calendário agregador; os outros não informam. Apresentação pública em 12/11"
+},
+{
+"ticker": "MOVI3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Investidor10 / Suno",
+"obs": ""
+},
+{
+"ticker": "MRVE3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Forbes (BTG) / BPMoney",
+"obs": "Teleconferência em 12/11"
+},
+{
+"ticker": "PLPL3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Forbes (calendário BTG) / Suno / Acionista",
+"obs": "A data aparece em várias fontes, o horário só na Forbes/BTG. Apresentação em 12/11"
+},
+{
+"ticker": "QUAL3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "RAIL3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Investfy; TradingView; Acionista",
+"obs": "Horário só no Investfy"
+},
+{
+"ticker": "RDOR3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Investfy; Money Times; Forbes; Investidor10",
+"obs": ""
+},
+{
+"ticker": "SLCE3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Investfy / ADVFN / Suno / Sabbius (calendários 3T26)",
+"obs": "Não achei o comunicado da própria empresa"
+},
+{
+"ticker": "TAEE11",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times",
+"obs": "Acionista também traz 11/11. Só o Money Times dá o horário. Teleconferência 12/11 às 11h."
+},
+{
+"ticker": "UGPA3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times; ADVFN; Investidor10",
+"obs": ""
+},
+{
+"ticker": "VLID3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "VTRU3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado da Vitru com a agenda do 3T26 (Acionista.com.br) / Visnoinvest",
+"obs": "Webcast em 12/11, às 12h ou às 11h conforme a fonte"
+},
+{
+"ticker": "AUAU3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Gazeta Mercantil (fato da recompra, 22/10) / Sabbius / Suno / Euqueroinvestir",
+"obs": "AUAU3 é a União Pet (fusão Petz + Cobasi, negocia desde 01/2026). InvesTalk/BB lista 13/11, provavelmente a data da teleconferência"
+},
+{
+"ticker": "B3SA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Investfy; ADVFN; Money Times; Acionista",
+"obs": "Call 13/11"
+},
+{
+"ticker": "BMOB3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Investfy / Money Times / Investidor10",
+"obs": ""
+},
+{
+"ticker": "BPAC11",
+"data": "2026-11-12",
+"quando": "antes",
+"confianca": "divergente",
+"fonte": "RI BTG; Investing.com",
+"obs": "Imprensa (Money Times, Seu Dinheiro, BP Money) diz 10/11 antes da abertura"
+},
+{
+"ticker": "BRAP4",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "RI Bradespar / Oceans14",
+"obs": "Data do RI da empresa. Só o Oceans14 dá o horário."
+},
+{
+"ticker": "BRSR6",
+"data": "2026-11-12",
+"quando": "?",
+"confianca": "divergente",
+"fonte": "Acionista / Suno / Investfy / Investing.com (data); ADVFN e Forbes (horário)",
+"obs": "Todos concordam na data. Horário diverge: ADVFN diz antes da abertura, Forbes/BTG diz após o fechamento, Money Times/Investfy/Investidor10 não informam"
+},
+{
+"ticker": "CMIG4",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "RI Cemig / Forbes (BTG)",
+"obs": "Data do RI (call em 13/11); horário só na Forbes"
+},
+{
+"ticker": "CPFE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Agregadores (Investfy / Investidor10)",
+"obs": "Teleconferência passou para 16/11; a data de divulgação não mudou, mas o comunicado não cita o dia."
+},
+{
+"ticker": "CPLE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "ADVFN; Money Times; Acionista; Investfy",
+"obs": ""
+},
+{
+"ticker": "CVCB3",
+"data": "2026-11-12",
+"quando": "?",
+"confianca": "alternativa",
+"fonte": "Seu Dinheiro / Investing.com",
+"obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "CXSE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "divergente",
+"fonte": "Money Times / Investidor10",
+"obs": "Alternativa: 09/11 após o fechamento (Forbes/BTG, BPMoney, EuQueroInvestir)"
+},
+{
+"ticker": "CYRE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Investfy; Acionista; Money Times",
+"obs": "Conferência 13/11"
+},
+{
+"ticker": "GGPS3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Seu Dinheiro / Investing",
+"obs": "Teleconferência em 13/11"
+},
+{
+"ticker": "GMAT3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Money Times / Suno",
+"obs": "Suno traz a data sem horário. Teleconferência aparentemente em 13/11."
+},
+{
+"ticker": "IRBR3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado da empresa de 22/10 (Acionista.com.br)",
+"obs": "Apresentação 13/11 às 11h."
+},
+{
+"ticker": "JHSF3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Acionista.com.br",
+"obs": "Teleconferência 13/11."
+},
+{
+"ticker": "LIGT3",
+"data": "2026-11-12",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "LWSA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI LWSA (ri.lwsa.tech, próximos eventos) / Safra",
+"obs": "Call em 13/11"
+},
+{
+"ticker": "MBRF3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investidor10 / Acionista",
+"obs": "Teleconferência em 13/11"
+},
+{
+"ticker": "MDIA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Forbes (BTG) / Seu Dinheiro",
+"obs": "Teleconferência em 13/11"
+},
+{
+"ticker": "NATU3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "https://ri.natura.com.br/en/",
+"obs": "RI da empresa: 12/11 após o fechamento; teleconferência 13/11 às 9h."
+},
+{
+"ticker": "ORVR3",
+"data": "2026-11-12",
+"quando": "?",
+"confianca": "prevista",
+"fonte": "BP Money / Investing.com",
+"obs": "Horário não encontrado."
+},
+{
+"ticker": "PASS3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Investing.com",
+"obs": "PASS3 é a Compass Gás e Energia (Cosan), listada no IPO de 11/05/2026"
+},
+{
+"ticker": "RAPT4",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Comunicado da Randoncorp com a receita de setembro (InfoMoney/BPMoney, 20/10) + Investfy / Money Times",
+"obs": "Apresentação em 13/11 às 11h. A Frasle divulga em 11/11"
+},
+{
+"ticker": "SAPR11",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "https://ri.sanepar.com.br/pt/servicos-aos-investidores/agenda-de-ri",
+"obs": "Agenda de RI da empresa: 12/11 após o fechamento; conferência 13/11."
+},
+{
+"ticker": "TTEN3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / Forbes (BTG)",
+"obs": "Teleconferência em 13/11 (Seu Dinheiro)"
+},
+{
+"ticker": "VAMO3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "prevista",
+"fonte": "Investfy / Money Times",
+"obs": ""
+},
+{
+"ticker": "YDUQ3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "RI da Yduqs / Money Times",
+"obs": "Videoconferência 13/11 às 9h."
+},
+{
+"ticker": "CSAN3",
+"data": "2026-11-13",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy",
+"obs": "Teleconferência em 16/11"
+},
+{
+"ticker": "SIMH3",
+"data": "2026-11-13",
+"quando": "apos",
+"confianca": "confirmada",
+"fonte": "Money Times / Investfy / BPMoney / Seu Dinheiro",
+"obs": "Teleconferência 16/11"
+}
+]
+}

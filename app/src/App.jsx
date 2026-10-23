@@ -111,6 +111,13 @@ import {
 import { AbaSwing } from "./swing.jsx";
 import { VigenciasCesta } from "./cesta.jsx";
 import { OrdensLeilao } from "./ordens.jsx";
+import { CalendarioResultados } from "./calendario.jsx";
+import {
+  buscarResultados,
+  montarCalendario,
+  resultadoNaNoite,
+  textoResultado,
+} from "./resultados.js";
 import {
   BotaoImagem,
   CURSOR,
@@ -307,6 +314,16 @@ export function App() {
       try {
         let D = await window.storage.get("ovr3:carteira");
         D?.value && yt(JSON.parse(D.value));
+      } catch {}
+    })();
+  }, []);
+  // calendário de resultados: arquivo publicado + datas que você corrigiu
+  useEffect(() => {
+    buscarResultados().then((D) => setCalArq(D));
+    (async () => {
+      try {
+        let D = await window.storage.get("ovr3:resultados_manuais");
+        D?.value && setResManuais(JSON.parse(D.value) || []);
       } catch {}
     })();
   }, []);
@@ -551,6 +568,14 @@ export function App() {
     ]),
     [Vs, Ws] = useState(null),
     [trocaId, setTrocaId] = useState(null),
+    [calArq, setCalArq] = useState(null),
+    [resManuais, setResManuais] = useState([]),
+    salvarResManuais = (D) => {
+      (setResManuais(D),
+        window.storage
+          .set("ovr3:resultados_manuais", JSON.stringify(D))
+          .catch(() => {}));
+    },
     Ll = Vg[Vg.length - 1].itens,
     [Eh, Ak] = useState("periodo"),
     [Iy, Ek] = useState(null),
@@ -1619,6 +1644,21 @@ export function App() {
             .join(",");
     }, [Vt, fe, di]),
     // papéis do Overnight padrão na data: ficam fora das sugestões do MIX
+    cal = useMemo(
+      () => montarCalendario(calArq, resManuais),
+      [calArq, resManuais],
+    ),
+    // papéis com balanço dentro da noite comprada em `fe`: fora do MIX
+    resultadoHoje = useMemo(
+      () =>
+        fe == null
+          ? ""
+          : Array.from(cal.porTicker.keys())
+              .filter((D) => resultadoNaNoite(cal, D, fe))
+              .sort()
+              .join(","),
+      [cal, fe],
+    ),
     cestaHoje = useMemo(
       () =>
         fe == null
@@ -1642,8 +1682,9 @@ export function App() {
               excluirOntem: Vy ? Vy.split(",") : [],
               origemExclusao: "acompanhar",
               excluirCesta: cestaHoje ? cestaHoje.split(",") : [],
+              excluirResultado: resultadoHoje ? resultadoHoje.split(",") : [],
             }),
-      [Vt, fe, X, j, I, L, Vy, cestaHoje],
+      [Vt, fe, X, j, I, L, Vy, cestaHoje, resultadoHoje],
     ),
     Ji = useMemo(
       () =>
@@ -4715,14 +4756,35 @@ export function App() {
                           He &&
                             (He.reforco = `${Oe.nome} também apontou este papel neste pregão (seria o nº ${ke.pos}) — reforça a entrada`);
                         }
+                      // balanço dentro da noite: não entrar
+                      for (let Oe of porAtivo.values()) {
+                        let ke = resultadoNaNoite(cal, Oe.ativo, fe);
+                        ke && (Oe.bloqueio = textoResultado(ke, fe));
+                      }
+                      let tickersHoje = new Set([
+                        ...porAtivo.keys(),
+                        ...Ji.flatMap((Oe) =>
+                          (Oe.porResultado ?? []).map((ke) => ke.ativo),
+                        ),
+                      ]);
                       return (
-                        <OrdensLeilao
-                          linhas={Array.from(porAtivo.values())}
-                          dataTxt={ve(fe)}
-                          dataIso={new Date(fe).toISOString().slice(0, 10)}
-                          provisorio={Ph(fe)}
-                          onImagem={(Oe) => lancarReais(Oe, fe)}
-                        />
+                        <>
+                          <OrdensLeilao
+                            linhas={Array.from(porAtivo.values())}
+                            dataTxt={ve(fe)}
+                            dataIso={new Date(fe).toISOString().slice(0, 10)}
+                            provisorio={Ph(fe)}
+                            onImagem={(Oe) => lancarReais(Oe, fe)}
+                          />
+                          <CalendarioResultados
+                            cal={cal}
+                            compra={fe}
+                            tickers={Array.from(tickersHoje)}
+                            manuais={resManuais}
+                            onManuais={salvarResManuais}
+                            geradoEm={calArq?.gerado_em}
+                          />
+                        </>
                       );
                     })()}
                     {Ji.map((Oe) => {
@@ -4837,6 +4899,24 @@ export function App() {
                           >
                             {Oe.resumo}
                           </div>
+                          {Oe.porResultado?.length > 0 && (
+                            <div
+                              style={{
+                                fontSize: 12,
+                                color: tema.down,
+                                marginTop: 6,
+                                lineHeight: 1.55,
+                              }}
+                            >
+                              {"⛔ "}
+                              {Oe.porResultado
+                                .map((He) => `${He.ativo} (seria o nº ${He.pos})`)
+                                .join(" · ")}
+                              {
+                                " ficou fora: divulga resultado dentro desta noite (depois do fechamento de hoje ou antes da abertura de amanhã). Entrou o próximo da lista."
+                              }
+                            </div>
+                          )}
                           {Oe.naCesta?.length > 0 && (
                             <div
                               style={{
@@ -6611,7 +6691,7 @@ export function App() {
             )}
           </div>
         )}
-        {_e && R === "swing" && <AbaSwing ind={Vt} />}
+        {_e && R === "swing" && <AbaSwing ind={Vt} cal={cal} />}
         {_e && R === "base" && _e.eventos.length > 0 && (
           <section
             style={{
@@ -11294,7 +11374,7 @@ export function App() {
                 <Secao
                   id="dados"
                   titulo="2 · De onde vêm os dados"
-                  resumo="COTAHIST oficial, coleta diária no GitHub, balanços da CVM, cotação ao vivo, upload manual e os três filtros de qualidade."
+                  resumo="COTAHIST oficial, coleta diária no GitHub, balanços da CVM, calendário de resultados, cotação ao vivo, upload manual e os três filtros de qualidade."
                   aberta={it("dados")}
                   onToggle={Ia}
                 >
@@ -11308,6 +11388,12 @@ export function App() {
                     <Pe>Balanços: dados abertos da CVM</Pe>
                     {
                       " — só para a aba SWING. Outra rotina no GitHub (Actions → “Fundamentos CVM”, toda terça e sexta) baixa os balanços trimestrais e anuais das companhias e grava um resumo por papel: lucro e receita de 12 meses, patrimônio, número de ações e lucro do trimestre contra o mesmo trimestre do ano anterior. Cada balanço vale a partir do pregão seguinte à entrega na CVM, nunca antes. Bancos, seguradoras e units ficam de fora."
+                    }
+                  </div>
+                  <div style={V}>
+                    <Pe>Calendário de resultados</Pe>
+                    {
+                      " — para a regra de não entrar na véspera de balanço. Uma rotina no GitHub (Actions → “Calendário de resultados”, dias úteis às 06h41 e 16h41) grava public/resultados.json juntando a pesquisa conferida da temporada (dados/resultados_pesquisa.json: data e horário de cada empresa, de comunicados e calendários publicados) com as datas do Yahoo Finance para os demais papéis, marcadas como estimativa. O que você corrigir ou incluir no OPERAR vale por cima e fica salvo no seu navegador e na nuvem."
                     }
                   </div>
                   <div style={V}>
@@ -11587,7 +11673,7 @@ export function App() {
                       <tbody>
                         {De(
                           "OPERAR · EXECUTAR",
-                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço, e o “⬇ imagem” baixa a tabela em PNG e já lança cada linha como ★ acompanhar no grupo Entradas reais da aba RESULTADOS (baixar de novo no mesmo dia atualiza as linhas, não duplica). Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Os papéis do Overnight padrão não entram como sugestão do MIX: se o MIX apontar um deles, ele fica fora, entra o próximo da lista, e a linha do Overnight padrão ganha um ★ dizendo que o MIX também apontou o papel — reforço da entrada. Também não bloqueiam o MIX do dia seguinte; só os do MIX contam. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
+                          "A carteira da noite, pronta para virar ordem. No topo, “Ordens do leilão de fechamento”: uma linha por papel — a cesta do Overnight padrão que vale na data (com os valores da aba RESULTADOS) mais os papéis das estratégias que você segue (R$ 10.000 cada, ou o valor que você digitar no cartão) — com fechamento, quantidade em lotes, preço da ordem (fechamento + 5%, arredondado para cima, para a ordem limitada não ficar de fora do leilão), total e quanto a corretora reserva; o botão “copiar ordens” leva papel, quantidade e preço, e o “⬇ imagem” baixa a tabela em PNG e já lança cada linha como ★ acompanhar no grupo Entradas reais da aba RESULTADOS (baixar de novo no mesmo dia atualiza as linhas, não duplica). Papel que aparece nas duas fontes vira uma ordem só, com os valores somados. Os papéis do Overnight padrão não entram como sugestão do MIX: se o MIX apontar um deles, ele fica fora, entra o próximo da lista, e a linha do Overnight padrão ganha um ★ dizendo que o MIX também apontou o papel — reforço da entrada. Também não bloqueiam o MIX do dia seguinte; só os do MIX contam. Regra de balanço: o app NÃO ENTRA num papel cujo resultado trimestral sai dentro da noite — depois do fechamento do dia da compra ou antes da abertura do dia da venda (sem horário informado, bloqueia os dois lados; divulgação durante o pregão não bloqueia). No MIX, o papel sai e entra o próximo da lista (o cartão do MIX diz quem saiu); no Overnight padrão e nas outras estratégias, a linha aparece como ⛔ NÃO ENTRAR, sem quantidade, e não vai para a cópia, a imagem nem o Entradas reais. Logo abaixo, “Resultados nos próximos dias” mostra o calendário e deixa você corrigir ou incluir uma data. Abaixo, você escolhe qual estratégia seguir, o termômetro diz quantos papéis o MIX leva hoje, o app avisa quando a ordem é grande demais para o volume do papel e marca quem está abaixo do piso. Daqui sai o lançamento para o acompanhamento.",
                         )}
                         {De(
                           "RESULTADOS · REALIZADO",
@@ -11599,7 +11685,7 @@ export function App() {
                         )}
                         {De(
                           "SWING",
-                          "O sinal “demanda retraída em empresa lucrativa”: quem deu sinal no último pregão (entrada, alvo, stop e prazo), as operações em andamento com o preço entre o stop e o alvo, o radar dos papéis a uma condição do sinal e o histórico com gráfico de cada operação. Os botões Padrão e Curto trocam o alvo, o stop e o prazo.",
+                          "O sinal “demanda retraída em empresa lucrativa”: quem deu sinal no último pregão (entrada, alvo, stop e prazo), as operações em andamento com o preço entre o stop e o alvo, o radar dos papéis a uma condição do sinal e o histórico com gráfico de cada operação. Os botões Padrão e Curto trocam o alvo, o stop e o prazo. Sinal com balanço dentro da noite aparece como “ESPERE O BALANÇO”; e o cartão avisa quando há resultado dentro do prazo da operação.",
                         )}
                         {De(
                           "ESTRATÉGIAS · SINAIS DO DIA",

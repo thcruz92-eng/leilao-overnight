@@ -265,6 +265,9 @@ Commit e pronto; vale a partir da próxima execução.
 | `coleta_cvm.py` / `resumo_fundamentos.py` | baixam os balanços da CVM e geram o resumo da aba SWING |
 | `.github/workflows/fundamentos-cvm.yml` | agenda a coleta da CVM (terça e sexta) |
 | `public/fundamentos.json` | resumo dos balanços que o app lê |
+| `coleta_resultados.py` / `.github/workflows/resultados.yml` | calendário de resultados (pesquisa + Yahoo), dias úteis às 06h41 e 16h41 |
+| `dados/resultados_pesquisa.json` | datas e horários de divulgação pesquisados na temporada |
+| `public/resultados.json` | calendário que o app usa para não entrar na véspera de balanço |
 | `public/base_b3.json` | a base publicada (vem vazia, a coleta preenche) |
 | `netlify.toml` | diz ao Netlify como publicar |
 | `package.json` / `package-lock.json` / `vite.config.js` | dependências e build |
