@@ -1,0 +1,535 @@
+{
+"gerado_em": "2026-10-23",
+"temporada": null,
+"fontes": [
+"pesquisa conferida (dados/resultados_pesquisa.json)",
+"Yahoo Finance (estimativa) para o resto"
+],
+"eventos": [
+{
+"ticker": "SAUD3",
+"data": "2026-10-21",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "WEGE3",
+"data": "2026-10-21",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "BBDC3",
+"data": "2026-10-22",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "GGBR3",
+"data": "2026-10-26",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "HYPE3",
+"data": "2026-10-27",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "KLBN3",
+"data": "2026-10-28",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MOTV3",
+"data": "2026-10-28",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "SANB3",
+"data": "2026-10-28",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ABEV3",
+"data": "2026-10-29",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MULT3",
+"data": "2026-10-29",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "VALE3",
+"data": "2026-10-29",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "USIM3",
+"data": "2026-10-30",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "BBSE3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ITUB3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "RADL3",
+"data": "2026-11-03",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "AXIA3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "DXCO3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MYPK3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "PCAR3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "PRIO3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "TEND3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "TOTS3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "VBBR3",
+"data": "2026-11-04",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ASAI3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "EZTC3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "FLRY3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "GRND3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "LREN3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "PSSA3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "RENT3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "SBSP3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "SUZB3",
+"data": "2026-11-05",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "BRAV3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CSMG3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CXSE3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ECOR3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ITSA3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "LOGG3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MGLU3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "RIAA3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "SMTO3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "TIMS3",
+"data": "2026-11-09",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "EGIE3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "EMBJ3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "PETR3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "VIVT3",
+"data": "2026-11-10",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "AZZA3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "BBAS3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "BEEF3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "COGN3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CVCB3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "ENEV3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "EQTL3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "FRAS3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "HAPV3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MRVE3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "QUAL3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "UGPA3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "VLID3",
+"data": "2026-11-11",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "B3SA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CMIG4",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CPFE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CPLE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CSNA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CYRE3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "GGPS3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "IRBR3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "LIGT3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "LWSA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MBRF3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "MDIA3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "RAIL3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "RDOR3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "YDUQ3",
+"data": "2026-11-12",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "CSAN3",
+"data": "2026-11-13",
+"quando": "apos",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+}
+]
+}
