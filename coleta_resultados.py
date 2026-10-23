@@ -50,7 +50,7 @@ def credenciais_yahoo():
     return cookie, crumb
 
 
-def quando_do_horario(ts):
+def quando_do_horario(ts):  # guardado para quando houver fonte com horário confiável
     """horário de Brasília → antes / durante / apos; meia-noite = sem horário"""
     t = datetime.fromtimestamp(ts, BRT)
     m = t.hour * 60 + t.minute
@@ -84,9 +84,12 @@ def yahoo(tickers):
                     r.get("earningsTimestampStart") and r.get("earningsTimestampEnd")
                     and r["earningsTimestampStart"] != r["earningsTimestampEnd"]
                 )
+                # o horário do Yahoo para a B3 não é confiável (marca 'após o
+                # fechamento' até para quem divulga antes da abertura): fica
+                # sem horário, e o app bloqueia os dois lados da noite
                 out[r["symbol"].replace(".SA", "")] = {
                     "data": datetime.fromtimestamp(ts, BRT).date().isoformat(),
-                    "quando": "?" if est else quando_do_horario(ts),
+                    "quando": "?",
                     "confianca": "estimada" if est else "yahoo",
                     "fonte": "Yahoo Finance",
                 }

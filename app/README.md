@@ -28,6 +28,8 @@ Depois de alterar o código, rode `npm run build` e faça commit dos dois:
 | `src/swing.jsx` | tela SWING |
 | `src/cesta.jsx` | vigências da cesta do Overnight padrão |
 | `src/ordens.jsx` | OPERAR: ordens do leilão de fechamento, uma linha por papel |
+| `src/resultados.js` | calendário de resultados e a regra de não entrar na véspera de balanço |
+| `src/calendario.jsx` | OPERAR: resultados nos próximos dias, com correção manual |
 | `src/navegacao.jsx` | cabeçalho, abas e sub-abas |
 | `src/graficos.jsx` | peças dos gráficos (eixos, tooltip, hastes, imagem) |
 | `src/relatorios.js` | exportações (Excel, CSV, PNG) |
