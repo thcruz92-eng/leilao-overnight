@@ -853,6 +853,13 @@
 "obs": "AUAU3 é a União Pet (fusão Petz + Cobasi, negocia desde 01/2026). InvesTalk/BB lista 13/11, provavelmente a data da teleconferência"
 },
 {
+"ticker": "AZUL3",
+"data": "2026-11-12",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "B3SA3",
 "data": "2026-11-12",
 "quando": "apos",
