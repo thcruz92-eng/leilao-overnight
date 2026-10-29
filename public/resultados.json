@@ -1,27 +1,11 @@
 {
-"gerado_em": "2026-10-28",
+"gerado_em": "2026-10-29",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "SAUD3",
-"data": "2026-10-21",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "InfoMoney",
-"obs": "Em 2026 SAUD3 é a BradSaúde S.A. Já divulgou em 21/10 após o fechamento."
-},
-{
-"ticker": "WEGE3",
-"data": "2026-10-21",
-"quando": "antes",
-"confianca": "confirmada",
-"fonte": "Money Times; Seu Dinheiro; BP Money",
-"obs": "Já divulgou"
-},
 {
 "ticker": "BBDC3",
 "data": "2026-10-22",
