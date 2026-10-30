@@ -1,27 +1,11 @@
 {
-"gerado_em": "2026-10-29",
+"gerado_em": "2026-10-30",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "BBDC3",
-"data": "2026-10-22",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times; Finance News; BM&C",
-"obs": "Já divulgou (22/10 à noite)"
-},
-{
-"ticker": "BBDC4",
-"data": "2026-10-22",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times; Finance News; BM&C",
-"obs": "Já divulgou (22/10 à noite)"
-},
 {
 "ticker": "GGBR3",
 "data": "2026-10-26",
