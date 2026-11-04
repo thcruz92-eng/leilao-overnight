@@ -1,19 +1,11 @@
 {
-"gerado_em": "2026-11-03",
+"gerado_em": "2026-11-04",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "HYPE3",
-"data": "2026-10-27",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Forbes (calendário BTG)",
-"obs": "Data em várias fontes; horário só na Forbes/BTG. Teleconferência em 28/10"
-},
 {
 "ticker": "INTB3",
 "data": "2026-10-28",
