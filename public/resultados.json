@@ -641,6 +641,13 @@
 "obs": "Conferência 12/11"
 },
 {
+"ticker": "BHIA3",
+"data": "2026-11-11",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
 "ticker": "COGN3",
 "data": "2026-11-11",
 "quando": "apos",
