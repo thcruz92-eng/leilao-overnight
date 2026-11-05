@@ -1,57 +1,11 @@
 {
-"gerado_em": "2026-11-04",
+"gerado_em": "2026-11-05",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "INTB3",
-"data": "2026-10-28",
-"quando": "?",
-"confianca": "prevista",
-"fonte": "Seu Dinheiro / Money Times / BPMoney / Acionista / Investidor10",
-"obs": "Todos dão a mesma data. O horário aparece como 'não informado/ND' em todos. Teleconferência em 29/10"
-},
-{
-"ticker": "KLBN11",
-"data": "2026-10-28",
-"quando": "antes",
-"confianca": "confirmada",
-"fonte": "Money Times / Seu Dinheiro / Safra (via Money Times)",
-"obs": "Acionista.com.br também traz 28/10."
-},
-{
-"ticker": "KLBN3",
-"data": "2026-10-28",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
-{
-"ticker": "MOTV3",
-"data": "2026-10-28",
-"quando": "apos",
-"confianca": "divergente",
-"fonte": "Seu Dinheiro; Acionista; Money Times",
-"obs": "Um calendário cita 29/10"
-},
-{
-"ticker": "SANB11",
-"data": "2026-10-28",
-"quando": "antes",
-"confianca": "confirmada",
-"fonte": "RI Santander (santander.com.br/ri) / Money Times / Seu Dinheiro",
-"obs": "Videoconferência às 10h"
-},
-{
-"ticker": "SANB3",
-"data": "2026-10-28",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
 {
 "ticker": "ABEV3",
 "data": "2026-10-29",
@@ -207,7 +161,7 @@
 "ticker": "MYPK3",
 "data": "2026-11-04",
 "quando": "?",
-"confianca": "yahoo",
+"confianca": "estimada",
 "fonte": "Yahoo Finance"
 },
 {
