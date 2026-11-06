@@ -158,13 +158,6 @@
 "obs": "Apresentação pública em 05/11. O horário vem dos calendários, não da empresa"
 },
 {
-"ticker": "MYPK3",
-"data": "2026-11-04",
-"quando": "?",
-"confianca": "estimada",
-"fonte": "Yahoo Finance"
-},
-{
 "ticker": "PCAR3",
 "data": "2026-11-04",
 "quando": "apos",
@@ -314,6 +307,13 @@
 "confianca": "alternativa",
 "fonte": "RI Magazine Luiza; Money Times; Investfy",
 "obs": "data citada por outras fontes; bloqueada por precaução"
+},
+{
+"ticker": "MYPK3",
+"data": "2026-11-05",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 },
 {
 "ticker": "PSSA3",
