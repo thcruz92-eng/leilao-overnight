@@ -1,43 +1,11 @@
 {
-"gerado_em": "2026-11-05",
+"gerado_em": "2026-11-06",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "ABEV3",
-"data": "2026-10-29",
-"quando": "antes",
-"confianca": "confirmada",
-"fonte": "RI Ambev; Suno; BTG; InfoMoney",
-"obs": "Antes da abertura; Money Times e Seu Dinheiro listam 28/10 (parece erro)"
-},
-{
-"ticker": "MOTV3",
-"data": "2026-10-29",
-"quando": "?",
-"confianca": "alternativa",
-"fonte": "Seu Dinheiro; Acionista; Money Times",
-"obs": "data citada por outras fontes; bloqueada por precaução"
-},
-{
-"ticker": "MULT3",
-"data": "2026-10-29",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Forbes (calendário BTG)",
-"obs": "Data em várias fontes; horário só na Forbes/BTG. Teleconferência em 30/10"
-},
-{
-"ticker": "VALE3",
-"data": "2026-10-29",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Comunicado Vale 01/10/2026; Money Times; Seu Dinheiro",
-"obs": "Teleconferência 30/10 às 11h"
-},
 {
 "ticker": "USIM3",
 "data": "2026-10-30",
