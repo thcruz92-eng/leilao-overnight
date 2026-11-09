@@ -1,26 +1,11 @@
 {
-"gerado_em": "2026-11-06",
+"gerado_em": "2026-11-09",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "USIM3",
-"data": "2026-10-30",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
-{
-"ticker": "USIM5",
-"data": "2026-10-30",
-"quando": "?",
-"confianca": "prevista",
-"fonte": "Acionista.com.br / Investidor10 / Money Times / BP Money",
-"obs": "Data consistente; horário 'não informado' em todos os calendários."
-},
 {
 "ticker": "BBSE3",
 "data": "2026-11-03",
