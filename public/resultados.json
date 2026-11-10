@@ -1,5 +1,5 @@
 {
-"gerado_em": "2026-11-09",
+"gerado_em": "2026-11-10",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
@@ -548,13 +548,6 @@
 "obs": "Conferência 12/11"
 },
 {
-"ticker": "BHIA3",
-"data": "2026-11-11",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
-{
 "ticker": "COGN3",
 "data": "2026-11-11",
 "quando": "apos",
@@ -940,6 +933,13 @@
 "confianca": "confirmada",
 "fonte": "Money Times / Investfy / BPMoney / Seu Dinheiro",
 "obs": "Teleconferência 16/11"
+},
+{
+"ticker": "BHIA3",
+"data": "2026-12-10",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
 }
 ]
 }
