@@ -1,67 +1,11 @@
 {
-"gerado_em": "2026-11-10",
+"gerado_em": "2026-11-11",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "BBSE3",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Finance News (anúncio da empresa) / Seu Dinheiro",
-"obs": "Teleconferência em 04/11"
-},
-{
-"ticker": "ISAE4",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "https://ri.isaenergiabrasil.com.br/",
-"obs": "RI da empresa: divulgação 03/11 depois do fechamento; teleconferência 04/11 às 10h. BP Money também traz 03/11."
-},
-{
-"ticker": "ITUB3",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times; Seu Dinheiro; Broadcast; BP Money",
-"obs": "Teleconferência 04/11 às 10h"
-},
-{
-"ticker": "ITUB4",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times; Seu Dinheiro; Broadcast; BP Money",
-"obs": "Teleconferência 04/11 às 10h"
-},
-{
-"ticker": "POMO4",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Money Times",
-"obs": "BP Money também traz 03/11. Só o Money Times dá o horário. Teleconferência 04/11 às 11h."
-},
-{
-"ticker": "RADL3",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "RI Raia Drogasil (ri.rdsaude.com.br)",
-"obs": "Call em 04/11"
-},
-{
-"ticker": "TIMS3",
-"data": "2026-11-03",
-"quando": "apos",
-"confianca": "alternativa",
-"fonte": "Money Times / Seu Dinheiro / Suno / Forbes",
-"obs": "data citada por outras fontes; bloqueada por precaução"
-},
 {
 "ticker": "AXIA3",
 "data": "2026-11-04",
