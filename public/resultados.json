@@ -1,19 +1,11 @@
 {
-"gerado_em": "2026-11-13",
+"gerado_em": "2026-11-16",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "ALPA4",
-"data": "2026-11-06",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Money Times",
-"obs": "InvesTalk e Suno também trazem 06/11. Um trecho cita 09/11, provavelmente a teleconferência."
-},
 {
 "ticker": "BRAV3",
 "data": "2026-11-09",
