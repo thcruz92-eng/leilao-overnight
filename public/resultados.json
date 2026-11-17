@@ -1,114 +1,11 @@
 {
-"gerado_em": "2026-11-16",
+"gerado_em": "2026-11-17",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "BRAV3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Seu Dinheiro",
-"obs": "Teleconferência 10/11."
-},
-{
-"ticker": "CSMG3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Comunicado Copasa 19/10/2026; Investfy; Money Times",
-"obs": "Teleconferência 10/11 às 11h"
-},
-{
-"ticker": "CXSE3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "alternativa",
-"fonte": "Money Times / Investidor10",
-"obs": "data citada por outras fontes; bloqueada por precaução"
-},
-{
-"ticker": "DIRR3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Seu Dinheiro / Forbes (BTG)",
-"obs": "Teleconferência em 10/11"
-},
-{
-"ticker": "ECOR3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / BPMoney / Suno",
-"obs": "Teleconferência em 10/11"
-},
-{
-"ticker": "ITSA3",
-"data": "2026-11-09",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
-{
-"ticker": "ITSA4",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "ADVFN; Money Times; Investfy",
-"obs": "Horário só na ADVFN"
-},
-{
-"ticker": "LOGG3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Seu Dinheiro / Suno",
-"obs": "Teleconferência em 10/11 às 10h"
-},
-{
-"ticker": "MGLU3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "divergente",
-"fonte": "RI Magazine Luiza; Money Times; Investfy",
-"obs": "Call 10/11 às 9h. SpaceMoney, ADVFN e BP Money citam 05/11"
-},
-{
-"ticker": "RIAA3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "divergente",
-"fonte": "Suno / Euqueroinvestir / Money Times e Investfy (listado como GUAR3)",
-"obs": "Alternativa: 04/11 após o fechamento (InfoMoney, ADVFN, Forbes/BTG). Teleconferência em 10/11 às 10h segundo o Money Times. Investing.com estima 04/11"
-},
-{
-"ticker": "SBFG3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Money Times",
-"obs": "Investing.com também traz 09/11, sem horário. Teleconferência 10/11 às 11h."
-},
-{
-"ticker": "SMTO3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "RI São Martinho (ri.saomartinho.com.br, agenda)",
-"obs": "Para a empresa é o 2T27 (safra 2026/27). Teleconferência em 10/11 às 15h; Investfy e Forbes dão a mesma data"
-},
-{
-"ticker": "TIMS3",
-"data": "2026-11-09",
-"quando": "apos",
-"confianca": "divergente",
-"fonte": "Money Times / Seu Dinheiro / Suno / Forbes",
-"obs": "Alternativa: 03/11 (BPMoney, Acionista)"
-},
 {
 "ticker": "AURE3",
 "data": "2026-11-10",
