@@ -1,241 +1,11 @@
 {
-"gerado_em": "2026-11-19",
+"gerado_em": "2026-11-20",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "AUAU3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Gazeta Mercantil (fato da recompra, 22/10) / Sabbius / Suno / Euqueroinvestir",
-"obs": "AUAU3 é a União Pet (fusão Petz + Cobasi, negocia desde 01/2026). InvesTalk/BB lista 13/11, provavelmente a data da teleconferência"
-},
-{
-"ticker": "AZUL3",
-"data": "2026-11-12",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
-{
-"ticker": "B3SA3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Investfy; ADVFN; Money Times; Acionista",
-"obs": "Call 13/11"
-},
-{
-"ticker": "BMOB3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Investfy / Money Times / Investidor10",
-"obs": ""
-},
-{
-"ticker": "BPAC11",
-"data": "2026-11-12",
-"quando": "antes",
-"confianca": "divergente",
-"fonte": "RI BTG; Investing.com",
-"obs": "Imprensa (Money Times, Seu Dinheiro, BP Money) diz 10/11 antes da abertura"
-},
-{
-"ticker": "BRAP4",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "RI Bradespar / Oceans14",
-"obs": "Data do RI da empresa. Só o Oceans14 dá o horário."
-},
-{
-"ticker": "BRSR6",
-"data": "2026-11-12",
-"quando": "?",
-"confianca": "divergente",
-"fonte": "Acionista / Suno / Investfy / Investing.com (data); ADVFN e Forbes (horário)",
-"obs": "Todos concordam na data. Horário diverge: ADVFN diz antes da abertura, Forbes/BTG diz após o fechamento, Money Times/Investfy/Investidor10 não informam"
-},
-{
-"ticker": "CMIG4",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "RI Cemig / Forbes (BTG)",
-"obs": "Data do RI (call em 13/11); horário só na Forbes"
-},
-{
-"ticker": "CPFE3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Agregadores (Investfy / Investidor10)",
-"obs": "Teleconferência passou para 16/11; a data de divulgação não mudou, mas o comunicado não cita o dia."
-},
-{
-"ticker": "CPLE3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "ADVFN; Money Times; Acionista; Investfy",
-"obs": ""
-},
-{
-"ticker": "CVCB3",
-"data": "2026-11-12",
-"quando": "?",
-"confianca": "alternativa",
-"fonte": "Seu Dinheiro / Investing.com",
-"obs": "data citada por outras fontes; bloqueada por precaução"
-},
-{
-"ticker": "CXSE3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "divergente",
-"fonte": "Money Times / Investidor10",
-"obs": "Alternativa: 09/11 após o fechamento (Forbes/BTG, BPMoney, EuQueroInvestir)"
-},
-{
-"ticker": "CYRE3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Investfy; Acionista; Money Times",
-"obs": "Conferência 13/11"
-},
-{
-"ticker": "GGPS3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Seu Dinheiro / Investing",
-"obs": "Teleconferência em 13/11"
-},
-{
-"ticker": "GMAT3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Money Times / Suno",
-"obs": "Suno traz a data sem horário. Teleconferência aparentemente em 13/11."
-},
-{
-"ticker": "IRBR3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Comunicado da empresa de 22/10 (Acionista.com.br)",
-"obs": "Apresentação 13/11 às 11h."
-},
-{
-"ticker": "JHSF3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investfy / Acionista.com.br",
-"obs": "Teleconferência 13/11."
-},
-{
-"ticker": "LIGT3",
-"data": "2026-11-12",
-"quando": "?",
-"confianca": "yahoo",
-"fonte": "Yahoo Finance"
-},
-{
-"ticker": "LWSA3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "RI LWSA (ri.lwsa.tech, próximos eventos) / Safra",
-"obs": "Call em 13/11"
-},
-{
-"ticker": "MBRF3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investidor10 / Acionista",
-"obs": "Teleconferência em 13/11"
-},
-{
-"ticker": "MDIA3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investfy / Forbes (BTG) / Seu Dinheiro",
-"obs": "Teleconferência em 13/11"
-},
-{
-"ticker": "NATU3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "https://ri.natura.com.br/en/",
-"obs": "RI da empresa: 12/11 após o fechamento; teleconferência 13/11 às 9h."
-},
-{
-"ticker": "ORVR3",
-"data": "2026-11-12",
-"quando": "?",
-"confianca": "prevista",
-"fonte": "BP Money / Investing.com",
-"obs": "Horário não encontrado."
-},
-{
-"ticker": "PASS3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investfy / Investing.com",
-"obs": "PASS3 é a Compass Gás e Energia (Cosan), listada no IPO de 11/05/2026"
-},
-{
-"ticker": "RAPT4",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Comunicado da Randoncorp com a receita de setembro (InfoMoney/BPMoney, 20/10) + Investfy / Money Times",
-"obs": "Apresentação em 13/11 às 11h. A Frasle divulga em 11/11"
-},
-{
-"ticker": "SAPR11",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "https://ri.sanepar.com.br/pt/servicos-aos-investidores/agenda-de-ri",
-"obs": "Agenda de RI da empresa: 12/11 após o fechamento; conferência 13/11."
-},
-{
-"ticker": "TTEN3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investfy / Forbes (BTG)",
-"obs": "Teleconferência em 13/11 (Seu Dinheiro)"
-},
-{
-"ticker": "VAMO3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "prevista",
-"fonte": "Investfy / Money Times",
-"obs": ""
-},
-{
-"ticker": "YDUQ3",
-"data": "2026-11-12",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "RI da Yduqs / Money Times",
-"obs": "Videoconferência 13/11 às 9h."
-},
 {
 "ticker": "CSAN3",
 "data": "2026-11-13",
@@ -255,6 +25,13 @@
 {
 "ticker": "BHIA3",
 "data": "2026-12-10",
+"quando": "?",
+"confianca": "yahoo",
+"fonte": "Yahoo Finance"
+},
+{
+"ticker": "SANB3",
+"data": "2027-02-03",
 "quando": "?",
 "confianca": "yahoo",
 "fonte": "Yahoo Finance"
