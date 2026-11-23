@@ -1,27 +1,11 @@
 {
-"gerado_em": "2026-11-20",
+"gerado_em": "2026-11-23",
 "temporada": "3T26",
 "fontes": [
 "pesquisa conferida (dados/resultados_pesquisa.json)",
 "Yahoo Finance (estimativa) para o resto"
 ],
 "eventos": [
-{
-"ticker": "CSAN3",
-"data": "2026-11-13",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investfy",
-"obs": "Teleconferência em 16/11"
-},
-{
-"ticker": "SIMH3",
-"data": "2026-11-13",
-"quando": "apos",
-"confianca": "confirmada",
-"fonte": "Money Times / Investfy / BPMoney / Seu Dinheiro",
-"obs": "Teleconferência 16/11"
-},
 {
 "ticker": "BHIA3",
 "data": "2026-12-10",
